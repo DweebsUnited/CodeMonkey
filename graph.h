@@ -21,14 +21,12 @@
 namespace CodeMonkey {
 namespace DataStructs {
 
-/*************************************************************************************
-* Classes
-*************************************************************************************/
 /*********************************************************************************//**
 * Graph class with templated link and node payloads
 *
-* Provides basic management of nodes and links, but no more. Algorithms that use it
-*   can add meaningful data to each.
+* Provides basic memory management of nodes and links, but no more. Algorithms that
+*   use it can add meaningful data to each. The payloads are just member variables.
+*   To understand, see: Node
 *************************************************************************************/
 template <class LinkPayloadType, class NodePayloadType>
 class Graph {
@@ -162,6 +160,14 @@ public:
     * @param    [in]    dir Directional control enum telling how to link nodes
     * @return               True if nodes were linked, False otherwise
     *********************************************************************************/
+    // TODO: Carry class list of links and their directions, would make deleting a node much easier
+    //   Right now we search every single link in the graph on removal
+    //   That would allow us to edit only the nodes with known links
+    //   Use map of id->Node* instead for even better speed?
+
+    //   Assume no desync ever? Can I make it fault tolerant somehow?
+    //     If a node gets changed, can I update the routing table to reflect that?
+    //     I'm smelling networking ;)
     bool addLink( uint32_t idA, uint32_t idB, LinkPayloadType pay, LinkDirection dir = LinkDirection::BOTH ) {
 
         // Get pointers to nodes
@@ -233,7 +239,7 @@ public:
 
 
 /*************************************************************************************
-* Typedefs
+* Extras
 *************************************************************************************/
 /** Provide a basic Weighted Graph type */
 typedef Graph<uint32_t, uint8_t> WeightedGraph;
