@@ -30,6 +30,8 @@ namespace DataStructs {
 *************************************************************************************/
 template <class LinkPayloadType, class NodePayloadType>
 class Graph {
+    /** Helper typedef to save a TON of typing */
+    typedef Node<LinkPayloadType, NodePayloadType> _Node;
 
 public:
     /*****************************************************************************//**
@@ -45,9 +47,6 @@ public:
     };
 
 private:
-    /** Helper typedef to save a TON of typing */
-    typedef Node<LinkPayloadType, NodePayloadType> _Node;
-
     /** Binary AND for scoped enum LinkDirection */
     inline friend uint8_t operator&( const LinkDirection & lhs, const LinkDirection & rhs ) { return static_cast<uint8_t>( lhs ) & static_cast<uint8_t>( rhs ); };
 
@@ -107,7 +106,7 @@ public:
         std::for_each( this->nodes.begin( ), this->nodes.end( ), [ nRem ]( _Node * n ) { n->removeLink( nRem ); } );
 
         // Use remove_if to remove node with ID in question, deallocate if we find it
-        std::vector<_Node *>::iterator newEnd =
+        typename std::vector<_Node *>::iterator newEnd =
             std::remove_if( this->nodes.begin( ), this->nodes.end( ), [ idRem ]( _Node * n ) { if( n->id == idRem ) { delete n; return true; } else return false; } );
 
         // Save return value, because once we erase we can't tell if anything was actually removed
@@ -134,7 +133,7 @@ public:
     * @return               Pointer to the node if it exists, NULL otherwise
     *********************************************************************************/
     _Node * findNodeByID( uint32_t id ) {
-        
+
         // I dislike cheating with auto, but I also don't feel like making this line any longer than it is already
         auto ret = std::find_if( this->nodes.begin( ), this->nodes.end( ), [ id ]( _Node * n ) { return n->id == id; } );
 
@@ -206,7 +205,7 @@ public:
 
         // If either was bad, we must fail as well
         if( aPtr != NULL && bPtr != NULL ) {
-            
+
             // Add links, return
             if( dir & LinkDirection::FOREWARD ) aPtr->removeLink( bPtr );
             if( dir & LinkDirection::BACKWARD ) aPtr->removeLink( bPtr );

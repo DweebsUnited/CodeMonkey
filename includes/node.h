@@ -34,6 +34,8 @@ namespace DataStructs {
 *************************************************************************************/
 template <class LinkPayloadType, class NodePayloadType>
 class Node {
+    /** Typedefs are wonderful, they save a ton of typing */
+    typedef Node<LinkPayloadType, NodePayloadType> _Node;
 
 public:
     /*****************************************************************************//**
@@ -62,11 +64,6 @@ public:
         LinkPayloadType payload;
     };
 
-private:
-    /** Typedefs are wonderful, they save a ton of typing */
-    typedef Node<LinkPayloadType, NodePayloadType> _Node;
-
-public:
     /** This node's id                      */
     uint32_t id;
 
@@ -117,7 +114,7 @@ public:
     /*****************************************************************************//**
     * Add a new outward pointing link to this node, target may not know we exist
     *
-    * @param    [in]    target 
+    * @param    [in]    target
     * @param    [in]    payload Node data to save
     *********************************************************************************/
     // TODO: take shared ptr to link payload instead
@@ -157,6 +154,7 @@ public:
 *************************************************************************************/
 class BareEmptyNode {
 
+    /** Another typedef to save a bunch of time */
     typedef BareEmptyNode _Node;
 
 public:
@@ -198,7 +196,7 @@ public:
     * @param    [in]    target  Target to point at
     *********************************************************************************/
     void addLink( _Node * target ) {
-        
+
         // If it doesnt exist already
         if( std::find_if( this->links.begin( ), this->links.end( ), [ target ]( _Node * l ) { return target == l; } ) == this->links.end( ) )
             // Add it to the list of links
@@ -212,7 +210,7 @@ public:
     * @param    [in]    target  Target to no longer point at
     *********************************************************************************/
     void removeLink( _Node * target ) {
-        
+
         // Remove erase idiom
         this->links.erase( std::remove_if( this->links.begin( ), this->links.end( ), [ target ]( _Node * l ) { return target == l; } ), this->links.end( ) );
 

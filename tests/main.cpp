@@ -13,6 +13,8 @@ int main( int argc, char ** argv ) {
     djikstraTest( );
     std::cout << "Djikstra test done" << std::endl;
 
+#ifdef _WIN32
     getchar( );
+#endif
 
 };
