@@ -35,9 +35,7 @@ namespace DataStructs {
 *************************************************************************************/
 template <class LinkPayloadType, class NodePayloadType>
 class Graph {
-    /** Helper typedef to save a TON of typing */
-    typedef Node<LinkPayloadType, NodePayloadType> _Node;
-
+    
     /** Helper typedef to save a TON of typing */
     typedef Node<LinkPayloadType, NodePayloadType> _Node;
 

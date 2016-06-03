@@ -1,6 +1,6 @@
-#include "includes/main.h"
+#include "main.h"
 
-#include "includes/graph.h"
+#include "graph.h"
 
 using namespace CodeMonkey;
 
