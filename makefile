@@ -9,7 +9,7 @@ CCFLAGS = -c -O2 -Wall -Wextra -I$(INCLUDEDIR)
 CSTD = -std=c99
 CPPSTD = -std=c++11
 
-TESTS = main graph djikstra grid
+TESTS = main graph djikstra
 TESTOBJECTS = $(addprefix $(BUILDDIR), $(addsuffix .o, $(TESTS)))
 
 PROJECTS = Engine RocketShip
