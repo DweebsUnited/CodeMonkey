@@ -1,5 +1,7 @@
-*
-!*.cpp
-!*.h
-!.gitignore
-!*.conf
+*.vcxproj*
+*.sln
+*.sdf
+/doxygen/
+/**/Debug/
+/**/x64/
+/**/.vs/
