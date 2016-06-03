@@ -19,12 +19,17 @@
 
 #include "stdlib.h"
 
+
 /*************************************************************************************
 * Namespaces
 *************************************************************************************/
 namespace CodeMonkey {
 namespace DataStructs {
 
+
+/*************************************************************************************
+* Classes
+*************************************************************************************/
 /*********************************************************************************//**
 * Node with templated link payload, and node payload
 *
@@ -34,6 +39,9 @@ namespace DataStructs {
 *************************************************************************************/
 template <class LinkPayloadType, class NodePayloadType>
 class Node {
+    /** Typedefs are wonderful, they save a ton of typing */
+    typedef Node<LinkPayloadType, NodePayloadType> _Node;
+
     /** Typedefs are wonderful, they save a ton of typing */
     typedef Node<LinkPayloadType, NodePayloadType> _Node;
 
@@ -48,6 +56,7 @@ public:
     * TODO: Make this a struct and generator function instead of a class.
     *********************************************************************************/
     class Link {
+
     public:
         /*************************************************************************//**
         * Constructor doesn't do anything
@@ -62,6 +71,7 @@ public:
 
         /** User typed data variable        */
         LinkPayloadType payload;
+
     };
 
     /** This node's id                      */
@@ -137,8 +147,8 @@ public:
     void removeLink( _Node * target ) {
 
         // Remove and erase idiom
-        // Of course, this assumes only one link to the target
         this->links.erase( std::remove_if( this->links.begin( ), this->links.end( ), [ target ]( Link & l ) { return target == l.target; } ), this->links.end( ) );
+
     };
 
 };
@@ -149,15 +159,16 @@ public:
 * The most basic of nodes
 *
 * This is the most simple a node can be, linking to other nodes, but carrying no
-*   data about anything. Bare means it has to link payloads, Empty that it has no
+*   data about anything. Bare means it has no link payloads, Empty that it has no
 *   node payload either.
 *************************************************************************************/
 class BareEmptyNode {
 
-    /** Another typedef to save a bunch of time */
+    /** This doesn't do much here, but it keeps the formatting consistent */
     typedef BareEmptyNode _Node;
 
 public:
+
     /** This node's id                      */
     uint32_t id;
 
