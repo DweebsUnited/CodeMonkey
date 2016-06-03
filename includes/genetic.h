@@ -1,26 +1,23 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 namespace CodeMonkey {
 namespace Genetic {
 
+// TODO: Parameterize fitness type
+
 template <class GeneType>
 class Genome {
 
-    GeneType * genome;
-    uint32_t geneCount;
+    std::vector<GeneType> genome;
 
-    Genome( uint32_t geneCount ) : geneCount( geneCount ) {
+    uint32_t fitness;
+
+    Genome( uint32_t geneCount ) {
         
-        this->genome = malloc( sizeof( GeneType ) * geneCount );
-
-        if( this->genome == NULL ) {
-
-            std::cerr << "Failed to allocate room for a genome." << std::endl;
-            exit( 1 );
-
-        }
+        this->genome.reserve( geneCount );
 
     };
 
@@ -29,19 +26,31 @@ class Genome {
 template <class GeneType>
 class Population {
 
-    Genome<GeneType> * members;
-    uint32_t memberCount;
+    std::vector<Genome<GeneType>> members;
 
-    Genome( uint32_t memberCount ) : memberCount( memberCount ) {
+    // Callback variables
+    uint32_t( *fitnessCallback )( std::vector<GeneType> &, uint32_t );
+    bool( *sortCallback )( uint32_t, uint32_t ) = { ;
 
-        this->members = malloc( sizeof( Genome<GeneType> ) * memberCount );
+    Population( uint32_t memberCount, uint32_t( *fitnessCallback )( std::vector<GeneType> &, uint32_t ) ) : fitnessCallback( fitnessCallback ) {
 
-        if( this->genome == NULL ) {
+        this->members.reserve( memberCount );
 
-            std::cerr << "Failed to allocate room for a population." << std::endl;
-            exit( 1 );
+    };
 
-        }
+    // Default callback implementations?
+
+    void breed( ) {
+
+        // Compute fitness of each member
+        member.fitness = this->fitnessCallback( member.genome )
+
+        // Sort according to fitness using callback
+        // If not available, do nothing
+
+        // Use stochastic universal sampling, and pick random samples to breed population back to full
+
+        // Mutate at random percentage
 
     };
 

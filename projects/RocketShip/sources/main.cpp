@@ -6,4 +6,6 @@ int main( int argc, char ** argv ) {
     // Demonstrate header functinality for color
     // Fitness is sum of indices with an ON pixel
 
+    
+
 }
