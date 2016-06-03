@@ -9,7 +9,7 @@ CCFLAGS = -c -O2 -Wall -Wextra -I$(INCLUDEDIR)
 CSTD = -std=c99
 CPPSTD = -std=c++11
 
-TESTS = main graph djikstra
+TESTS = main graph djikstra genetic
 TESTOBJECTS = $(addprefix $(BUILDDIR), $(addsuffix .o, $(TESTS)))
 
 PROJECTS = Engine RocketShip
@@ -20,8 +20,7 @@ all: codeMonkeyTests.out
 codeMonkeyTests.out: $(TESTOBJECTS)
 	$(CPP) $^ -o $@
 
-$(BUILDDIR)%.o: $(TESTSDIR)%.cpp ; $(CPP) $^ $(CPPSTD) $(CCFLAGS) -o $@
-$(BUILDDIR)%.o: $(INCLUDEDIR)%.h ;
+$(BUILDDIR)%.o: $(TESTSDIR)%.cpp $(INCLUDEDIR)%.h ; $(CPP) $< $(CPPSTD) $(CCFLAGS) -o $@
 
 .PHONY: clean
 clean:
