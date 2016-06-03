@@ -19,8 +19,7 @@ all: codeMonkeyTests.out
 codeMonkeyTests.out: $(TESTOBJECTS)
 	$(CPP) $^ -o $@
 
-$(BUILDDIR)%.o: $(TESTSDIR)%.cpp ; $(CPP) $^ $(CPPSTD) $(CCFLAGS) -o $@
-$(BUILDDIR)%.o: $(INCLUDEDIR)%.h ;
+$(BUILDDIR)%.o: $(TESTSDIR)%.cpp $(INCLUDEDIR)%.h ; $(CPP) $< $(CPPSTD) $(CCFLAGS) -o $@
 
 .PHONY: clean
 clean:

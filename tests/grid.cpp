@@ -1,6 +1,6 @@
-#include "includes/main.h"
+#include "main.h"
 
-#include "includes/grid.h"
+#include "grid.h"
 
 // Make it a checkerboard
 void mapFunc( uint32_t * cell, uint32_t i, uint32_t j ) {

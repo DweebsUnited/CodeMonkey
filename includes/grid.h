@@ -66,7 +66,7 @@ public:
     void map( void( *mapFunc )( _Cell * cell, uint32_t i, uint32_t j ) ) {
 
         for( uint32_t i = 0; i < this->nRows; ++i )
-            for( uint32_t j = 0; i < this->nCols; ++j )
+            for( uint32_t j = 0; j < this->nCols; ++j )
                 mapFunc( (*this)[ i ] + j, i, j );
 
     };
@@ -77,7 +77,7 @@ public:
 
         for( uint32_t i = 0; i < this->nRows; ++i ) {
 
-            for( uint32_t j = 0; i < this->nCols; ++j )
+            for( uint32_t j = 0; j < this->nCols; ++j )
                 std::cout << ( *this )[ i ][ j ] << "    ";
 
             std::cout << std::endl;
