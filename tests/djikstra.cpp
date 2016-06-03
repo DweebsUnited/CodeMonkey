@@ -1,6 +1,6 @@
-#include "main.h"
+#include "includes/main.h"
 
-#include "djikstra.h"
+#include "includes/djikstra.h"
 
 void djikstraTest( ) {
 

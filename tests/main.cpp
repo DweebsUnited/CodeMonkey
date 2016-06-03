@@ -1,4 +1,4 @@
-#include "main.h"
+#include "includes/main.h"
 
 int main( int argc, char ** argv ) {
 
@@ -18,6 +18,7 @@ int main( int argc, char ** argv ) {
     gridTest( );
     std::cout << "Grid test done" << std::endl;
 
+#ifdef _WIN32
     getchar( );
 #endif
 
