@@ -4,5 +4,4 @@
 
 void graphTest( );
 void djikstraTest( );
-void gridTest( );
 int main( int, char ** );

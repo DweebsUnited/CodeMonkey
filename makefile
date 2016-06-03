@@ -12,7 +12,8 @@ CPPSTD = -std=c++11
 TESTS = main graph djikstra grid
 TESTOBJECTS = $(addprefix $(BUILDDIR), $(addsuffix .o, $(TESTS)))
 
-PROJECTS = Engine
+PROJECTS = Engine RocketShip
+# Run make in all project subdirs
 
 all: codeMonkeyTests.out
 

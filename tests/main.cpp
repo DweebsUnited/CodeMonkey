@@ -12,11 +12,6 @@ int main( int argc, char ** argv ) {
     std::cout << "Running Djikstra test" << std::endl;
     djikstraTest( );
     std::cout << "Djikstra test done" << std::endl;
-    
-    // Basic grid tests, make sure everything works
-    std::cout << "Running Grid test" << std::endl;
-    gridTest( );
-    std::cout << "Grid test done" << std::endl;
 
 #ifdef _WIN32
     getchar( );
