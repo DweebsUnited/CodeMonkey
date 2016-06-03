@@ -2,6 +2,7 @@ SOURCEDIR = ./sources/
 TESTSDIR = ./tests/
 INCLUDEDIR = ./includes/
 BUILDDIR = ./build/
+PROJECTDIR = ./projects/
 
 CC = gcc
 CPP = g++
@@ -12,8 +13,11 @@ CPPSTD = -std=c++11
 TESTS = main graph djikstra genetic
 TESTOBJECTS = $(addprefix $(BUILDDIR), $(addsuffix .o, $(TESTS)))
 
-PROJECTS = Engine RocketShip
-# Run make in all project subdirs
+
+.PHONY: RocketShip
+RocketShip:
+	make -C $(PROJECTDIR)$@
+
 
 all: codeMonkeyTests.out
 
