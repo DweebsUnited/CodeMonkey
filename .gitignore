@@ -2,6 +2,8 @@
 *.sln
 *.sdf
 *.opensdf
+*.out
+*.o
 /doxygen/
 /**/Debug/
 /**/x64/
