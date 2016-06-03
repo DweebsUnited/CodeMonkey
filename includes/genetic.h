@@ -21,7 +21,9 @@ public:
 
     Genome( uint32_t geneCount ) {
 
-        this->genome.reserve( geneCount );
+        for( uint32_t i = 0; i < geneCount; ++i ) {
+            this->genome.push_back( GeneType( ) );
+        }
 
     };
 
@@ -34,19 +36,21 @@ public:
 
     std::vector<Genome<GeneType>> members;
     uint32_t memberCount;
-
     uint32_t numChamps;
+    uint32_t geneCount;
 
     // Callback variables
     uint32_t( *fitnessCallback )( std::vector<GeneType> & ) = NULL;
-    bool( *sortCallback )( uint32_t &, uint32_t & ) = NULL;
-    //Genome<GeneType>( *breedCallback )(  );
 
     // Constructor
-    Population( uint32_t memberCount, uint32_t numChamps, uint32_t geneCount, uint32_t( *fitnessCallback )( std::vector<GeneType> & ) ) :
+    Population(
+        uint32_t memberCount,
+        uint32_t numChamps,
+        uint32_t geneCount ) :
+
         memberCount( memberCount ),
         numChamps( numChamps ),
-        fitnessCallback( fitnessCallback ) {
+        geneCount( geneCount ) {
 
         for( uint32_t i = 0; i < memberCount; ++i ) {
             this->members.push_back( Genome<GeneType>( geneCount ) );
@@ -54,32 +58,46 @@ public:
 
     };
 
-    void nextGeneration( ) {
+    void nextGeneration(
+        float crossoverChance, // Higher means more swaps between a and b
+        float mutationChance, // Higher means more likely to mutate a GENE after breeding
+        uint32_t( *fitnessCallback )( std::vector<GeneType> & ),
+        bool( *sortCallback )( uint32_t &, uint32_t & ),
+        GeneType( *mutateCallback )( GeneType &, uint32_t ) ) {
+
+        if( fitnessCallback == NULL || mutateCallback == NULL )
+            return;
+
 
         uint32_t sumFitness = 0;
         uint32_t stochasticFitness = 0;
-        uint32_t i;
+        uint32_t i, j;
+        bool crossSide;
 
         std::vector<uint32_t> fitnessPoints;
         std::vector<Genome<GeneType>> champions;
 
-        std::default_random_engine generator;
-        std::uniform_int_distribution<int> * distribution;
+        std::default_random_engine gen;
+        std::uniform_int_distribution<int> * distI;
+        std::uniform_real_distribution<float> * distF = new std::uniform_real_distribution<float>( 0.0, 1.0 );
+
 
         // Compute fitness of each member
-        std::for_each( this->members.begin( ), this->members.end( ), [ this, &sumFitness ]( Genome<GeneType> & member ) { member.fitness = this->fitnessCallback( member.genome ); sumFitness += member.fitness; } );
+        std::for_each( this->members.begin( ), this->members.end( ), [ &sumFitness, fitnessCallback ]( Genome<GeneType> & member ) { member.fitness = fitnessCallback( member.genome ); sumFitness += member.fitness; } );
+
 
         // Sort according to fitness using callback
         // If not available, do nothing
         if( sortCallback != NULL ) {
 
-            std::sort( this->members.begin( ), this->members.end( ), [ this ]( Genome<GeneType> & a, Genome<GeneType> & b ) { return this->sortCallback( a.fitness, b.fitness ); } );
+            std::sort( this->members.begin( ), this->members.end( ), [ sortCallback ]( Genome<GeneType> & a, Genome<GeneType> & b ) { return sortCallback( a.fitness, b.fitness ); } );
 
         }
 
-        // Use stochastic universal sampling, and pick random samples to breed population back to full
-        distribution = new std::uniform_int_distribution<int>( 0, sumFitness / this->numChamps );
-        stochasticFitness = (*distribution)( generator );
+
+        // Use stochastic universal sampling to pick our champions
+        distI = new std::uniform_int_distribution<int>( 0, sumFitness / this->numChamps );
+        stochasticFitness = (*distI)( gen );
 
         for( i = 0; i < this->numChamps; ++i ) {
 
@@ -105,20 +123,55 @@ public:
         // Sanity check that we have enough champions
         // std::cout << champions.size( ) << " " << numChamps << std::endl;
 
-        // Breed champions at random until we are at full capacity
-        delete distribution;
-        distribution = new std::uniform_int_distribution<int>( 0, this->numChamps );
 
-        for( i = 0; i < this->memberCount; ++i ) {
+        // Breed champions at random until we have a new generation
+        delete distI;
+        distI = new std::uniform_int_distribution<int>( 0, this->numChamps );
 
-            this->memberCount[ i ] = this->breedCallback( champions[ distribution( generator ) ], champions[ distribution( generator ) ] );
+        for( i = 0; i < numChamps; ++i ) {
+
+            this->members[ i ] = champions[ i ];
 
         }
 
-        // Mutate
+        for( ; i < this->memberCount; ++i ) {
 
+            std::vector<GeneType> * champA = &( this->members[ (*distI)( gen ) ].genome );
+            std::vector<GeneType> * champB = &( this->members[ (*distI)( gen ) ].genome );
+
+            crossSide = (*distF)( gen ) > 0.5;
+
+            for( j = 0; j < this->geneCount; ++j ) {
+
+                if( crossSide ) {
+                    this->members[ i ].genome[ j ] = (*champA)[ j ];
+                } else {
+                    this->members[ i ].genome[ j ] = (*champB)[ j ];
+                }
+
+                if( (*distF)( gen ) < mutationChance ) {
+                    this->members[ i ].genome[ j ] = mutateCallback( this->members[ i ].genome[ j ], j );
+                }
+
+                if( (*distF)( gen ) < crossoverChance ) {
+                    crossSide = !crossSide;
+                }
+
+            }
+
+        }
 
     };
+
+    void printOut( ) {
+        std::cout << "Population:" << std::endl;
+        for( Genome<GeneType> member : this->members ) {
+            for( GeneType gene : member.genome ) {
+                std::cout << gene << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
 
 };
 
