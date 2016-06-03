@@ -1,6 +1,6 @@
-#include "includes/main.h"
+#include "main.h"
 
-#include "includes/djikstra.h"
+#include "djikstra.h"
 
 void djikstraTest( ) {
 
@@ -17,9 +17,9 @@ void djikstraTest( ) {
 
     g.addLink( 2, 3, 11 );
     g.addLink( 2, 5, 2 );
-    
+
     g.addLink( 3, 4, 6 );
-    
+
     g.addLink( 4, 5, 9 );
 
     //g.printOut( );

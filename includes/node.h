@@ -39,9 +39,7 @@ namespace DataStructs {
 *************************************************************************************/
 template <class LinkPayloadType, class NodePayloadType>
 class Node {
-    /** Typedefs are wonderful, they save a ton of typing */
-    typedef Node<LinkPayloadType, NodePayloadType> _Node;
-
+    
     /** Typedefs are wonderful, they save a ton of typing */
     typedef Node<LinkPayloadType, NodePayloadType> _Node;
 
