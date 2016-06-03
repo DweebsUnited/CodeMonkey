@@ -1,6 +1,7 @@
 *.vcxproj*
 *.sln
 *.sdf
+*.opensdf
 /doxygen/
 /**/Debug/
 /**/x64/
