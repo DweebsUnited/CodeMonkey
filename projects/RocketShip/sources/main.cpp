@@ -1,4 +1,4 @@
-#include "includes/genetic.h"
+#include "genetic.h"
 
 int main( int argc, char ** argv ) {
 

@@ -13,10 +13,15 @@ int main( int argc, char ** argv ) {
     djikstraTest( );
     std::cout << "Djikstra test done" << std::endl;
 
-    // Run Grid tests
+    // Run Genetic tests
     std::cout << "Running Genetic test" << std::endl;
     geneticTest( );
     std::cout << "Genetic test done" << std::endl;
+
+    // Run Grid tests
+    std::cout << "Running Grid test" << std::endl;
+    gridTest( );
+    std::cout << "Grid test done" << std::endl;
 
 #ifdef _WIN32
     getchar( );

@@ -5,4 +5,5 @@
 void graphTest( );
 void djikstraTest( );
 void geneticTest( );
+void gridTest( );
 int main( int, char ** );
