@@ -14,11 +14,6 @@ TESTS = main grid graph djikstra genetic
 TESTOBJECTS = $(addprefix $(BUILDDIR), $(addsuffix .o, $(TESTS)))
 
 
-.PHONY: RocketShip
-RocketShip:
-	make -C $(PROJECTDIR)$@
-
-
 all: codeMonkeyTests.out
 
 codeMonkeyTests.out: $(TESTOBJECTS)
@@ -30,3 +25,7 @@ $(BUILDDIR)%.o: $(TESTSDIR)%.cpp $(INCLUDEDIR)%.h ; $(CPP) $< $(CPPSTD) $(CCFLAG
 clean:
 	rm *.out
 	rm $(BUILDDIR)*.o
+
+.PHONY: RocketShip
+RocketShip:
+	make -C $(PROJECTDIR)$@
