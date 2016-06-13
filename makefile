@@ -25,7 +25,3 @@ $(BUILDDIR)%.o: $(TESTSDIR)%.cpp $(INCLUDEDIR)%.h ; $(CPP) $< $(CPPSTD) $(CCFLAG
 clean:
 	rm *.out
 	rm $(BUILDDIR)*.o
-
-.PHONY: RocketShip
-RocketShip:
-	make -C $(PROJECTDIR)$@
