@@ -10,7 +10,7 @@ CCFLAGS = -c -O2 -Wall -Wextra -I$(INCLUDEDIR)
 CSTD = -std=c99
 CPPSTD = -std=c++11
 
-TESTS = main grid graph djikstra genetic
+TESTS = main grid graph djikstra genetic threadsafe
 TESTOBJECTS = $(addprefix $(BUILDDIR), $(addsuffix .o, $(TESTS)))
 
 
