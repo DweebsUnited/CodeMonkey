@@ -1,16 +1,45 @@
 #pragma once
+/*********************************************************************************//**
+* @file genetic.h
+* Genetic algorithm class, designed to be extended with project specific methods
+*
+* Copyright (C) 2016 by Eric Osburn.
+* The redistribution terms are provided in the LICENSE file that must
+* be distributed with this source code.
+*************************************************************************************/
 
+/*************************************************************************************
+* Includes
+*************************************************************************************/
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <random>
 #include <limits>
 
+
+/*************************************************************************************
+* Namespaces
+*************************************************************************************/
 namespace CodeMonkey {
 namespace Genetic {
 
+/*************************************************************************************
+* Utilities
+*************************************************************************************/
 typedef uint32_t Fitness;
 
+
+/*************************************************************************************
+* Classes
+*************************************************************************************/
+/*********************************************************************************//**
+* Population class with templated gene type
+*
+* Implements a basic Genetic algorithm, using stochastic random sampling for
+*   champion selection. All methods that deal with genes are pure virtual, as
+*   those are always project specific.
+*************************************************************************************/
 template <class GeneType = uint16_t>
 class Population {
 public:
@@ -59,7 +88,6 @@ public:
         }
     };
 
-    // TODO: Make these pure virtuals
     virtual GeneType newGene( ) = 0;
 
     virtual void mutateGene( GeneType & gene ) = 0;
