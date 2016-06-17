@@ -1,4 +1,5 @@
 SOURCEDIR = ./sources/
+RESOURCEDIR = ./resources/
 TESTSDIR = ./tests/
 INCLUDEDIR = ./includes/
 BUILDDIR = ./build/
@@ -6,7 +7,7 @@ PROJECTDIR = ./projects/
 
 CC = gcc
 CPP = g++
-CCFLAGS = -c -O2 -Wall -Wextra -I$(INCLUDEDIR)
+CCFLAGS = -c -O2 -Wall -Wextra -I$(INCLUDEDIR) -I$(RESOURCEDIR)
 CSTD = -std=c99
 CPPSTD = -std=c++11
 

@@ -193,6 +193,19 @@ public:
       data_[y_offset + x_offset + 2] = red;
    }
 
+   inline void set_pixel_transparent(const unsigned int x, const unsigned int y,
+                         const unsigned char red,
+                         const unsigned char green,
+                         const unsigned char blue,
+                         const float alpha)
+   {
+      const unsigned int y_offset = y * row_increment_;
+      const unsigned int x_offset = x * bytes_per_pixel_;
+      data_[y_offset + x_offset + 0] = static_cast<unsigned char> ( blue  * alpha + data_[y_offset + x_offset + 0] * ( 1 - alpha ) );
+      data_[y_offset + x_offset + 1] = static_cast<unsigned char> ( green * alpha + data_[y_offset + x_offset + 1] * ( 1 - alpha ) );
+      data_[y_offset + x_offset + 2] = static_cast<unsigned char> ( red   * alpha + data_[y_offset + x_offset + 2] * ( 1 - alpha ) );
+   }
+
    inline bool copy_from(const bitmap_image& image)
    {
       if (
@@ -459,6 +472,7 @@ public:
       }
    }
 
+   // Barrel shift right
    inline void ror_channel(const color_plane color, const unsigned int& ror)
    {
       for (unsigned char* itr = (data_ + offset(color)); itr < (data_ + length_); itr += bytes_per_pixel_)
@@ -1912,7 +1926,46 @@ public:
       plot_pen_pixel(x2,y2);
    }
 
-   void horiztonal_line_segment(int x1, int x2, int y)
+   void line_segment_transparent(int x1, int y1, int x2, int y2, float alpha)
+   {
+      this->alpha_ = alpha;
+      int steep = 0;
+      int sx    = ((x2 - x1) > 0) ? 1 : -1;
+      int sy    = ((y2 - y1) > 0) ? 1 : -1;
+      int dx    = abs(x2 - x1);
+      int dy    = abs(y2 - y1);
+
+      if (dy > dx)
+      {
+         steep = x1;  x1 = y1;  y1 = steep;  /* swap x1 and y1 */
+         steep = dx;  dx = dy;  dy = steep;  /* swap dx and dy */
+         steep = sx;  sx = sy;  sy = steep;  /* swap sx and sy */
+         steep = 1;
+      }
+
+      int e = 2 * dy - dx;
+
+      for (int i = 0; i < dx; ++i)
+      {
+         if (steep)
+            plot_pen_pixel_transparent(y1,x1);
+         else
+            plot_pen_pixel_transparent(x1,y1);
+
+         while (e >= 0)
+         {
+            y1 += sy;
+            e -= (dx << 1);
+         }
+
+         x1 += sx;
+         e  += (dy << 1);
+      }
+
+      plot_pen_pixel_transparent(x2,y2);
+   }
+
+   void horizontal_line_segment(int x1, int x2, int y)
    {
       if (x1 > x2)
       {
@@ -2071,9 +2124,50 @@ public:
       }
    }
 
+   void plot_pen_pixel_transparent(int x, int y)
+   {
+      switch (pen_width_)
+      {
+         case 1  : plot_pixel_transparent(x,y);
+                   break;
+
+         case 2  : {
+                      plot_pixel_transparent(x    , y    );
+                      plot_pixel_transparent(x + 1, y    );
+                      plot_pixel_transparent(x + 1, y + 1);
+                      plot_pixel_transparent(x    , y + 1);
+                   }
+                   break;
+
+         case  3 : {
+                      plot_pixel_transparent(x    , y - 1);
+                      plot_pixel_transparent(x - 1, y - 1);
+                      plot_pixel_transparent(x + 1, y - 1);
+
+                      plot_pixel_transparent(x    , y    );
+                      plot_pixel_transparent(x - 1, y    );
+                      plot_pixel_transparent(x + 1, y    );
+
+                      plot_pixel_transparent(x    , y + 1);
+                      plot_pixel_transparent(x - 1, y + 1);
+                      plot_pixel_transparent(x + 1, y + 1);
+                   }
+                   break;
+
+         default : plot_pixel_transparent(x,y);
+                   break;
+      }
+   }
+
    void plot_pixel(int x, int y)
    {
       image_.set_pixel(x,y,pen_color_red_,pen_color_green_,pen_color_blue_);
+   }
+
+   void plot_pixel_transparent(int x, int y)
+   {
+      // TODO: guards on going out of bounds here
+      image_.set_pixel_transparent(x,y,pen_color_red_,pen_color_green_,pen_color_blue_,alpha_);
    }
 
    void pen_width(const unsigned int& width)
@@ -2103,6 +2197,7 @@ private:
    unsigned char pen_color_red_;
    unsigned char pen_color_green_;
    unsigned char pen_color_blue_;
+   float alpha_;
 };
 
 const rgb_store autumn_colormap[1000] = {
