@@ -11,9 +11,11 @@ namespace Genetic {
 
 typedef uint32_t Fitness;
 
-template <class GeneType = uint32_t>
+template <class GeneType = uint16_t>
 class Population {
 public:
+
+    typedef GeneType Gene;
 
     struct Genome {
         Fitness fitness;
@@ -45,7 +47,10 @@ public:
         distF( 0.0, 1.0 ),
         distI( 0, this->numChamps ) { };
 
-    void initMembers( ) {
+    // Don't call this here because newGene is not defined in this class
+    // Weird virtual rules that make complete sense if you learn a little more about
+    //   how virtuals actually work
+    virtual void initMembers( ) {
         Genome g;
         for( uint32_t i = 0; i < this->memberCount; ++i ) {
             this->members.push_back( g );
@@ -54,20 +59,14 @@ public:
         }
     };
 
-    virtual GeneType newGene( ) {
-        static std::default_random_engine gen;
-        static std::uniform_int_distribution<GeneType> distI( 0, std::numeric_limits<GeneType>::max( ) / 4 );
+    // TODO: Make these pure virtuals
+    virtual GeneType newGene( ) = 0;
 
-        return distI( gen );
-    };
+    virtual void mutateGene( GeneType & gene ) = 0;
 
-    virtual void fitnessCalculate( Genome & genome ) {
-        genome.fitness = 0;
-        for( GeneType gene : genome.genome )
-            genome.fitness += gene;
-    };
+    virtual void fitnessCalculate( Genome & genome ) = 0;
 
-    Fitness fitnessCompute( ) {
+    virtual Fitness fitnessCompute( ) {
 
         std::for_each( this->members.begin( ), this->members.end( ), [ this ]( Genome & genome ) { this->fitnessCalculate( genome ); } );
 
@@ -155,7 +154,7 @@ public:
 
                 // Check for mutation
                 if( this->doMutate( j, i ) )
-                    this->members[ i ].genome[ j ] = this->newGene( );
+                    this->mutateGene( this->members[ i ].genome[ j ] );
 
                 // Check for crossover
                 if( this->doCrossOver( j, i ) )
