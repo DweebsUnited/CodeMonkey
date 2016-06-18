@@ -36,7 +36,7 @@ namespace DataStructs {
 * WARNING: If you use a class as the CellType, you must remember to init them,
 *   and deinit when you are done. Use map to map an initializer over all cells.
 *   Also do keep in mind if you are using pointers in anything tehy will only be
-*   shallow copied. Use smart pointers instead if you need them.
+*   shallow copied. Use smart pointers instead if you really need them.
 *************************************************************************************/
 template <class CellType>
 class Grid {
@@ -53,32 +53,79 @@ public:
     /** Number of columns in grid           */
     uint32_t nCols;
 
-
+    /*****************************************************************************//**
+    * Constructor sets up memory
+    *
+    * @param    [in]   uint32_t         Number of rows
+    * @param    [in]   uint32_t         Number of columns
+    *********************************************************************************/
     Grid( uint32_t nRows, uint32_t nCols ) : nRows( nRows ), nCols( nCols ) {
+
+        // Allocate some data
         this->cells = new _Cell[ nRows * nCols ];
+
     };
 
-    ~Grid( ) { delete this->cells; };
+    /*****************************************************************************//**
+    * Destructor cleans up
+    *********************************************************************************/
+    ~Grid( ) {
 
+        delete this->cells;
+
+    };
+
+    /*****************************************************************************//**
+    * Whether this gene should mutate
+    *
+    * Takes these parems so later members can have a higher mutation rate. This
+    *   introduces some extreme randomness to hopefully not hit a local minima.
+    *
+    * @param    [in]   uint32_t         Number of rows
+    * @param    [in]   uint32_t         Number of columns
+    *********************************************************************************/
     _Cell * operator[]( uint32_t i ) { return this->cells + i * this->nCols; };
-    _Cell * operator()( ) { return this->cells; };
 
+    /*****************************************************************************//**
+    * Paren operator returns data pointer
+    *********************************************************************************/
+    _Cell * operator()( ) {
+        return this->cells;
+    };
+
+    /*****************************************************************************//**
+    * Whether this gene should mutate
+    *
+    * Takes these parems so later members can have a higher mutation rate. This
+    *   introduces some extreme randomness to hopefully not hit a local minima.
+    *
+    * @param    [in]   A monster        Callback to give each cell
+    *********************************************************************************/
     void map( void( *mapFunc )( _Cell * cell, uint32_t i, uint32_t j ) ) {
 
+        // Call mapFunc on each cell
+
         for( uint32_t i = 0; i < this->nRows; ++i )
+
             for( uint32_t j = 0; j < this->nCols; ++j )
-                mapFunc( (*this)[ i ] + j, i, j );
+
+                mapFunc( this->cells + i * this->nCols + j, i, j );
 
     };
 
     // TODO: map on region of interest only
 
+    /*****************************************************************************//**
+    * Print a grid
+    *********************************************************************************/
     void printOut( ) {
 
+        // Print each cell
         for( uint32_t i = 0; i < this->nRows; ++i ) {
 
             for( uint32_t j = 0; j < this->nCols; ++j )
-                std::cout << ( *this )[ i ][ j ] << "    ";
+
+                std::cout << this->cells[ i * this->nCols + j ] << "    ";
 
             std::cout << std::endl;
 
@@ -88,10 +135,17 @@ public:
 
 };
 
+/*************************************************************************************
+* Utility typedefs
+*************************************************************************************/
+/** Integer grid                        */
 typedef Grid<uint32_t> IGrid;
+/** Integer cell                        */
 typedef uint32_t ICell;
 
+/** I don't think this works            */
 typedef Grid<bool> BoolGrid;
+/** Boolean cell                        */
 typedef bool BoolCell;
 
 };
