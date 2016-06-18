@@ -40,7 +40,7 @@ public:
         std::default_random_engine gen;
         std::uniform_int_distribution<uint32_t> dist( 1, 25 );
 
-        gen.seed( std::chrono::high_resolution_clock::now( ).time_since_epoch( ).count( ) );
+        gen.seed( (uint32_t)std::chrono::high_resolution_clock::now( ).time_since_epoch( ).count( ) );
 
         Message m = { dist( gen ), '*' };
 

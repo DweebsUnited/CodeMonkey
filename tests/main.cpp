@@ -32,7 +32,7 @@ int main( int argc, char ** argv ) {
 
     // Test some of the threadsafe stuff
     std::cout << "Testing some threadsafe shtuff" << std::endl;
-    threadsafeTest( );
+    //threadsafeTest( );
     std::cout << "Threadsafe test completed" << std::endl << std::endl;
 
 #ifdef _WIN32
@@ -54,15 +54,15 @@ void scratchBMP( ) {
     // TODO: Add guards on drawing out of bounds
     std::uniform_int_distribution<uint16_t> dist( 0, 250 );
     std::uniform_int_distribution<uint16_t> color( 0, 255 );
-    std::uniform_real_distribution<float> a( 0.0, 0.15 );
+    std::uniform_real_distribution<float> a( 0.0f, 0.15f );
 
     draw.pen_width( 1 );
 
-    gen.seed( std::chrono::high_resolution_clock::now( ).time_since_epoch( ).count( ) );
-
+    gen.seed( (uint32_t)std::chrono::high_resolution_clock::now( ).time_since_epoch( ).count( ) );
+    
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now( );
     for( uint32_t i = 0; i < 100000; ++i ) {
-        draw.pen_color( color( gen ), color( gen ), color( gen ) );
+        draw.pen_color( (uint8_t)color( gen ), (uint8_t)color( gen ), (uint8_t)color( gen ) );
         draw.line_segment_transparent( dist( gen ), dist( gen ), dist( gen ), dist( gen ), a( gen ) );
     }
     double timetook = std::chrono::duration_cast<std::chrono::duration<double>>( std::chrono::high_resolution_clock::now( ) - t1 ).count( );
