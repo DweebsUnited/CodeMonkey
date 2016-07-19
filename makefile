@@ -39,3 +39,7 @@ clean:
 	rm *.out
 	rm $(TESTBUILDDIR)*.o
 	rm $(LIBBUILDDIR)*.o
+
+.PHONY: Fractal
+Fractal:
+	make -C $(PROJECTDIR)$@
