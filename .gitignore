@@ -2,6 +2,7 @@
 *.opensdf
 *.out
 *.o
+*.VC.db
 /doxygen/
 /**/Debug/
 /**/x64/
