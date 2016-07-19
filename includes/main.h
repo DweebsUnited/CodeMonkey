@@ -8,4 +8,5 @@ void djikstraTest( );
 void geneticTest( );
 void gridTest( );
 void threadsafeTest( );
+void logTest( );
 int main( int, char ** );

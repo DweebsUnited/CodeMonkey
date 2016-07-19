@@ -35,6 +35,11 @@ int main( int argc, char ** argv ) {
     //threadsafeTest( );
     std::cout << "Threadsafe test completed" << std::endl << std::endl;
 
+    // Test the logger
+    std::cout << "Testing logging. This might take a while" << std::endl;
+    logTest( );
+    std::cout << "Logger test completed" << std::endl << std::endl;
+
 #ifdef _WIN32
     getchar( );
 #endif
