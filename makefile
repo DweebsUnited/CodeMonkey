@@ -3,6 +3,8 @@ RESOURCEDIR = ./resources/
 TESTSDIR = ./tests/
 INCLUDEDIR = ./includes/
 BUILDDIR = ./build/
+TESTBUILDDIR = $(BUILDDIR)tests/
+LIBBUILDDIR = $(BUILDDIR)lib/
 PROJECTDIR = ./projects/
 
 CC = gcc
@@ -11,18 +13,29 @@ CCFLAGS = -c -O2 -Wall -Wextra -I$(INCLUDEDIR) -I$(RESOURCEDIR)
 CSTD = -std=c99
 CPPSTD = -std=c++11
 
-TESTS = main grid graph djikstra genetic threadsafe
-TESTOBJECTS = $(addprefix $(BUILDDIR), $(addsuffix .o, $(TESTS)))
+MODULES = logger djikstra
+MODULEOBJECTS = $(addprefix $(LIBBUILDDIR), $(addsuffix .o, $(MODULES)))
 
+TESTS = main grid graph djikstra genetic threadsafe logger
+TESTOBJECTS = $(addprefix $(TESTBUILDDIR), $(addsuffix .o, $(TESTS)))
 
 all: codeMonkeyTests.out
 
+codeMonkeyTests.out: $(BUILDDIR)CodeMonkey.a
 codeMonkeyTests.out: $(TESTOBJECTS)
 	$(CPP) $^ -o $@
 
-$(BUILDDIR)%.o: $(TESTSDIR)%.cpp $(INCLUDEDIR)%.h ; $(CPP) $< $(CPPSTD) $(CCFLAGS) -o $@
+$(TESTBUILDDIR)%.o: $(TESTSDIR)%.cpp
+	$(CPP) $< $(CPPSTD) $(CCFLAGS) -o $@
+
+
+$(BUILDDIR)CodeMonkey.a: $(MODULEOBJECTS)
+	ar rcs $@ $^
+
+$(LIBBUILDDIR)%.o: $(SOURCEDIR)%.cpp $(INCLUDEDIR)%.h ; $(CPP) $< $(CPPSTD) $(CCFLAGS) -o $@
 
 .PHONY: clean
 clean:
 	rm *.out
-	rm $(BUILDDIR)*.o
+	rm $(TESTBUILDDIR)*.o
+	rm $(LIBBUILDDIR)*.o
