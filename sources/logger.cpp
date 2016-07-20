@@ -2,103 +2,22 @@
 
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <chrono>
 #include <vector>
 #include <algorithm>
 
-// Private classes as needed
-class Header {
-public:
-    static const uint8_t size = 14;
 
-    uint8_t recNum;
-    uint64_t tStamp;
-    uint8_t module;
-    uint8_t caller;
-    CodeMonkey::Logger::LogLevel debugLevel;
-    uint16_t recSize;
+// Global logging SMACK
+std::fstream logFile;
+// True = Writing, False = Reading
+bool logFileMode = true;
 
-    Header( uint8_t recNum, uint64_t tStamp, uint8_t module, uint8_t caller, CodeMonkey::Logger::LogLevel debugLevel, uint16_t recSize ) :
-        recNum( recNum ),
-        tStamp( tStamp ),
-        module( module ),
-        caller( caller ),
-        debugLevel( debugLevel ),
-        recSize( recSize ) { };
-
-
-    Header( std::string& hString ) :
-        recNum( (uint8_t)hString[ 0 ] ),
-        module( (uint8_t)hString[ 9 ] ),
-        caller( (uint8_t)hString[ 10 ] ),
-        debugLevel( (CodeMonkey::Logger::LogLevel)hString[ 11 ] ),
-        recSize( (uint8_t)hString[ 12 ] | ( (uint8_t)hString[ 13 ] ) << 8 ) {
-
-        this->tStamp = 0;
-        for( uint32_t i = 0; i < 8; ++i )
-            tStamp |= ( (uint8_t) hString[ 1 + i ] ) << 8 * i;
-
-    };
-
-    std::string toString( ) {
-
-        std::string ret;
-
-        ret += this->recNum;
-
-        for( uint32_t i = 0; i < 8; ++i )
-            ret += ( this->tStamp >> 8 * i ) & 0xFF;
-
-        ret += this->module;
-
-        ret += this->caller;
-
-        ret += (uint8_t)this->debugLevel;
-
-        ret += this->recSize & 0xFF;
-        ret += this->recSize >> 8;
-
-        return ret;
-
-    };
-};
-
-
-class RecordLogger {
-public:
-    uint8_t recNum;
-    uint8_t module;
-    uint8_t caller;
-
-    RecordLogger( uint8_t recNum, uint8_t module, uint8_t caller ) :
-        recNum( recNum ),
-        module( module ),
-        caller( caller ) { };
-
-    void logRecord( std::string& record, CodeMonkey::Logger::LogLevel debugLevel ) {
-        Header h(
-            this->recNum,
-            (uint64_t)std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now( ).time_since_epoch( ) ).count( ),
-            this->module,
-            this->caller,
-            debugLevel,
-            record.size( ) )
-
-        std::string hString = h.toString( );
-
-        if( logFile.is_open( ) && logFileMode ) {
-            logFile.write( &hString[ 0 ], Header::size );
-            logFile.write( &record[ 0 ], record.size( ) );
-        }
-    }
-};
 
 class NameManager {
 public:
-    RecordLogger logger( 1, 0, 0 );
-    static std::vector<std::string> modules( 1, std::string( "Reserved" ) );
-    static std::vector<std::string> callers( 1, std::string( "Reserved" ) );
+    static CodeMonkey::Logger::RecordLogger logger;
+    static std::vector<std::string> modules;
+    static std::vector<std::string> callers;
 
     static void reset( ) {
         NameManager::modules.resize( 1 );
@@ -116,32 +35,92 @@ public:
     static uint8_t reserveModule( std::string name ) {
         std::vector<std::string>::iterator it = std::find( NameManager::modules.begin( ), NameManager::modules.end( ), name );
 
-        if( it != modules.end( ) ) {
+        if( it != modules.end( ) )
             return std::distance( NameManager::modules.begin( ), it );
-        } else {
-            uint8_t num = NameManager::nextModuleID( );
+
+        else {
+
+            uint16_t num = NameManager::nextModuleID( );
             if( num == NUMMODULES )
                 // NO VALID MODULE NUMBER
                 // TODO: Throw an exception here?
                 return 0;
 
-            
+            // Add name to modules
+            NameManager::modules.push_back( name );
+
+            // Write out name reservation
+            std::string record;
+            record += (uint8_t)0x00;
+            record += (uint8_t)num;
+            record += (uint8_t)name.size( );
+            record += name;
+
+            NameManager::logger.logRecord( record, CodeMonkey::Logger::LogLevel::RESERVED );
+
+            return num;
 
         }
-    }
 
+    };
+
+    static uint8_t reserveCaller( std::string name ) {
+        std::vector<std::string>::iterator it = std::find( NameManager::callers.begin( ), NameManager::callers.end( ), name );
+
+        if( it != callers.end( ) )
+            return std::distance( NameManager::callers.begin( ), it );
+
+        else {
+
+            uint16_t num = NameManager::nextCallerID( );
+            if( num == NUMCALLERS )
+                // NO VALID CALLER NUMBER
+                // TODO: Throw an exception here?
+                return 0;
+
+            // Add name to modules
+            NameManager::callers.push_back( name );
+
+            // Write out name reservation
+            std::string record;
+            record += (uint8_t)0x01;
+            record += (uint8_t)num;
+            record += (uint8_t)name.size( );
+            record += name;
+
+            NameManager::logger.logRecord( record, CodeMonkey::Logger::LogLevel::RESERVED );
+
+            return num;
+
+        }
+
+    };
+
+    static std::string lookupModule( uint8_t id ) {
+        if( id < NameManager::nextModuleID( ) )
+            return NameManager::modules[ id ];
+        else
+            return std::string( "Unknown" );
+    };
+
+    static std::string lookupCaller( uint8_t id ) {
+        if( id < NameManager::nextCallerID( ) )
+            return NameManager::callers[ id ];
+        else
+            return std::string( "Unknown" );
+    };
 
 };
+
+CodeMonkey::Logger::RecordLogger NameManager::logger = CodeMonkey::Logger::RecordLogger( 1, 0, 0 );
+std::vector<std::string> NameManager::modules = std::vector<std::string>( 1, std::string( "Reserved" ) );
+std::vector<std::string> NameManager::callers = std::vector<std::string>( 1, std::string( "Reserved" ) );
+
 
 class RecordManager {
+public:
 
 };
-
-
-// Global logging SMACK
-std::fstream logFile;
-// True = Writing, False = Reading
-bool logFileMode = true;
 
 
 void CodeMonkey::Logger::closeLog( ) {
@@ -151,7 +130,7 @@ void CodeMonkey::Logger::closeLog( ) {
 
 };
 
-void CodeMonkey::Logger::openLogInput( std::string& filename ) {
+void CodeMonkey::Logger::openLogInput( std::string filename ) {
 
     closeLog( );
 
@@ -159,12 +138,12 @@ void CodeMonkey::Logger::openLogInput( std::string& filename ) {
     logFile.open( filename, std::ios::binary | std::ios::in );
 
     // TODO
-    // _NameManager.reset( )
+    NameManager::reset( );
     // _RecordManager.reset( )
 
 };
 
-void CodeMonkey::Logger::openLogOutput( std::string& filename ) {
+void CodeMonkey::Logger::openLogOutput( std::string filename ) {
 
     closeLog( );
 
@@ -172,12 +151,12 @@ void CodeMonkey::Logger::openLogOutput( std::string& filename ) {
     logFile.open( filename, std::ios::binary | std::ios::out );
 
     // TODO
-    // _NameManager.reset( )
+    NameManager::reset( );
     // _RecordManager.reset( )
 
 };
 
-void CodeMonkey::Logger::printLog( std::string& filename ) {
+void CodeMonkey::Logger::printLog( std::string filename ) {
     closeLog( );
     openLogInput( filename );
 
@@ -200,45 +179,71 @@ void CodeMonkey::Logger::printLog( std::string& filename ) {
         // Print out the header stats
         std::cout << "Record number: " << (int)h.recNum << std::endl;
         std::cout << "Time         : " << (uint64_t)h.tStamp << std::endl;
-        // TODO
-        std::cout << "Module       : " << (int)h.module/*_NameManager.lookupModule( h.module )*/ << std::endl;
-        std::cout << "Caller       : " << (int)h.caller/*_NameManager.lookupCaller( h.caller )*/ << std::endl;
+        std::cout << "Module       : " << NameManager::lookupModule( h.module ) << std::endl;
+        std::cout << "Caller       : " << NameManager::lookupCaller( h.caller ) << std::endl;
         std::cout << "Debug level  : " << (int)h.debugLevel << std::endl;
         std::cout << "Record size  : " << (int)h.recSize << std::endl;
         std::cout << std::endl;
 
-        // String message
         if( h.recNum == 0 ) {
+        // String message
+
             std::string msg;
             msg.resize( h.recSize );
             logFile.read( &msg[ 0 ], h.recSize );
             std::cout << "Message      : " << msg << std::endl;
+
+        }  else if( h.recNum == 1 ) {
+            // Name reservation
+
+            std::string record;
+            record.resize( 1 );
+            uint8_t resType;
+            uint8_t resID;
+
+            logFile.read( &record[ 0 ], 1 );
+            resType = record[ 0 ];
+
+            logFile.read( &record[ 0 ], 1 );
+            resID = record[ 0 ];
+
+            logFile.read( &record[ 0 ], 1 );
+            record.resize( record[ 0 ] );
+            logFile.read( &record[ 0 ], record.size( ) );
+
+
+            std::cout << "Type         : ";
+            if( resType == 0 ) {
+
+                std::cout << "Module";
+                if( resID == NameManager::nextModuleID( ) )
+                    NameManager::reserveModule( record );
+
+            } else if( resType == 1 ) {
+
+                std::cout << "Caller";
+                if( resID == NameManager::nextCallerID( ) )
+                    NameManager::reserveCaller( record );
+
+            } else
+                std::cout << (int)resType;
+
+            std::cout << std::endl;
+
+            std::cout << "ID           : " << (int)resID << std::endl;
+            std::cout << "Name         : " << record << std::endl;
+
         } else {
+
+            // We don't know how to handle this, so ignore it
+            // We can read the right number of bytes, or seek past
+            // I choose to read, because it's how I did it in python
             std::string msg;
             msg.resize( h.recSize );
             logFile.read( &msg[ 0 ], h.recSize );
+
         }
-
-        /*elif h.recNum == 1:
-            # Name reservation
-            typ = ord( fh.read( 1 ) )
-
-            rid = ord( fh.read( 1 ) )
-            name = fh.read( ord( fh.read( 1 ) ) ) # Neat way to read a pstring
-
-            if typ == 0:
-                typ = "Module"
-                if rid == _NameManager.nextModuleID( ):
-                    _NameManager.reserveModule( name )
-            elif typ == 1:
-                typ = "Caller"
-                if rid == _NameManager.nextCallerID( ):
-                    _NameManager.reserveCaller( name )
-
-            std::cout << "Type:         ", typ
-            std::cout << "ID:           ", rid
-            std::cout << "Message:      ", name
-        elif h.recNum == 2:
+        /*elif h.recNum == 2:
             # Record reservation
             rDef = RecordDef( fh.read( ord( fh.read( 1 ) ) ) )
 
@@ -289,4 +294,79 @@ void CodeMonkey::Logger::printLog( std::string& filename ) {
 
     }
 
+};
+
+
+CodeMonkey::Logger::Header::Header( uint8_t recNum, uint64_t tStamp, uint8_t module, uint8_t caller, CodeMonkey::Logger::LogLevel debugLevel, uint16_t recSize ) :
+    recNum( recNum ),
+    tStamp( tStamp ),
+    module( module ),
+    caller( caller ),
+    debugLevel( debugLevel ),
+    recSize( recSize ) { };
+
+CodeMonkey::Logger::Header::Header( std::string& hString ) :
+    recNum( (uint8_t)hString[ 0 ] ),
+    module( (uint8_t)hString[ 9 ] ),
+    caller( (uint8_t)hString[ 10 ] ),
+    debugLevel( (CodeMonkey::Logger::LogLevel)hString[ 11 ] ),
+    recSize( (uint8_t)hString[ 12 ] | ( (uint8_t)hString[ 13 ] ) << 8 ) {
+
+    this->tStamp = 0;
+    for( uint32_t i = 0; i < 8; ++i )
+        tStamp |= ( (uint8_t) hString[ 1 + i ] ) << 8 * i;
+
+};
+
+std::string CodeMonkey::Logger::Header::toString( ) {
+
+    std::string ret;
+
+    ret += this->recNum;
+
+    for( uint32_t i = 0; i < 8; ++i )
+        ret += ( this->tStamp >> 8 * i ) & 0xFF;
+
+    ret += this->module;
+
+    ret += this->caller;
+
+    ret += (uint8_t)this->debugLevel;
+
+    ret += this->recSize & 0xFF;
+    ret += this->recSize >> 8;
+
+    return ret;
+
+};
+
+
+CodeMonkey::Logger::RecordLogger::RecordLogger( uint8_t recNum, uint8_t module, uint8_t caller ) :
+    recNum( recNum ),
+    module( module ),
+    caller( caller ) { };
+
+void CodeMonkey::Logger::RecordLogger::logRecord( std::string& record, CodeMonkey::Logger::LogLevel debugLevel ) {
+    if( logFile.is_open( ) && logFileMode ) {
+        Header h(
+            this->recNum,
+            (uint64_t)std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now( ).time_since_epoch( ) ).count( ),
+            this->module,
+            this->caller,
+            debugLevel,
+            record.size( ) );
+
+        std::string hString = h.toString( );
+
+        logFile.write( &hString[ 0 ], Header::size );
+        logFile.write( &record[ 0 ], record.size( ) );
+    }
+};
+
+
+CodeMonkey::Logger::LogStringLogger::LogStringLogger( std::string module, std::string caller ) :
+    logger( 0, NameManager::reserveModule( module ), NameManager::reserveCaller( caller ) ) { };
+
+void CodeMonkey::Logger::LogStringLogger::logRecord( std::string message, CodeMonkey::Logger::LogLevel debugLevel ) {
+    this->logger.logRecord( message, debugLevel );
 };

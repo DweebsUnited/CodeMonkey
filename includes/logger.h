@@ -2,11 +2,14 @@
 #define NUMCALLERS 256 // 1 reserved
 #define NUMRECORDS 256 // 3 reserved
 
+#include <cstdint>
+#include <string>
+
 namespace CodeMonkey {
 namespace Logger {
 
 typedef enum class _LogLevel : uint8_t {
-    RESERVED,
+    RESERVED = 0,
     INFO,
     WARN,
     ERROR,
@@ -25,12 +28,6 @@ typedef enum class _Types : uint8_t {
     pstring = 0x50  // P
 } Types;
 
-// Have to use 64 bit timestamps to save all the milliseconds
-// this->millis = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now( ).time_since_epoch( ) ).count( );
-// for( int i = 0; i < sizeof( uint64_t ); ++i ) {
-//     s += ( this->millis >> ( 8 * i ) ) & 0xFF;
-// }
-
 void closeLog( );
 
 void openLogInput( std::string filename );
@@ -38,7 +35,45 @@ void openLogOutput( std::string filename );
 
 void printLog( std::string filename );
 
+class Header {
+public:
+
+    static const uint8_t size = 14;
+
+    uint8_t recNum;
+    uint64_t tStamp;
+    uint8_t module;
+    uint8_t caller;
+    CodeMonkey::Logger::LogLevel debugLevel;
+    uint16_t recSize;
+
+    Header( uint8_t recNum, uint64_t tStamp, uint8_t module, uint8_t caller, CodeMonkey::Logger::LogLevel debugLevel, uint16_t recSize );
+    Header( std::string& hString );
+
+    std::string toString( );
+
+};
+
+class RecordLogger {
+public:
+
+    uint8_t recNum;
+    uint8_t module;
+    uint8_t caller;
+
+    RecordLogger( uint8_t recNum, uint8_t module, uint8_t caller );
+
+    void logRecord( std::string& record, CodeMonkey::Logger::LogLevel debugLevel );
+
+};
+
 class LogStringLogger {
+public:
+    RecordLogger logger;
+
+    LogStringLogger( std::string module, std::string caller );
+
+    void logRecord( std::string message, LogLevel debugLevel );
 
 };
 
