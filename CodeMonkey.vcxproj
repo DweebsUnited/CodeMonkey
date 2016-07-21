@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tests\djikstra.cpp" />
+    <ClCompile Include="tests\fourier.cpp" />
     <ClCompile Include="tests\genetic.cpp" />
     <ClCompile Include="tests\graph.cpp" />
     <ClCompile Include="tests\grid.cpp" />
@@ -31,12 +32,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\djikstra.h" />
+    <ClInclude Include="includes\fourier.h" />
     <ClInclude Include="includes\genetic.h" />
     <ClInclude Include="includes\graph.h" />
     <ClInclude Include="includes\grid.h" />
     <ClInclude Include="includes\main.h" />
     <ClInclude Include="includes\node.h" />
     <ClInclude Include="includes\threadsafe.h" />
+    <ClInclude Include="resources\bitmap_image.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2DAD79B7-88CC-473D-8C17-0428F8AD1BA2}</ProjectGuid>
@@ -123,7 +126,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>E:\Documents\Visual Studio 2015\Projects\CodeMonkey\CodeMonkey\resources;$(ProjectDir)/includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Documents\Visual Studio 2015\Projects\CodeMonkey\resources;$(ProjectDir)/includes</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

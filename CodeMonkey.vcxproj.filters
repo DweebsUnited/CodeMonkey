@@ -38,6 +38,9 @@
     <ClCompile Include="tests\threadsafe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tests\fourier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\djikstra.h">
@@ -60,6 +63,12 @@
     </ClInclude>
     <ClInclude Include="includes\threadsafe.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\fourier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resources\bitmap_image.hpp">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
