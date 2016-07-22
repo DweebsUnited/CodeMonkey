@@ -108,7 +108,7 @@ public:
         // Make a default genome
         Genome g;
 
-        // For eack member TODO: this should use an iterator
+        // For each member
         for( uint32_t i = 0; i < this->memberCount; ++i ) {
 
             // Push back the genome
@@ -162,7 +162,7 @@ public:
         // Use member var as accumulator
         this->sumFitness = 0;
 
-        // TODO: I need a functional reduce
+        // Functional reduce idiom
         for( Genome & genome : this->members )
             this->sumFitness += genome.fitness;
 
@@ -174,7 +174,7 @@ public:
     /*****************************************************************************//**
     * Pick the finest among them
     *
-    * TODO SIDE EFFECTS: Sorts members HtoL
+    * SIDE EFFECTS: Sorts members HtoL
     *
     * @param    [out]   std::vector<Genome>     Champions of this generation
     *********************************************************************************/

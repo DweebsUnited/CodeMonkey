@@ -1,4 +1,5 @@
 #pragma once
+// TODO: This shit ugly
 
 #include <iostream>
 

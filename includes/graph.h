@@ -103,6 +103,7 @@ public:
         _Node * nRem = findNodeByID( idRem );
 
         // For any node linking to that ID, remove that link
+        // TODO: O( n m ) -> n = num nodes, m = num links
         std::for_each( this->nodes.begin( ), this->nodes.end( ), [ nRem ]( _Node * n ) { n->removeLink( nRem ); } );
 
         // Use remove_if to remove node with ID in question, deallocate if we find it
@@ -159,7 +160,7 @@ public:
     * @param    [in]    dir Directional control enum telling how to link nodes
     * @return               True if nodes were linked, False otherwise
     *********************************************************************************/
-    // TODO: Carry class list of links and their directions, would make deleting a node much easier
+    // TODO: Maintain list of links and their directions, would make deleting a node much easier
     //   Right now we search every single link in the graph on removal
     //   That would allow us to edit only the nodes with known links
     //   Use map of id->Node* instead for even better speed?
