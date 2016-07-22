@@ -1,37 +1,44 @@
 # CodeMonkey
 
-A repository of useful libraries I never want to rewrite. Includes projects on different topics I have learned in my academic explorations, as well as many one time use scripts.
+A repository of useful libraries I never want to rewrite. Includes projects on different topics I have learned in my academic explorations, as well as many one time use scripts, and several large undertakings.
 
-Has full (okay not quite) Doxygen support, and a config file. Has several other major projects incorporated in as well. Those are listed below.
+Has full ( okay not quite ) Doxygen support, with a config file.
 
 ## Highlights
 
+* The best folder hierarchy you ever SEEN son.
 * Data structure implementations from simple to templated behemoths.
   * Everything I learned in CS 251: Data Structures and Algorithms
-* Major projects will show up here as they are completed.
-* In fieri:
-  * Signal processing: FFT, DSP, reading answer messages off an iClickr
-  * Rendering projects such as fractals, terrain generation
-  * Fixed point math (because I learn best by implementation)
-  * A complete rendering engine:
-    * Basic shape library with file loading.
-    * Extendable parts, from camera controls to shaders.
-    * Will incorporate graphic optimizations as I take the time to learn them.
-  * RocketShip: Genetic generation of github user icons
-  * Lindon: Genetic approximation of images using colored lines
+* Basic DSP routines
+  * DFT, FFT, and inverses for both
+
+In fieri:
+* Reading answer messages off iClickers with an SDR
+* Fixed point math ( because I learn best by implementation )
+* A complete rendering engine:
+  * Basic shape library with file loading.
+  * Extendable parts, from camera controls to shaders.
+  * Will incorporate graphic optimizations as I take the time to learn them.
+* RocketShip: Genetic generation of github user icons
+* Lindon: Genetic approximation of images using colored lines
+* Fractal generators
+  * Diamond square
+  * Perlin noise
+  * Curl noise
+* Cloud generation and simulation
 
 ## Installation
 
-Download it. If using visual studio, adding all the .h's to "Header Files", and all the .cpp's to "Source Files" seems to work. You can mess around in main if you just want to play with library structures. If you want to run a project, add its files instead of the library files. Good luck.
+Download it. The solutions should be good for VS 2015 Community, and the makefiles for any gcc/g++ compiler ( barring weird platform specific errors ).
 
 ## Usage
 
-For now, you're on your own to figure out dependencies. Build what files need to be built, link what needs linking. There are makefiles for the library and for each project, which are a good starting point if you want to use it for something.
+Assuming no weird errors ( I've gotten new compilation errors on every platform I've compiled this on :/ ) this should be ready to go. There are makefiles for the library and for each project, which are a good starting point if you want to use it for something. The library makefile will build CodeMonkey.a in build, which you can link like any other static library. Some modules are still header only, so you may not need to link with it if you only use those.
 
 ## Contributing
 
 1. Fork it!
-2. Do work on a feature branch off master
+2. Do work on a feature branch based off master
 3. Push it somewhere
 5. Submit a pull request :D
 
@@ -41,7 +48,7 @@ This was started when I was rooting around and found hundreds of old one-off scr
 
 ## Credits
 
-My name is Eric S. Osburn, my handle is DweebsUnited, and my nickname is Ozzy. I'm a CS undergrad at Purdue, who doesn't know what he wants to do with his life. Rock climbing, Gaellic hurling, my hobbies are best described as eccentric. My foremost passion though is coding. I hope you get some good use out of this.
+My name is Eric S. Osburn, my handle is DweebsUnited, and my nickname is Ozzy. I'm a CS undergrad at Purdue, who doesn't know what he wants to do with his life. Rock climbing, Gaellic hurling, my hobbies are best described as eccentric. My foremost passion however is coding. I hope you get some good use out of this, drop me an email if you make something cool that uses it.
 
 ## License
 

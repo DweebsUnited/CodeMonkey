@@ -39,7 +39,7 @@ namespace DataStructs {
 *************************************************************************************/
 template <class LinkPayloadType, class NodePayloadType>
 class Node {
-    
+
     /** Typedefs are wonderful, they save a ton of typing */
     typedef Node<LinkPayloadType, NodePayloadType> _Node;
 
@@ -103,7 +103,7 @@ public:
     Node( uint32_t id, NodePayloadType & payload ) : id( id ), payload( payload ) { };
 
     /*****************************************************************************//**
-    * Print out data, including piping payload right to std::cout
+    * Print out data, by piping payload right to std::cout
     *********************************************************************************/
     void printOut( ) {
 

@@ -70,7 +70,6 @@ void CodeMonkey::Algorithm::djikstra( CodeMonkey::Algorithm::DjikstraGraph & g, 
                 if( l.target->payload.isInf || currDist + l.payload < dData->distance ) {
 
                     // If it merely hadn't been seen before, save it as seen
-                    // TODO: Redo this with an Infinity value, instead of another variable
                     if( dData->isInf )
                         dData->isInf = false;
                     // Update the distance
