@@ -55,7 +55,12 @@ public:
             // record += (uint8_t)0;
             // Causes an ambiguous overload error
             const uint8_t type = 0x00;
+#ifdef _WIN32
+            // Sigh. And yet windows insists on being an asshole
+            record += (char)type;
+#else
             record += type;
+#endif
 
             record += (uint8_t)num;
             record += (uint8_t)name.size( );
@@ -342,7 +347,7 @@ void CodeMonkey::Logger::printLog( const std::string& filename ) {
 
                 std::cout << "Field name   : " << name << std::endl;
                 std::cout << "  Type       : " << CodeMonkey::Logger::FieldDef::getTypeName( typeNum ) << std::endl;
-                std::cout << "  Array size : " << arraySize << std::endl;
+                std::cout << "  Array size : " << (int)arraySize << std::endl;
                 std::cout << "  Field units: " << units << std::endl;
 
             }
@@ -467,3 +472,6 @@ void CodeMonkey::Logger::RecordDef::addField( const CodeMonkey::Logger::FieldDef
 
 CodeMonkey::Logger::UserRecordLogger::UserRecordLogger( const std::string& module, const std::string& caller, RecordDef& definition ) :
     CodeMonkey::Logger::RecordLogger( RecordManager::reserveRecord( definition ), NameManager::reserveModule( module ), NameManager::reserveCaller( caller ) ) { };
+
+
+void CodeMonkey::Logger::StringPacker::pack( std::string& record ) { };

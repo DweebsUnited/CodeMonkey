@@ -5,8 +5,6 @@
 #include <random>
 #include <chrono>
 
-void scratchBMP( );
-
 int main( int argc, char ** argv ) {
 
     // Test that the basics of the graph are working

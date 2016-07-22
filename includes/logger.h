@@ -1,3 +1,5 @@
+#pragma once
+
 #define NUMMODULES 256 // 1 reserved
 #define NUMCALLERS 256 // 1 reserved
 #define NUMRECORDS 256 // 3 reserved
@@ -201,54 +203,54 @@ public:
 
 };
 
-// namespace StringPacker {
-//
-//     void pack( std::string& record ) { };
-//
-//     template<typename...Args>
-//     void pack( std::string& record, std::string f, Args... args ) {
-//
-//         record += (uint8_t) f.size( );
-//         record += f;
-//
-//         record += pack( record, args );
-//
-//     };
-//     template<typename...Args>
-//     void pack( std::string& record, std::vector<std::string> f, Args... args ) {
-//
-//         for( uint32_t j = 0; j < f.size( ); ++j ) {
-//
-//             record += (uint8_t) f[ j ].size( );
-//             record += f[ j ];
-//
-//         }
-//
-//         record += pack( record, args );
-//
-//     };
-//
-//     template<typename T, typename...Args>
-//     void pack( std::string& record, T f, Args... args ) {
-//
-//         for( uint32_t i = 0; i < sizeof( T ); ++i )
-//             record += (uint8_t)( ( T >> ( i * 8 ) ) & 0xFF );
-//
-//         record += pack( record, args );
-//
-//     };
-//     template<typename...Args>
-//     void pack( std::string& record, std::vector<T> f, Args... args ) {
-//
-//         for( uint32_t j = 0; j < f.size( ); ++j )
-//             for( uint32_t i = 0; i < sizeof( T ); ++i )
-//                 record += (uint8_t)( ( T >> ( i * 8 ) ) & 0xFF );
-//
-//         record += pack( record, args );
-//
-//     };
-//
-// };
+namespace StringPacker {
+
+    void pack( std::string& record );
+
+    template<typename...Args>
+    void pack( std::string& record, const std::string& f, Args... args ) {
+
+        record += (uint8_t) f.size( );
+        record += f;
+
+        pack( record, args... );
+
+    };
+    template<typename...Args>
+    void pack( std::string& record, std::vector<std::string> f, Args... args ) {
+
+        for( uint32_t j = 0; j < f.size( ); ++j ) {
+
+            record += (uint8_t) f[ j ].size( );
+            record += f[ j ];
+
+        }
+
+        pack( record, args... );
+
+    };
+
+    template<typename T, typename...Args>
+    void pack( std::string& record, T f, Args... args ) {
+
+        for( uint32_t i = 0; i < sizeof( T ); ++i )
+            record += (uint8_t)( ( f >> ( i * 8 ) ) & 0xFF );
+
+        pack( record, args... );
+
+    };
+    template<typename T, typename...Args>
+    void pack( std::string& record, std::vector<T> f, Args... args ) {
+
+        for( uint32_t j = 0; j < f.size( ); ++j )
+            for( uint32_t i = 0; i < sizeof( T ); ++i )
+                record += (uint8_t)( ( f[ j ] >> ( i * 8 ) ) & 0xFF );
+
+        pack( record, args... );
+
+    };
+
+};
 
 };
 };
