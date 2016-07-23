@@ -69,7 +69,7 @@ std::vector<std::complex<float>> iDFT( std::vector<std::complex<float>>& xin ) {
 
 void _FFT( std::complex<float> * xin, std::complex<float> * xout, uint32_t N, uint32_t s ) {
 
-    if( N == 1 )
+    if( s >= N )
         xout[ 0 ] = xin[ 0 ];
     else {
 
@@ -95,7 +95,41 @@ std::vector<std::complex<float>> FFT( std::vector<std::complex<float>> xin ) {
 
     std::vector<std::complex<float>> xout( xin );
 
-    _FFT( xin.data( ), xout.data( ), N, 1 );
+    _FFT( &xin[ 0 ], &xout[ 0 ], N, 1 );
+
+    return xout;
+
+};
+
+void _iFFT( std::complex<float> * xin, std::complex<float> * xout, uint32_t N, uint32_t s ) {
+
+    if( s >= N )
+        xout[ 0 ] = xin[ 0 ];
+    else {
+
+        _FFT( xin, xout, N, 2 * s );
+        _FFT( xin + s, xout + s, N, 2 * s );
+
+        for( uint32_t k = 0; k < N; k += 2 * s ) {
+
+            std::complex<float> t = xout[ k + s ] * std::exp( std::complex<float>( 0.0f, PI * k / N ) );
+
+            xin[ k / 2 ] = xout[ k ] + t;
+            xin[ ( k + N ) / 2 ] = xout[ k ] - t;
+
+        }
+
+    }
+
+};
+
+std::vector<std::complex<float>> iFFT( std::vector<std::complex<float>> xin ) {
+
+    uint32_t N = xin.size( );
+
+    std::vector<std::complex<float>> xout( xin );
+
+    _FFT( &xin[ 0 ], &xout[ 0 ], N, 1 );
 
     return xout;
 
