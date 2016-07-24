@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 namespace CodeMonkey {
 namespace Logger {
 
@@ -31,13 +33,6 @@ typedef enum class _Types : uint8_t {
     pstring = 0x50  // P
 } Types;
 
-void closeLog( );
-
-void openLogInput( const std::string& filename );
-void openLogOutput( const std::string& filename );
-
-void printLog( const std::string& filename );
-
 class Header {
 public:
 
@@ -56,6 +51,15 @@ public:
     std::string toString( );
 
 };
+
+
+void closeLog( );
+
+void openLogInput( const std::string& filename );
+void openLogOutput( const std::string& filename );
+void printLog( const std::string& filename );
+void parseLog( const std::string& filename, void ( *callback )( Header& h, const std::string& recName, const std::string& record ) );
+
 
 class RecordLogger {
 public:
@@ -208,7 +212,7 @@ namespace StringPacker {
     void pack( std::string& record );
 
     template<typename...Args>
-    void pack( std::string& record, const std::string& f, Args... args ) {
+    void pack( std::string& record, std::string& f, Args&... args ) {
 
         record += (uint8_t) f.size( );
         record += f;
@@ -217,7 +221,7 @@ namespace StringPacker {
 
     };
     template<typename...Args>
-    void pack( std::string& record, std::vector<std::string> f, Args... args ) {
+    void pack( std::string& record, std::vector<std::string>& f, Args&... args ) {
 
         for( uint32_t j = 0; j < f.size( ); ++j ) {
 
@@ -231,7 +235,7 @@ namespace StringPacker {
     };
 
     template<typename T, typename...Args>
-    void pack( std::string& record, T f, Args... args ) {
+    void pack( std::string& record, T& f, Args&... args ) {
 
         for( uint32_t i = 0; i < sizeof( T ); ++i )
             record += (uint8_t)( ( f >> ( i * 8 ) ) & 0xFF );
@@ -240,13 +244,60 @@ namespace StringPacker {
 
     };
     template<typename T, typename...Args>
-    void pack( std::string& record, std::vector<T> f, Args... args ) {
+    void pack( std::string& record, std::vector<T>& f, Args&... args ) {
 
         for( uint32_t j = 0; j < f.size( ); ++j )
             for( uint32_t i = 0; i < sizeof( T ); ++i )
                 record += (uint8_t)( ( f[ j ] >> ( i * 8 ) ) & 0xFF );
 
         pack( record, args... );
+
+    };
+
+
+    void unpack( std::string::const_iterator record );
+
+    template<typename...Args>
+    void unpack( std::string::const_iterator record, std::string& f, Args&... args ) {
+
+        f.resize( (uint8_t) *record++ );
+        for( uint8_t i = 0; i < f.size( ); ++i )
+            f[ i ] = *record++;
+
+        unpack( record, args... );
+
+    };
+    template<typename...Args>
+    void unpack( std::string::const_iterator record, std::vector<std::string>& f, Args&... args ) {
+
+        for( uint32_t j = 0; j < f.size( ); ++j ) {
+
+            f[ j ].resize( (uint8_t) *record++ );
+            for( uint8_t i = 0; i < f[ j ].size( ); ++i )
+                f[ j ][ i ] = *record++;
+
+        }
+
+        unpack( record, args... );
+
+    };
+    template<typename T, typename...Args>
+    void unpack( std::string::const_iterator record, T& f, Args&... args ) {
+
+        for( uint32_t i = 0; i < sizeof( T ); ++i )
+            f |= ( (uint8_t) *record++ ) << ( 8 * i );
+
+        unpack( record, args... );
+
+    };
+    template<typename T, typename...Args>
+    void unpack( std::string::const_iterator record, std::vector<T>& f, Args&... args ) {
+
+        for( uint32_t j = 0; j < f.size( ); ++j )
+            for( uint32_t i = 0; i < sizeof( T ); ++i )
+                f[ j ] |= ( (uint8_t) *record++ ) << ( 8 * i );
+
+        unpack( record, args... );
 
     };
 
