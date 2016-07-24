@@ -30,6 +30,8 @@ public:
     Shape( );
     Shape( const Shape& s );
 
+    virtual ~Shape( );
+
     /* Constructors and destructors         */
 
     virtual bool prepare( ) = 0;
