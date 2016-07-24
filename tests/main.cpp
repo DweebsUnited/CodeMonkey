@@ -35,6 +35,13 @@ int main( int argc, char ** argv ) {
     //threadsafeTest( );
     std::cout << "Threadsafe test completed" << std::endl << std::endl;
 
+    // Test some of the threadsafe stuff
+    std::cout << "Testing the DFT" << std::endl;
+    dftTest( );
+    std::cout << std::endl;
+    fftTest( );
+    std::cout << "DFT test completed" << std::endl << std::endl;
+
 #ifdef _WIN32
     getchar( );
 #endif
