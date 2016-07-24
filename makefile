@@ -36,9 +36,9 @@ $(LIBBUILDDIR)%.o: $(SOURCEDIR)%.cpp $(INCLUDEDIR)%.h ; $(CPP) $< $(CPPSTD) $(CC
 
 .PHONY: clean
 clean:
-	rm *.out
 	rm $(TESTBUILDDIR)*.o
 	rm $(LIBBUILDDIR)*.o
+	rm *.out
 
 .PHONY: Fractal
 Fractal:

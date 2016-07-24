@@ -5,8 +5,6 @@
 #include <random>
 #include <chrono>
 
-void scratchBMP( );
-
 int main( int argc, char ** argv ) {
 
     // Test that the basics of the graph are working
@@ -37,10 +35,15 @@ int main( int argc, char ** argv ) {
 
     // Test some of the threadsafe stuff
     std::cout << "Testing the DFT" << std::endl;
-    dftTest( );
+    //dftTest( );
     std::cout << std::endl;
-    fftTest( );
+    //fftTest( );
     std::cout << "DFT test completed" << std::endl << std::endl;
+
+    // Test the logger
+    std::cout << "Testing logging." << std::endl;
+    //logTest( );
+    std::cout << "Logger test completed" << std::endl << std::endl;
 
 #ifdef _WIN32
     getchar( );

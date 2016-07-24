@@ -12,4 +12,5 @@ void dftTest( );
 void idftTest( );
 void fftTest( );
 void ifftTest( );
+void logTest( );
 int main( int, char ** );
