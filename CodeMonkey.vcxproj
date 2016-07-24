@@ -22,6 +22,7 @@
     <None Include="CodeMonkey.conf" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="sources\djikstra.cpp" />
     <ClCompile Include="tests\djikstra.cpp" />
     <ClCompile Include="tests\fourier.cpp" />
     <ClCompile Include="tests\genetic.cpp" />
