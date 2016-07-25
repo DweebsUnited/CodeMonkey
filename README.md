@@ -6,22 +6,23 @@ Has full ( okay not quite ) Doxygen support, with a config file.
 
 ## Highlights
 
-* The best folder hierarchy you ever SEEN son.
-* Data structure implementations from simple to templated behemoths.
+* The best folder hierarchy you ever SEEN son
+* Data structure implementations from simple to templated behemoths
   * Everything I learned in CS 251: Data Structures and Algorithms
 * Basic DSP routines
   * DFT, FFT, and inverses for both
+* A complete rendering engine:
+  * Basic shape library, with file loading coming soon
+  * Extendable parts, from camera controls to shaders
+  * Will incorporate graphic optimizations as I take the time to learn them
 
 In fieri:
 * Reading answer messages off iClickers with an SDR
 * Fixed point math ( because I learn best by implementation )
-* A complete rendering engine:
-  * Basic shape library with file loading.
-  * Extendable parts, from camera controls to shaders.
-  * Will incorporate graphic optimizations as I take the time to learn them.
 * RocketShip: Genetic generation of github user icons
 * Lindon: Genetic approximation of images using colored lines
 * Fractal generators
+  * Mandelbrot image generation
   * Diamond square
   * Perlin noise
   * Curl noise
@@ -29,7 +30,7 @@ In fieri:
 
 ## Installation
 
-Download it. The solutions should be good for VS 2015 Community, and the makefiles for any gcc/g++ compiler ( barring weird platform specific errors ).
+Download it. The solutions should be good for VS 2015 Community, and the makefiles for any gcc/g++ compiler ( barring weird platform specific errors, of which I have gotten many ).
 
 ## Usage
 
