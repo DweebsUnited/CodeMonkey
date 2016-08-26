@@ -40,6 +40,10 @@ clean:
 	rm $(LIBBUILDDIR)*.o
 	rm *.out
 
+	.PHONY: Engine
+	Engine:
+		make -C $(PROJECTDIR)$@
+
 .PHONY: Fractal
 Fractal:
 	make -C $(PROJECTDIR)$@
