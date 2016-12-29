@@ -7,17 +7,19 @@ PROJECTDIR = ./projects/
 
 CC = gcc
 CPP = g++
-CCFLAGS = -c -O2 -Wall -Wextra -I$(INCLUDEDIR) -I$(RESOURCEDIR) -I../../resources
+CCFLAGS = -c -O2 -Wall -Wextra -I$(INCLUDEDIR) -I$(RESOURCEDIR) -I../../resources $(GRAPHICSBUILDFLAGS)
 CSTD = -std=c99
 CPPSTD = -std=c++11
+GRAPHICSLINKFLAGS = -lglew -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -L/usr/local/lib
+GRAPHICSBUILDFLAGS = -I$(GLFWDIR) -I$(GLEWDIR)
 
-MODULES = main
+MODULES = main mandelbrot peterDeJong
 MODULEOBJECTS = $(addprefix $(BUILDDIR), $(addsuffix .o, $(MODULES)))
 
 all: Fractal.out
 
 Fractal.out: $(MODULEOBJECTS)
-	$(CPP) $^ -o $@
+	$(CPP) $^ -o $@ $(GRAPHICSLINKFLAGS)
 
 $(BUILDDIR)%.o: $(SOURCEDIR)%.cpp $(INCLUDEDIR)%.h ; $(CPP) $< $(CPPSTD) $(CCFLAGS) -o $@
 
