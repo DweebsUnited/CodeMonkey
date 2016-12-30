@@ -16,6 +16,7 @@ static float a = 1.641;
 static float b = 1.902;
 static float c = 0.316;
 static float d = 1.525;
+static float mod = 0.001;
 
 static float x = 0.0;
 static float y = 0.0;
@@ -25,7 +26,7 @@ static float * image = (float *) malloc( width * height * sizeof( float ) );
 static std::thread updater;
 static std::atomic<bool> shouldRun( false );
 
-void peterDeJongUpdateFunc( ) {
+void peterDeJongFun( ) {
 
     while( shouldRun ) {
 
@@ -53,6 +54,8 @@ void peterDeJongUpdateFunc( ) {
 
 void peterDeJongSetup( ) {
 
+    // std::cout << "DeJong parameters: " << a << ", " << b << ", " << c << ", " << d << std::endl;
+
     shouldRun = false;
     if( updater.joinable( ) )
         updater.join( );
@@ -61,7 +64,7 @@ void peterDeJongSetup( ) {
         image[ i ] = 0.0;
 
     shouldRun = true;
-    updater = std::thread( peterDeJongUpdateFunc );
+    updater = std::thread( peterDeJongFun );
 
 }
 
@@ -83,6 +86,38 @@ void peterDeJongKeyCallback( GLFWwindow* window, int key, int scancode, int acti
         if( key == GLFW_KEY_ESCAPE )
 
             glfwSetWindowShouldClose( window, GL_TRUE );
+
+        else if( key == GLFW_KEY_Q ) {
+            a += mod;
+            peterDeJongSetup( );
+        } else if( key == GLFW_KEY_W ) {
+            b += mod;
+            peterDeJongSetup( );
+        } else if( key == GLFW_KEY_E ) {
+            c += mod;
+            peterDeJongSetup( );
+        } else if( key == GLFW_KEY_R ) {
+            d += mod;
+            peterDeJongSetup( );
+        } else if( key == GLFW_KEY_A ) {
+            a -= mod;
+            peterDeJongSetup( );
+        } else if( key == GLFW_KEY_S ) {
+            b -= mod;
+            peterDeJongSetup( );
+        } else if( key == GLFW_KEY_D ) {
+            c -= mod;
+            peterDeJongSetup( );
+        } else if( key == GLFW_KEY_F ) {
+            d -= mod;
+            peterDeJongSetup( );
+        } else if( key == GLFW_KEY_T ) {
+            mod = 0.1;
+        } else if( key == GLFW_KEY_G ) {
+            mod = 0.01;
+        } else if( key == GLFW_KEY_B ) {
+            mod = 0.001;
+        }
 
     }
 

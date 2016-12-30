@@ -3,9 +3,11 @@
 
 #include "mandelbrot.h"
 
+#include <thread>
+
 Plugin mandelbrot {
-    mandelbrotFun,
-    NULL,
+    mandelbrotSetup,
+    mandelbrotTeardown,
     mandelbrotKeyCallback,
     mandelbrotMouseCallback
 };
@@ -19,6 +21,9 @@ static const uint16_t iterLimit = 254;
 static const float magLimit = 4.0;
 
 static float * image = (float *) malloc( width * height * sizeof( float ) );
+
+static std::thread updater;
+static std::atomic<bool> shouldRun( false );
 
 void mandelbrotFun( ) {
 
@@ -41,8 +46,11 @@ void mandelbrotFun( ) {
     // unsigned char * data = img.data_;
     //bgr
     for( int i = 0; i < height; ++i ) {
+
         imag = yMin + i * pixH;
+
         for( int j = 0; j < width; ++j ) {
+
             real = xMin + j * pixW;
 
             treal = real;
@@ -67,11 +75,34 @@ void mandelbrotFun( ) {
             // img.data_[ ( i * width + j ) * 3 + 2 ] = cyclesCount;
 
         }
+
     }
 
     // img.save_image( "test.bmp" );
 
     updateTexture( image );
+
+}
+
+void mandelbrotSetup( ) {
+
+    shouldRun = false;
+    if( updater.joinable( ) )
+        updater.join( );
+
+    for( int i = 0; i < height * width; ++i )
+        image[ i ] = 0.0;
+
+    shouldRun = true;
+    updater = std::thread( mandelbrotFun );
+
+}
+
+void mandelbrotTeardown( ) {
+
+    shouldRun = false;
+    if( updater.joinable( ) )
+        updater.join( );
 
 }
 
@@ -89,39 +120,39 @@ void mandelbrotKeyCallback( GLFWwindow* window, int key, int scancode, int actio
         else if( key == GLFW_KEY_UP ) {
 
             y += scale / 4.0;
-            mandelbrotFun( );
+            mandelbrotSetup( );
 
         } else if( key == GLFW_KEY_DOWN ) {
 
             y -= scale / 4.0;
-            mandelbrotFun( );
+            mandelbrotSetup( );
 
         } else if( key == GLFW_KEY_LEFT ) {
 
             x -= scale / 4.0;
-            mandelbrotFun( );
+            mandelbrotSetup( );
 
         } else if( key == GLFW_KEY_RIGHT ) {
 
             x += scale / 4.0;
-            mandelbrotFun( );
+            mandelbrotSetup( );
 
         } else if( key == GLFW_KEY_I ) {
 
             scale /= 2.0;
-            mandelbrotFun( );
+            mandelbrotSetup( );
 
         } else if( key == GLFW_KEY_O ) {
 
             scale *= 2.0;
-            mandelbrotFun( );
+            mandelbrotSetup( );
 
         } else if( key == GLFW_KEY_R ) {
 
             x = -0.25;
             y = 0.0;
             scale = 1.0;
-            mandelbrotFun( );
+            mandelbrotSetup( );
 
         }
 
@@ -147,13 +178,13 @@ void mandelbrotMouseCallback( GLFWwindow* window, int button, int action, int mo
 
             scale /= 2.0;
 
-            mandelbrotFun( );
+            mandelbrotSetup( );
 
         } else {
 
             scale *= 2.0;
 
-            mandelbrotFun( );
+            mandelbrotSetup( );
 
         }
 

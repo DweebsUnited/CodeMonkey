@@ -227,9 +227,8 @@ int main( int argc, char ** argv ) {
     Plugin * plug;
     if( mode == "mandelbrot" ) {
         plug = &mandelbrot;
-    // } else if( mode == "dSquare" ) {
-    //     dSquare( );
-    //     glfwSetKeyCallback( window, dSquareKeyCallback );
+    } else if( mode == "dSquare" ) {
+        plug = &dSquare;
     } else if( mode == "deJong" ) {
         plug = &peterDeJong;
     } else {
