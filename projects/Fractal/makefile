@@ -13,7 +13,7 @@ CPPSTD = -std=c++11
 GRAPHICSLINKFLAGS = -lglew -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -L/usr/local/lib
 GRAPHICSBUILDFLAGS = -I$(GLFWDIR) -I$(GLEWDIR)
 
-MODULES = main mandelbrot peterDeJong dSquare
+MODULES = main mandelbrot peterDeJong dSquare perlin
 MODULEOBJECTS = $(addprefix $(BUILDDIR), $(addsuffix .o, $(MODULES)))
 
 all: Fractal.out

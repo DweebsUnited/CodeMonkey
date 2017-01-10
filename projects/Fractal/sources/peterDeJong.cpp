@@ -9,7 +9,8 @@ Plugin peterDeJong {
     peterDeJongSetup,
     peterDeJongTeardown,
     peterDeJongKeyCallback,
-    peterDeJongMouseCallback
+    peterDeJongMouseCallback,
+    nullptr
 };
 
 static float a = 1.641;

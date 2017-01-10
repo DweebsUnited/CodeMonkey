@@ -9,7 +9,8 @@ Plugin mandelbrot {
     mandelbrotSetup,
     mandelbrotTeardown,
     mandelbrotKeyCallback,
-    mandelbrotMouseCallback
+    mandelbrotMouseCallback,
+    nullptr
 };
 
 // Mandelbrot globals
@@ -68,7 +69,7 @@ void mandelbrotFun( ) {
                 timag2 = timag * timag;
             }
 
-            image[ i * width + j ] = ( 255 - cyclesCount ) / 255.0;
+            image[ i * width + j ] = ( ( iterLimit + 1 ) - cyclesCount ) / (float) ( iterLimit + 1 );
 
             // img.data_[ ( i * width + j ) * 3 + 0 ] = cyclesCount;
             // img.data_[ ( i * width + j ) * 3 + 1 ] = cyclesCount;

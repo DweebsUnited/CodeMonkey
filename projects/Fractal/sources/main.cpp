@@ -243,37 +243,42 @@ int main( int argc, char ** argv ) {
 
 
     // Main render loop
+    if( plug->renderloop )
+        plug->renderloop( );
+    else {
 
-    while( 1 ) {
+        while( 1 ) {
 
-        // if the window should close, do it
-        if( glfwWindowShouldClose( window ) ) {
+            // if the window should close, do it
+            if( glfwWindowShouldClose( window ) ) {
 
-            if( plug->teardown )
-                plug->teardown( );
+                if( plug->teardown )
+                    plug->teardown( );
 
-            if( window )
-                glfwDestroyWindow( window );
+                if( window )
+                    glfwDestroyWindow( window );
 
-            break;
+                break;
 
-        }
+            }
 
-        // Clear background
-        glClear( GL_COLOR_BUFFER_BIT );
+            // Clear background
+            glClear( GL_COLOR_BUFFER_BIT );
 
-        // Check mouse/keyboard events
-        glfwPollEvents( );
+            // Check mouse/keyboard events
+            glfwPollEvents( );
 
-        glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
+            glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
 
-        // Swap buffers and draw to screen
-        glfwSwapBuffers( window );
+            // Swap buffers and draw to screen
+            glfwSwapBuffers( window );
 
-        // Check if we have an update
-        if( dirty ) {
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_FLOAT, data );
-            dirty = false;
+            // Check if we have an update
+            if( dirty ) {
+                glTexImage2D( GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_FLOAT, data );
+                dirty = false;
+            }
+
         }
 
     }

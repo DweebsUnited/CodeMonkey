@@ -10,4 +10,5 @@ struct Plugin {
     void (*teardown)( );
     GLFWkeyfun keyCbk;
     GLFWmousebuttonfun mouseCbk;
+    void (*renderloop)( );
 };
