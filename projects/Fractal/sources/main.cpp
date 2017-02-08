@@ -243,6 +243,7 @@ int main( int argc, char ** argv ) {
 
 
     // Main render loop
+    // This is in case a plugin wants their own render loop
     if( plug->renderloop )
         plug->renderloop( );
     else {
