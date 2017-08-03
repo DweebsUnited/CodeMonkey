@@ -7,24 +7,32 @@ final int WIDE = 1280;
 final int TALL = 720;
 
 // Number of points active
-final int N_PTS = 16;
-// Number of launch centers
-final int N_LCH = 1;
-
+final int N_PTS = 64;
 // Time step for physics
 final float T_STEP = 1.0 / 60.0;
 // Drag coefficient
 final float P_DRAG = 0.99;
+// Perterbation gaussian scaling factor
+final float P_PFAC = 12.5;
+
+// Number of launch centers
+final int N_LCH = 2;
+// Launch angle gaussian scaling factor
+final float LA_FAC = 6.0;
 // Launch speed
-final int P_SPD = 5;
+final float P_SPD = 0.02;
+// Min launch distance
+final float L_MIN = 0.9;
+// Launch belt thickness
+final float L_DIF = 0.05;
 
 // Point opacity
-final int P_OPA = 75;
+final int P_OPA = 1;
 
 final Random rng = new Random( );
 
 // Drop points randomly, then let them spiral in towards the center
-// Like shooting atoms towards a black hole
+// Like shooting atoms near a black hole
 
 class Point {
   
@@ -46,12 +54,18 @@ class Point {
     
   }
   
+  private float gravMag( float d ) {
+    
+    return 0.01 / pow( d, 0.25 );
+    
+  }
+  
   public void step( ) {
     
     PVector accel = new PVector( 0, 0 );
     accel.sub( this.pos );
     float d = accel.magSq( );
-    accel.setMag( 0.025 / d );
+    accel.setMag( this.gravMag( d ) );
     
     // Verlet integrator
     PVector temp = new PVector( );
@@ -67,25 +81,26 @@ class Point {
     // Little bit of drag
     this.pos.sub( this.ppos );
     this.pos.mult( P_DRAG );
+    this.pos.rotate( (float)rng.nextGaussian( ) / P_PFAC ); // Little perturbations ;)
     this.pos.add( this.ppos );
     
   }
   
   public void draw( ) {
     
-    if( frameCount % 2 == 0 ) {
+    //if( frameCount % 2 == 0 ) {
     
       float x = ( this.pos.x + 1.0 ) / 2.0 * TALL + ( WIDE - TALL ) / 2.0;
       float y = ( this.pos.y + 1.0 ) / 2.0 * TALL;
-      float px = ( this.opos.x + 1.0 ) / 2.0 * TALL + ( WIDE - TALL ) / 2.0;
-      float py = ( this.opos.y + 1.0 ) / 2.0 * TALL;
+      float px = ( this.ppos.x + 1.0 ) / 2.0 * TALL + ( WIDE - TALL ) / 2.0;
+      float py = ( this.ppos.y + 1.0 ) / 2.0 * TALL;
       
       noFill( );
       stroke( 255, 255, 255, P_OPA );
       line( x, y, px, py );
       
-    } else
-      this.opos.set( this.pos );
+    //} else
+    //  this.opos.set( this.pos );
     
   }
   
@@ -110,17 +125,17 @@ class PointFactory {
   Point make( ) {
   
     // Angle of unit circle to start from
-    float sAng = this.launchPts[ rng.nextInt( N_LCH ) ] + (float)rng.nextGaussian( ) / 6.0;
+    float sAng = this.launchPts[ rng.nextInt( N_LCH ) ] + (float)rng.nextGaussian( ) / LA_FAC;
     
-    // Start location [ 0.9, 0.95 ]
-    PVector s = new PVector( rng.nextFloat( ) * 0.05 + 0.9, 0.0 );
+    // Start location
+    PVector s = new PVector( rng.nextFloat( ) * L_DIF + L_MIN, 0.0 );
     s.rotate( sAng );
     
     // Set up for velocity
     PVector v = new PVector( 0.0, 0.0 );
     v.sub( s );
     v.normalize( );
-    v.mult( 0.02 );
+    v.mult( P_SPD );
     
     // Launch angle [ 45, 95 ] deg
     float lAng = rng.nextFloat( ) * -50.0 + 95.0;
