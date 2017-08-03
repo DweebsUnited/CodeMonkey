@@ -1,6 +1,6 @@
 final float P_SPD = 5.0;
 
-class Element : public PVector {
+class Element extends PVector {
   
   public PVector pos;
   public PVector ppos;
@@ -21,6 +21,12 @@ class Element : public PVector {
     this.ppos.set( this.pos );
     
     this.set( this.pos );
+    
+  }
+  
+  public void addAccel( PVector a ) {
+    
+    this.accel.add( a );
     
   }
   
@@ -59,6 +65,15 @@ class Element : public PVector {
     else if( this.pos.y < 0 )
       this.pos.y = 0;
       
+  }
+  
+  public void draw( ) {
+    
+    fill( 255, 255, 255, 5 );
+    noStroke( );
+    
+    ellipse( this.pos.x, this.pos.y, 5, 5 );
+    
   }
   
 }
