@@ -7,16 +7,18 @@ final int WIDE = 1280;
 final int TALL = 720;
 
 // Number of points active
-final int N_PTS = 64;
+final int N_PTS = 128;
+// How many points to launch total
+final int N_LIM = 2048;
 // Time step for physics
 final float T_STEP = 1.0 / 60.0;
 // Drag coefficient
 final float P_DRAG = 0.99;
 // Perterbation gaussian scaling factor
-final float P_PFAC = 12.5;
+final float P_PFAC = 20;
 
 // Number of launch centers
-final int N_LCH = 2;
+final int N_LCH = 3;
 // Launch angle gaussian scaling factor
 final float LA_FAC = 6.0;
 // Launch speed
@@ -27,9 +29,9 @@ final float L_MIN = 0.9;
 final float L_DIF = 0.05;
 
 // Point opacity
-final int P_OPA = 1;
+final int P_OPA = 5;
 
-final Random rng = new Random( );
+final Random rng = new Random( System.currentTimeMillis( ) );
 
 // Drop points randomly, then let them spiral in towards the center
 // Like shooting atoms near a black hole
@@ -40,7 +42,9 @@ class Point {
   private PVector ppos;
   private PVector opos;
   
-  public Point( PVector pos, PVector vel ) {
+  private boolean valid;
+  
+  public Point( PVector pos, PVector vel, boolean valid ) {
     
     this.pos = new PVector( );
     this.ppos = new PVector( );
@@ -52,11 +56,13 @@ class Point {
     
     this.pos.add( vel );
     
+    this.valid = valid;
+    
   }
   
   private float gravMag( float d ) {
     
-    return 0.01 / pow( d, 0.25 );
+    return 0.01 / pow( d, 0.5 );
     
   }
   
@@ -88,19 +94,17 @@ class Point {
   
   public void draw( ) {
     
-    //if( frameCount % 2 == 0 ) {
+    if( ! this.valid )
+      return;
     
-      float x = ( this.pos.x + 1.0 ) / 2.0 * TALL + ( WIDE - TALL ) / 2.0;
-      float y = ( this.pos.y + 1.0 ) / 2.0 * TALL;
-      float px = ( this.ppos.x + 1.0 ) / 2.0 * TALL + ( WIDE - TALL ) / 2.0;
-      float py = ( this.ppos.y + 1.0 ) / 2.0 * TALL;
-      
-      noFill( );
-      stroke( 255, 255, 255, P_OPA );
-      line( x, y, px, py );
-      
-    //} else
-    //  this.opos.set( this.pos );
+    float x = ( this.pos.x + 1.0 ) / 2.0 * TALL + ( WIDE - TALL ) / 2.0;
+    float y = ( this.pos.y + 1.0 ) / 2.0 * TALL;
+    float px = ( this.ppos.x + 1.0 ) / 2.0 * TALL + ( WIDE - TALL ) / 2.0;
+    float py = ( this.ppos.y + 1.0 ) / 2.0 * TALL;
+    
+    noFill( );
+    stroke( 255, 255, 255, P_OPA );
+    line( x, y, px, py );
     
   }
   
@@ -112,7 +116,9 @@ class Point {
 
 class PointFactory {
   
-  public float[] launchPts;
+  private float[] launchPts;
+  
+  private int makeCount;
   
   public PointFactory( ) {
     
@@ -146,7 +152,15 @@ class PointFactory {
       
     v.rotate( lAng );
     
-    return new Point( s, v );
+    this.makeCount++;
+    
+    if( this.makeCount == N_LIM )
+      System.out.println( "Out of points!" );
+    
+    if( this.makeCount < N_LIM )
+      return new Point( s, v, true );
+    else
+      return new Point( s, v, false );
   
   }
   
@@ -163,9 +177,8 @@ void setup( ) {
   size( 1280, 720 );
   background( 0 );
   
-  for( int idx = 0; idx < N_PTS; ++idx ) {
+  for( int idx = 0; idx < N_PTS; ++idx )
     points[ idx ] = pf.make( );
-  }
   
 }
 
