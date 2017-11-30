@@ -40,6 +40,7 @@ class Branch:
         self.vel.rotate( uniform( -PI / 8.0, PI / 8.0 ) )
 
     def kill( self ):
+        # Am ded
         self.alive = False
 
     def split( self ):

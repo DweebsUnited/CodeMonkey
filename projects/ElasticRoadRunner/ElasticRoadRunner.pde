@@ -1,8 +1,5 @@
 import java.util.Random;
 
-// Gaussian distance, uniform angle
-// Anchors randomly placed
-
 // Number of points to draw
 final int N_PTS = 15;
 // Cosmic background radiation points to draw
@@ -21,7 +18,7 @@ final int P_SZ_RNG = P_SZ_MAX - P_SZ_MIN;
 final int F_FAC = 50;
 final int F_OPA = 5;
 // Power to raise acceptance test to
-final int A_POW = 3;
+final int A_POW = 4;
 
 Random rng = new Random( System.currentTimeMillis( ) );
 
@@ -34,7 +31,7 @@ boolean acceptable( PVector pos ) {
   if( x > pixelWidth - 1 || x < 0 || y > pixelHeight - 1 || y < 0 )
     return false;
   
-  return rng.nextFloat( ) < pow( acceptance[ int( pos.y ) ][ int( pos.x ) ], A_POW );
+  return rng.nextFloat( ) < acceptance[ int( pos.y ) ][ int( pos.x ) ];
   
 }
 
@@ -74,7 +71,7 @@ void setup( ) {
       
       nV = ( nV - mV ) / ( MV - mV );
       
-      acceptance[ idx ][ jdx ] = nV;
+      acceptance[ idx ][ jdx ] = pow( nV, A_POW );
       
     }
   }
