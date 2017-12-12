@@ -10,7 +10,7 @@ class CirclePositionFactory implements PositionFactory {
   
   public PVector make( ) {
     
-    return this.rng.nextRota( 2, 1 );
+    return this.rng.nextRota( 1, 1 );
     
   }
   

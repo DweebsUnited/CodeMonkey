@@ -13,18 +13,21 @@ class CircleFactory {
   
     this.rad_min = rad_min;
     this.rad_rng = rad_rng;
-   
     
   }
    
   
-  public Circle make( RandomWrapper rng, PositionFactory pf ) {
+  public Circle make( RandomWrapper rng, PositionFactory pf, FourseasonsColorFactory cf ) {
     
     Circle c = new Circle( );
     
     c.pos = pf.make( );
     c.dir = rng.minMaxVec( this.spd_rng, this.spd_min );
-    c.rad = rng.minMax( this.rad_min, this.rad_min );
+    c.rad = abs( rng.minMax( this.rad_min, this.rad_min ) );
+    
+    c.c = cf.make( );
+    
+    c.fcf = cf;
     
     return c;
     

@@ -36,6 +36,8 @@ class RandomWrapper {
   
   public PVector nextRota( float scale, float var ) {
     
+    scale *= 2;
+    
     float ang = this.nextFloat( ) * 2 * PI;
     
     int s = min( pixelWidth, pixelHeight );
@@ -46,11 +48,11 @@ class RandomWrapper {
   }
   
   public float minMax( float rng, float min ) {
-    return this.nextFloat( ) * rng + min;
+    return ( this.nextFloat( ) * 2 - 1 ) * rng + min;
   }
   
   public PVector minMaxVec( float rng, float min ) {
-    return new PVector( this.nextFloat( ) * rng + min, this.nextFloat( ) * rng + min );
+    return new PVector( ( this.nextFloat( ) * 2 - 1 ) * rng + min, ( this.nextFloat( ) * 2 - 1 ) * rng + min );
   }
   
 }
