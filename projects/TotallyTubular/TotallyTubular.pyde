@@ -25,6 +25,8 @@ F_RUN = 1000
 class Branch:
     speed = PVector( 2, 0 )
     thick = 5
+    
+    col = randint( 100, 255 );
 
     def __init__( self, pos ):
         self.pos = pos
@@ -38,12 +40,14 @@ class Branch:
         self.vel.rotate( uniform( -PI / 8.0, PI / 8.0 ) )
 
     def kill( self ):
+        # Am ded
         self.alive = False
 
     def split( self ):
         nb = deepcopy( self )
         self.vel.rotate( uniform( PI / 4.0, PI ) )
         nb.vel.rotate( uniform( -PI, -PI / 4.0 ) )
+        nb.col = randint( 100, 255 )
         return nb
 
 bs = [ Branch( PVector( randint( 0, WIDE ), randint( 0, HIGH ) ) ) for _ in range( NUM_BS ) ]
@@ -52,14 +56,15 @@ fcnt = 0
 def setup():
     size( WIDE, HIGH )
     background( 255, 255, 255 )
+    
+    noStroke( )
 
 def draw():
     # Don't forget this
     global bs, fcnt
 
-    fill( 0, 0, 0 )
-
     for b in bs:
+        fill( b.col )
         ellipse( b.pos.x, b.pos.y, Branch.thick, Branch.thick )
         b.step( )
 

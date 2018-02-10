@@ -1,0 +1,5 @@
+interface PositionFactory {
+  
+  PVector make( );
+  
+}

@@ -1,9 +1,9 @@
 import java.util.Random;
-import com.hamoid.*;
+//import com.hamoid.*;
 
 // Size of canvas
-final int WIDE = 1920;
-final int TALL = 1080;
+final int WIDE = 1280;
+final int TALL = 720;
 
 // How fast tpos can move each frame
 final float P_SPD = 1;
@@ -32,7 +32,7 @@ final int O_STRK = 40;
 final int O_FILL = 10;
 
 final Random rng = new Random( );
-VideoExport exporter;
+//VideoExport exporter;
 
 ArrayList<Element> ps = new ArrayList<Element>( );
 
@@ -69,13 +69,13 @@ void setup( ) {
         }
     }
 
-    size( 1920, 1080 );
+    size( 1280, 720 );
     background( 255, 255, 255, 255 );
     
-    exporter = new VideoExport( this, "BitterFist.mp4" );
-    exporter.setFrameRate( F_RATE );
+    //exporter = new VideoExport( this, "BitterFist.mp4" );
+    //exporter.setFrameRate( F_RATE );
     
-    exporter.startMovie( );
+    //exporter.startMovie( );
     
 }
 
@@ -93,7 +93,7 @@ void draw( ) {
             p.step( );
         }
 
-        exporter.saveFrame( );
+        //exporter.saveFrame( );
         
     }
          
@@ -107,7 +107,7 @@ void keyReleased( ) {
          
     } else if( key == 'q' ) {
       
-        exporter.endMovie( );
+        //exporter.endMovie( );
         exit( );
       
     }
