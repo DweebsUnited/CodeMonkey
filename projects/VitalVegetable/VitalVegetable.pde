@@ -28,6 +28,7 @@ class Spawn {
   public void update( ) {
     
     this.pos.add( this.spd );
+    this.spd.rotate( rng.nextGaussian( ) / 3.0 * ( PI / 16.0 ) );
     
   }
   
@@ -81,9 +82,7 @@ class Spawner {
     if( this.pos.x > pixelWidth || this.pos.x < 0 || this.pos.y > pixelHeight || this.pos.y < 0 )
       this.pos = rng.nextPos( );
     
-    PVector up = PVector.random2D( );
-    this.speed.add( up );
-    this.speed.setMag( SPD_MAG );
+    this.speed.rotate( rng.nextGaussian( ) / 3.0 * ( PI / 8.0 ) );
     
     if( rng.nextFloat01( ) < P_SPAWN )
       this.spawned.add( new Spawn( this.pos, this.speed ) );

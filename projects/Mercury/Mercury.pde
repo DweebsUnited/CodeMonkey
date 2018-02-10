@@ -128,7 +128,7 @@ class Gaussian01Distribution implements Distribution {
   
   public float next( RandomWrapper rng ) {
   
-    return (float) ( rng.nextGaussian( ) / this.var + 0.5 );
+    return constrain( (float) ( rng.nextGaussian( ) / this.var + 0.5 ), 0.0, 1.0 );
   
   }
   

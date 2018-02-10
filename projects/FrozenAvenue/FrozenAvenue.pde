@@ -64,7 +64,7 @@ void setup( ) {
   PImage img = loadImage( "D:\\Downloads\\StarryNight.jpg" );
   img.loadPixels( );
   
-  final int k = 4;
+  final int k = 5;
   color centroids[] = new color[ k ];
   
   for( int cIdx = 0; cIdx < k; ++cIdx ) {

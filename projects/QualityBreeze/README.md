@@ -1,4 +1,4 @@
-# TotallyTubular
+# QualityBreeze
 
 This is a sudoku solver, written in python.
 
