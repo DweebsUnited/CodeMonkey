@@ -1,11 +1,16 @@
 import java.util.ArrayList;
 import java.util.Comparator;
 
+double xmax = -Double.MAX_VALUE;
+double ymax = -Double.MAX_VALUE;
+double xmin = Double.MAX_VALUE;
+double ymin = Double.MAX_VALUE;
+
 int cx( float x ) {
-  return Math.round( ( x + 1.0 ) / 2.0 * pixelWidth );
+  return (int)Math.round( ( x - xmin ) / ( xmax - xmin ) * pixelWidth );
 }
 int cy( float y ) {
-  return Math.round( ( y + 1.0 ) / 2.0 * pixelHeight );
+  return (int)Math.round( ( 1.0 - ( y - ymin ) / ( ymax - ymin ) ) * pixelHeight );
 }
 
 class Point {
@@ -21,7 +26,7 @@ class Point {
   }
 
   public void prepare( ) {
-    this.dens = 1.0 / ( dens + 0.001 );
+    this.dens = 1.0 / ( dens + 1.0 );
   }
 }
 class PointComparator implements Comparator<Point> {
@@ -37,7 +42,7 @@ double triArea( Point a, Point b, Point c ) {
 void drawTriangle( Point a, Point b, Point c, double minDens, double maxDens ) {
 
   double fillDens = ( a.dens + b.dens + c.dens ) / 3.0;
-  fillDens = Math.pow( ( fillDens - minDens ) / ( maxDens - minDens ), 1 );
+  fillDens = Math.pow( ( fillDens - minDens ) / ( maxDens - minDens ), 0.5 );
 
   noStroke( );
   fill( Math.round( ( 1.0 - fillDens ) * 255 ) );
@@ -46,7 +51,7 @@ void drawTriangle( Point a, Point b, Point c, double minDens, double maxDens ) {
 
 void setup( ) {
 
-  size( 4096, 4096 );
+  size( 4096, 2048 );
   background( 255 );
 
   JSONObject triangulation = loadJSONObject( "triangulation.json" );
@@ -58,7 +63,18 @@ void setup( ) {
   for ( int pdx = 0; pdx < points.size( ); ++pdx ) {
 
     JSONObject pt = points.getJSONObject( pdx );
-    pts.add( new Point( new PVector( pt.getFloat( "x" ), pt.getFloat( "y" ) ), pt.getInt( "id" ) ) );
+    Point point = new Point( new PVector( pt.getFloat( "x" ), pt.getFloat( "y" ) ), pt.getInt( "id" ) );
+    pts.add( point );
+    
+    if( point.coord.x > xmax )
+      xmax = point.coord.x;
+    if( point.coord.y > ymax )
+      ymax = point.coord.y;
+    if( point.coord.x < xmin )
+      xmin = point.coord.x;
+    if( point.coord.y < ymin )
+      ymin = point.coord.y;
+    
   }
 
   pts.sort( new PointComparator( ) );
@@ -115,7 +131,9 @@ void setup( ) {
     drawTriangle( a, b, c, minDens, maxDens );
   }
   
-  noLoop( );
   saveFrame( "StrawLobster.png" );
+  System.out.println( "Saved!" );
+  
+  noLoop( );
   
 }

@@ -126,8 +126,8 @@ void main( int argc, char ** argv ) {
 
         nlohmann::json face;
         face[ "a" ] = fti->vertex( 0 )->info( );
-        face[ "b" ] = fti->vertex( 1 )->info( );
-        face[ "c" ] = fti->vertex( 2 )->info( );
+        face[ "b" ] = fti->vertex( fti->ccw( 0 ) )->info( );
+        face[ "c" ] = fti->vertex( fti->cw( 0 ) )->info( );
 
         faces.push_back( face );
 

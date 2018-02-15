@@ -78,6 +78,10 @@ SlidingLlama - WIP
     Water drop on voronoi diagram
     Uses spring forces to simulate the effect of a waterdrop
 
+SquareVulture
+    Agglomerative clustering
+    Originally used to clean up datasets for StrawLobster
+
 StrawLobster
     DTFE drawer for a delaunay triangulation
 
