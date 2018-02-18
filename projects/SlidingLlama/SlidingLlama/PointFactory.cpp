@@ -12,12 +12,11 @@ PointFactory::PointFactory( ) {
 Point * PointFactory::make( ) {
 
     Point * p = new Point( );
-    p->setID( this->guid++ );
+    p->id = this->guid++;
 
-    float ang = this->radDist( this->gen );
-    float mag = std::sqrt( this->magDist( this->gen ) );
-
-    p->set( std::cos( ang ) * mag, std::sin( ang ) * mag );
+    p->x = this->magDist( this->gen );
+    p->y = this->magDist( this->gen );
+    p->z = this->magDist( this->gen );
 
     return p;
 
@@ -26,12 +25,14 @@ Point * PointFactory::make( ) {
 Point * PointFactory::makeRim( ) {
 
     Point * p = new Point( );
-    p->setID( this->guid++ );
+    p->id = this->guid++;
 
     float ang = (float)M_PI * 2.0 / NUM_RIM * rimGenned++;
     float mag = 1.0;
 
-    p->set( std::cos( ang ) * mag, std::sin( ang ) * mag );
+    p->x = std::cos( ang ) * mag;
+    p->y = std::sin( ang ) * mag;
+    p->z = 0.0;
 
     return p;
 

@@ -51,7 +51,7 @@ void drawTriangle( Point a, Point b, Point c, double minDens, double maxDens ) {
 
 void setup( ) {
 
-  size( 4096, 2048 );
+  size( 720, 720 );
   background( 255 );
 
   JSONObject triangulation = loadJSONObject( "triangulation.json" );

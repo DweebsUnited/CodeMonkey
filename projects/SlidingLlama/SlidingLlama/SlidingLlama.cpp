@@ -27,9 +27,9 @@ void generateModel( nlohmann::json & edges, std::vector<Point *> & points, int f
         float uz = 1.0;
 
         // Vector from a to b
-        float ax = b->getX( ) - a->getX( );
-        float ay = b->getY( ) - a->getY( );
-        float az = b->get( ) - a->get( );
+        float ax = b->x - a->x;
+        float ay = b->y - a->y;
+        float az = b->z - a->z;
 
         float amag = std::sqrt( ax * ax + ay * ay + az * az );
         ax /= amag;
@@ -45,10 +45,10 @@ void generateModel( nlohmann::json & edges, std::vector<Point *> & points, int f
         ry *= 0.01f / rmag;
 
         // Need 4 vertices and 2 faces
-        int fV = ply.addVertex( a->getX( ) + rx, a->getY( ) + ry, a->get( ), 255, 0, 0 );
-        ply.addVertex( a->getX( ) - rx, a->getY( ) - ry, a->get( ), 255, 0, 0 );
-        ply.addVertex( b->getX( ) + rx, b->getY( ) + ry, b->get( ), 255, 0, 0 );
-        ply.addVertex( b->getX( ) - rx, b->getY( ) - ry, b->get( ), 255, 0, 0 );
+        int fV = ply.addVertex( a->x + rx, a->y + ry, a->z, 255, 0, 0 );
+        ply.addVertex( a->x - rx, a->y - ry, a->z, 255, 0, 0 );
+        ply.addVertex( b->x + rx, b->y + ry, b->z, 255, 0, 0 );
+        ply.addVertex( b->x - rx, b->y - ry, b->z, 255, 0, 0 );
 
         ply.addFace( fV + 0, fV + 1, fV + 2 );
         ply.addFace( fV + 1, fV + 3, fV + 2 );
@@ -59,17 +59,38 @@ void generateModel( nlohmann::json & edges, std::vector<Point *> & points, int f
 
 }
 
+void generateFaceDump( nlohmann::json triangulation, std::vector<Point *> points ) {
+
+    // Generate a model
+    PLYExporter ply;
+
+    for( Point * p : points ) {
+
+        ply.addVertex( p->x, p->y, p->z, 0, 0, 0 );
+
+    }
+
+    for( nlohmann::json & face : triangulation[ "faces" ] ) {
+
+        ply.addFace( face[ "a" ].get<int>( ), face[ "b" ].get<int>( ), face[ "c" ].get<int>( ) );
+    }
+
+    ply.exportFile( "faceDump.ply" );
+
+}
+
 void main( ) {
 
     PointFactory * pf = new PointFactory( );
 
-    int idx = 0;
     std::vector<Point *> points;
 
     {
         nlohmann::json jsonPts = nlohmann::json::array( );
 
         Point * p;
+
+        /*
         while( pf->hasRim( ) ) {
 
             // Add point to points list
@@ -78,12 +99,13 @@ void main( ) {
 
             nlohmann::json pt;
             pt[ "id" ] = idx++;
-            pt[ "x" ] = p->getX( );
-            pt[ "y" ] = p->getY( );
+            pt[ "x" ] = p->x;
+            pt[ "y" ] = p->y;
 
             jsonPts.push_back( pt );
 
         }
+        */
 
         for( int pdx = 0; pdx < NUM_PTS; pdx++ ) {
 
@@ -92,9 +114,10 @@ void main( ) {
             points.push_back( p );
 
             nlohmann::json pt;
-            pt[ "id" ] = idx++;
-            pt[ "x" ] = p->getX( );
-            pt[ "y" ] = p->getY( );
+            pt[ "id" ] = p->id;
+            pt[ "x" ] = p->x;
+            pt[ "y" ] = p->y;
+            pt[ "z" ] = p->z;
 
             jsonPts.push_back( pt );
 
@@ -113,7 +136,7 @@ void main( ) {
 
     }
 
-    if( system( "TombstoneTriangulator.exe pts.json triangulation.json" ) != 0 ) {
+    if( system( "TombstoneTriangulator.exe t pts.json triangulation.json" ) != 0 ) {
         std::cerr << "Couldn't run triangulation" << std::endl;
         exit( 1 );
     }
@@ -134,6 +157,6 @@ void main( ) {
     // TODO
 
     // Generate a model
-    generateModel( triangulation[ "edges" ], points, 0 );
+    generateFaceDump( triangulation, points );
 
 }

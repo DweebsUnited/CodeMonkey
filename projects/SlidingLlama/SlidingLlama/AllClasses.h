@@ -13,29 +13,18 @@
 #include <complex>
 
 class Point {
-private:
-    std::complex<float> coord = std::complex<float>( 0, 0 );
+public:
+    float x = 0;
+    float y = 0;
     float z = 0;
 
     int id;
 
     std::vector<Point *> links;
 
-public:
     Point( );
 
-    void setID( int id );
     void addLink( Point * p );
-
-    void set( float x, float y );
-    void set( float z );
-
-    // Get Z
-    float get( );
-    // Get X
-    float getX( );
-    // Get Y
-    float getY( );
 
     static float triArea( Point * a, Point * b, Point * c );
 
