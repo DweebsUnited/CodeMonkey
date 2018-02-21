@@ -8,6 +8,5 @@
 /**/x64/
 /**/.vs/
 .DS_Store
-*.png
 *.mp4
 ffmpeg.txt
