@@ -59,7 +59,7 @@ void setup( ) {
   
   System.out.println( "Done" );
   
-  saveFrame( );
+  saveFrame( "AlarmistRainbow.png" );
   
   noLoop( );
   
