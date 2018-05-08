@@ -26,7 +26,7 @@ class Point {
   }
 
   public void prepare( ) {
-    this.dens = 1.0 / ( dens + 1.0 );
+    this.dens = this.dens > Double.MIN_VALUE ? 1.0 / this.dens : 0.0;
   }
 }
 class PointComparator implements Comparator<Point> {
@@ -42,7 +42,7 @@ double triArea( Point a, Point b, Point c ) {
 void drawTriangle( Point a, Point b, Point c, double minDens, double maxDens ) {
 
   double fillDens = ( a.dens + b.dens + c.dens ) / 3.0;
-  fillDens = Math.pow( ( fillDens - minDens ) / ( maxDens - minDens ), 0.5 );
+  fillDens = Math.pow( ( fillDens - minDens ) / ( maxDens - minDens ), 0.75 );
 
   noStroke( );
   fill( Math.round( ( 1.0 - fillDens ) * 255 ) );
@@ -51,7 +51,7 @@ void drawTriangle( Point a, Point b, Point c, double minDens, double maxDens ) {
 
 void setup( ) {
 
-  size( 720, 720 );
+  size( 7957, 472 );
   background( 255 );
 
   JSONObject triangulation = loadJSONObject( "triangulation.json" );
@@ -129,6 +129,7 @@ void setup( ) {
     Point c = pts.get( face.getInt( "c" ) );
 
     drawTriangle( a, b, c, minDens, maxDens );
+    
   }
   
   saveFrame( "StrawLobster.png" );
