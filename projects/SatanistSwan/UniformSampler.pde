@@ -4,9 +4,12 @@ class UniformSampler implements FloatSampler {
   
   private float min, max;
   
-  public UniformSampler( Random rng, float min, float max ) {
+  public UniformSampler( float min, float max ) {
     
-    this.rng = rng;
+    this.rng = new Random( );
+    
+    this.min = min;
+    this.max = max;
     
   }
   
