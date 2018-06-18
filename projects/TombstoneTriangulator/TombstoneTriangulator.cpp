@@ -97,7 +97,7 @@ public:
 void to_json( nlohmann::json& j, const Point& p ) {
 
     j = nlohmann::json { { "id", p.id }, { "x", p.x }, { "y", p.y } };
-    
+
     if( p.hasZ )
         j[ "z" ] = p.z;
 
@@ -178,7 +178,7 @@ void loadPoints( std::string fname, std::vector<Point> & points, DelaunayMethod 
 
     for( nlohmann::json & pt : pts ) {
 
-        
+
         // Pull attributes from the point
 
         nlohmann::json id = pt[ "id" ];
@@ -190,9 +190,9 @@ void loadPoints( std::string fname, std::vector<Point> & points, DelaunayMethod 
         // Handle bad object
 
         if( id == nullptr || x == nullptr || y == nullptr || ( method != DelaunayMethod::XY && z == nullptr ) ) {
-            
+
             std::cerr << "Object missing an attribute!" << std::endl;
-            
+
             std::cerr << "ID: " << ( id != nullptr ? std::to_string( id.get<int>( )   ) : "MISSING" ) << std::endl;
             std::cerr << "X:  " << (  x != nullptr ? std::to_string( x.get<double>( ) ) : "MISSING" ) << std::endl;
             std::cerr << "Y:  " << (  y != nullptr ? std::to_string( y.get<double>( ) ) : "MISSING" ) << std::endl;
@@ -201,7 +201,7 @@ void loadPoints( std::string fname, std::vector<Point> & points, DelaunayMethod 
                 << std::endl;
 
             exit( 1 );
-        
+
         }
 
 
@@ -299,7 +299,7 @@ void delaunay( std::vector<Point> & points, std::vector<Edge> & edges, std::vect
     // Variables!
 
     Delaunay dt;
-    Delaunay::Vertex_handle vh;
+    typename Delaunay::Vertex_handle vh;
 
 
     // Construct the triangulation
@@ -327,12 +327,12 @@ void delaunay( std::vector<Point> & points, std::vector<Edge> & edges, std::vect
 
     std::cout << "Reading edges: ";
 
-    for( Delaunay::Finite_edges_iterator pti = dt.finite_edges_begin( ); pti != dt.finite_edges_end( ); ++pti ) {
+    for( typename Delaunay::Finite_edges_iterator pti = dt.finite_edges_begin( ); pti != dt.finite_edges_end( ); ++pti ) {
 
-        Delaunay::Face& f = *( pti->first );
+        typename Delaunay::Face& f = *( pti->first );
         int i = pti->second;
-        Delaunay::Vertex_handle va = f.vertex( f.cw( i ) );
-        Delaunay::Vertex_handle vb = f.vertex( f.ccw( i ) );
+        typename Delaunay::Vertex_handle va = f.vertex( f.cw( i ) );
+        typename Delaunay::Vertex_handle vb = f.vertex( f.ccw( i ) );
 
         edges.push_back( Edge( va->info( ), vb->info( ) ) );
 
@@ -345,7 +345,7 @@ void delaunay( std::vector<Point> & points, std::vector<Edge> & edges, std::vect
 
     std::cout << "Reading faces: ";
 
-    for( Delaunay::Finite_faces_iterator fti = dt.finite_faces_begin( ); fti != dt.finite_faces_end( ); ++fti ) {
+    for( typename Delaunay::Finite_faces_iterator fti = dt.finite_faces_begin( ); fti != dt.finite_faces_end( ); ++fti ) {
 
         Face f;
 
@@ -450,7 +450,7 @@ void delaunay3d( std::vector<Point> & points, std::vector<Edge> & edges, std::ve
 
 // Main
 
-void main( int argc, char ** argv ) {
+int main( int argc, char ** argv ) {
 
 
     // Variables!
@@ -529,7 +529,7 @@ void main( int argc, char ** argv ) {
 
     writeTriangulation( argv[ argc - 1 ], points, edges, faces );
 
-    
+
     // Done!
 
     std::cout << "Done!" << std::endl;

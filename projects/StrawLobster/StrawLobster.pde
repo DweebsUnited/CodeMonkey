@@ -51,7 +51,7 @@ void drawTriangle( Point a, Point b, Point c, double minDens, double maxDens ) {
 
 void setup( ) {
 
-  size( 7957, 472 );
+  size( 720, 640 );
   background( 255 );
 
   JSONObject triangulation = loadJSONObject( "triangulation.json" );
@@ -65,7 +65,7 @@ void setup( ) {
     JSONObject pt = points.getJSONObject( pdx );
     Point point = new Point( new PVector( pt.getFloat( "x" ), pt.getFloat( "y" ) ), pt.getInt( "id" ) );
     pts.add( point );
-    
+
     if( point.coord.x > xmax )
       xmax = point.coord.x;
     if( point.coord.y > ymax )
@@ -74,7 +74,7 @@ void setup( ) {
       xmin = point.coord.x;
     if( point.coord.y < ymin )
       ymin = point.coord.y;
-    
+
   }
 
   pts.sort( new PointComparator( ) );
@@ -86,12 +86,12 @@ void setup( ) {
     Point b = pts.get( face.getInt( "b" ) );
     Point c = pts.get( face.getInt( "c" ) );
 
-    double area = triArea( a, b, c );
+    double area = face.getFloat( "area" );
 
     a.dens += area;
     b.dens += area;
     c.dens += area;
-    
+
   }
 
   double rawMax = 0.0;
@@ -102,20 +102,20 @@ void setup( ) {
 
     if ( p.dens > rawMax )
       rawMax = p.dens;
-      
+
     if ( p.dens < rawMin )
       rawMin = p.dens;
-    
+
     p.prepare( );
 
     if ( p.dens > maxDens )
       maxDens = p.dens;
-      
+
     if ( p.dens < minDens )
       minDens = p.dens;
-      
+
   }
-  
+
   System.out.println( String.format( "Raw min: %f", rawMin ) );
   System.out.println( String.format( "Raw max: %f", rawMax ) );
   System.out.println( String.format( "Min density: %f", minDens ) );
@@ -129,12 +129,12 @@ void setup( ) {
     Point c = pts.get( face.getInt( "c" ) );
 
     drawTriangle( a, b, c, minDens, maxDens );
-    
+
   }
-  
+
   saveFrame( "StrawLobster.png" );
   System.out.println( "Saved!" );
-  
+
   noLoop( );
-  
+
 }
