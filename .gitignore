@@ -1,12 +1,3 @@
-*.sdf
-*.opensdf
-*.out
-*.o
-*.VC.db
-/doxygen/
-/**/Debug/
-/**/x64/
-/**/.vs/
 .DS_Store
 *.mp4
 ffmpeg.txt
