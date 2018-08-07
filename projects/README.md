@@ -14,6 +14,10 @@ BitterFist
     Shepherding random grids
     Uses factories for the grid coordinates and the color ranges
 
+BlueBoxer
+    Shader based frosted glass rain droplets
+    As the rain runs down the glass, it reveals starry night underneath
+
 BlueSubdivision
     Random tower generator in python
 
@@ -34,6 +38,9 @@ DiscardedEyelid
 
 DustyFirecracker
     Raytracing engine
+
+EarlyCanal - WIP
+    Attempt to make random projections by placing axis randomly in the viewport
 
 EasternPlanet
     Dice battle simulator in python
@@ -65,6 +72,9 @@ FrozenAvenue
 HeavyOyster - WIP
     Idea for a generative behavior system that both responds to its environment and behaves in a locally optimal way
 
+HotPlutonium
+    Runner for TombstoneTriangulator, customized for Aksinia's project
+
 HuskyKangaroo
     Recursive octree rasterizer, with a sick blender shader
 
@@ -76,6 +86,16 @@ IvoryNeutron
     Voronoi generator using kd-trees
     Stupidly inefficient
     Sure, we can run a kd-lookup for every pixel, why not? x)
+
+java
+    Soon to be Eclipse project with all my projects nestled inside
+    A way to reduce the amount of duplicate code
+
+    DangerousTire
+        Light painting base that outputs 3d printer gcode
+
+    TitaniumSheepdog
+        Simulation of sunlight hitting bathroom tile
 
 LateMorning
     Basic perlin noise viewer
@@ -97,7 +117,7 @@ OliveSummer
 QualityBreeze
     Python Sudoku solver
 
-RestlessTiger - WIP, really neat
+RestlessTiger - WIP
     Idea for a self modifying system that could be initialized with a vibrating table
 
 RichVenom
@@ -138,6 +158,9 @@ SteamyToupee
 StrawLobster
     DTFE drawer for a delaunay triangulation
 
+TemporarySubdivision
+    Simple midpoint displacement mountain range
+
 TimelyVenus - WIP
     A line segment density drawer
 
@@ -152,13 +175,13 @@ TotallyTubular
     Python processing script
     A hyphae grower, currently still broken
     Will lag out your computer if you try to run it
-    Really disturbing to watch actually...
+    Really disturbing to watch...
 
 TurkeyNeck - WIP
     Guitar neck scale and chord builder
 
 VitalVegetable
-    Perlin viewer using shortlifespan random walkers
+    Perlin viewer using short lifespan random walkers
 
 WesternPython
     Swinging arms with a sandpainter
@@ -166,4 +189,3 @@ WesternPython
 YellowSummer
     Genetic algorithm
     Tries to find x colors such that the differences between all mixtures of colors is maximized
-    Is actually pretty cool
