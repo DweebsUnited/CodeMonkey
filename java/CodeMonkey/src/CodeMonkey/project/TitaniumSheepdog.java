@@ -11,7 +11,9 @@ import processing.core.PVector;
 
 public class TitaniumSheepdog extends PApplet {
 
-  private final int NUM_RAYS = 1024;
+  private final int NUM_RAYS = 256;
+  private final int NUM_TGT = 256;
+  private final int TGT_SD = 256;
 
   private Random rng = new Random( );
   private Mirror mirr;
@@ -22,9 +24,9 @@ public class TitaniumSheepdog extends PApplet {
   private boolean drawing = true;
   private PGraphics canvas;
 
-  private final int a = this.color(  78, 121, 52, 15 );
-  private final int b = this.color(  43,  66, 90, 15 );
-  private final int c = this.color( 138, 133, 59, 15 );
+  private int a;
+  private int b;
+  private int c;
 
   // Some 3D debugging
   //  private ArrayList<Segment> lines = new ArrayList<Segment>( );
@@ -45,6 +47,12 @@ public class TitaniumSheepdog extends PApplet {
 
   @Override
   public void setup( ) {
+
+    this.colorMode( HSB, 360, 100, 100, 100 );
+
+    this.a = this.color(  97, 57, 47, 10 );
+    this.b = this.color( 244, 52, 35, 10 );
+    this.c = this.color(  56, 57, 54, 10 );
 
     this.canvas = this.createGraphics( 1920, 1080 );
 
@@ -108,50 +116,69 @@ public class TitaniumSheepdog extends PApplet {
     for( int rdx = 0; rdx < this.NUM_RAYS; ++rdx ) {
 
       PVector o = PVector.lerp( this.lend, this.rend, this.rng.nextFloat( ) );
-      Ray r = Ray.fromTwoPoints( o, new PVector( this.rng.nextFloat( ), this.rng.nextFloat( ) / 2.0f, 0 ) );
-      r.normalize( );
+      PVector tgtCent = new PVector( this.rng.nextFloat( ), this.rng.nextFloat( ) / 2.0f, 0 );
+      for( int tdx = 0; tdx < this.NUM_TGT; ++tdx ) {
 
-      Ray ref = this.mirr.bounce( r );
+        // TODO: gaussian dist tgt around cent
 
-      if( ref == null )
-        continue;
+        Ray r = Ray.fromTwoPoints( o, tgt );
+        r.normalize( );
 
-      PVector norm = this.mirr.normal( ref.o );
+        Ray ref = this.mirr.bounce( r );
 
-      // Where the reflection hits the screen ( y = 0 )
-      PVector p = ref.atT( -ref.o.y / ref.d.y );
+        if( ref == null )
+          continue;
 
-      if( p.x < 0 || p.x > 1 || p.z < 0 || p.z > 1 )
-        continue;
+        PVector norm = this.mirr.normal( ref.o );
 
-      int col;
-      float mh;
+        // Where the reflection hits the screen ( y = 0 )
+        PVector p = ref.atT( -ref.o.y / ref.d.y );
 
-      // Per Mom,
-      //      float ah = this.noise( p.x, p.z, 0.7439652f );
-      //      float bh = this.noise( p.x, p.z, 0.4729439f );
-      //      float ch = this.noise( p.x, p.z, 0.6627156f );
+        if( p.x < 0 || p.x > 1 || p.z < 0 || p.z > 1 )
+          continue;
 
-      // per Dad
-      float ah = this.noise( p.x, p.z, 0.7365218f );
-      float bh = this.noise( p.x, p.z, 0.9362519f );
-      float ch = this.noise( p.x, p.z, 0.0298198f );
+        int col;
+        float mh;
 
-      // Try choosing based on greatest noise( intersection point )
-      if( ah > bh ) {
-        col = this.a;
-        mh = ah;
-      } else {
-        col = this.b;
-        mh = bh;
+        // Per Mom,
+        //      float ah = this.noise( p.x, p.z, 0.7439652f );
+        //      float bh = this.noise( p.x, p.z, 0.4729439f );
+        //      float ch = this.noise( p.x, p.z, 0.6627156f );
+
+        // per Dad
+        //      float ah = this.noise( p.x, p.z, 0.7365218f );
+        //      float bh = this.noise( p.x, p.z, 0.9362519f );
+        //      float ch = this.noise( p.x, p.z, 0.0298198f );
+
+        // Try choosing based on greatest noise( intersection point )
+        //      if( ah > bh ) {
+        //        col = this.a;
+        //        mh = ah;
+        //      } else {
+        //        col = this.b;
+        //        mh = bh;
+        //      }
+        //      if( ch > mh ) {
+        //        col = this.c;
+        //      }
+
+        // Try choosing based on greatest norm axis
+        if( norm.x > norm.y ) {
+          col = this.a;
+          mh = norm.x;
+        } else {
+          col = this.b;
+          mh = norm.y;
+        }
+        //      if( norm.z > mh ) {
+        //        col = this.c;
+        //      }
+
+        this.canvas.fill( col );
+
+        this.canvas.ellipse( p.x * this.canvas.pixelWidth, ( 1 - p.z ) * this.canvas.pixelHeight, 5, 5 );
+
       }
-      if( ch > mh ) {
-        col = this.c;
-      }
-
-      this.canvas.fill( col );
-
-      this.canvas.ellipse( p.x * this.canvas.pixelWidth, ( 1 - p.z ) * this.canvas.pixelHeight, 5, 5 );
 
     }
 

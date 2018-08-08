@@ -2,22 +2,22 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="library/core.jar"/>
-	<classpathentry kind="lib" path="library/gluegen-rt-natives-linux-aarch64.jar"/>
-	<classpathentry kind="lib" path="library/gluegen-rt-natives-linux-amd64.jar"/>
-	<classpathentry kind="lib" path="library/gluegen-rt-natives-linux-armv6hf.jar"/>
-	<classpathentry kind="lib" path="library/gluegen-rt-natives-linux-i586.jar"/>
-	<classpathentry kind="lib" path="library/gluegen-rt-natives-macosx-universal.jar"/>
-	<classpathentry kind="lib" path="library/gluegen-rt-natives-windows-amd64.jar"/>
-	<classpathentry kind="lib" path="library/gluegen-rt-natives-windows-i586.jar"/>
-	<classpathentry kind="lib" path="library/gluegen-rt.jar"/>
-	<classpathentry kind="lib" path="library/jogl-all-natives-linux-aarch64.jar"/>
-	<classpathentry kind="lib" path="library/jogl-all-natives-linux-amd64.jar"/>
-	<classpathentry kind="lib" path="library/jogl-all-natives-linux-armv6hf.jar"/>
-	<classpathentry kind="lib" path="library/jogl-all-natives-linux-i586.jar"/>
-	<classpathentry kind="lib" path="library/jogl-all-natives-macosx-universal.jar"/>
-	<classpathentry kind="lib" path="library/jogl-all-natives-windows-amd64.jar"/>
-	<classpathentry kind="lib" path="library/jogl-all-natives-windows-i586.jar"/>
-	<classpathentry kind="lib" path="library/jogl-all.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/core.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-aarch64.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-amd64.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-armv6hf.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-i586.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-macosx-universal.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-windows-amd64.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-linux-aarch64.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-linux-amd64.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-linux-armv6hf.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-linux-i586.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-macosx-universal.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-amd64.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="ProcessingLib/jogl-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
