@@ -12,6 +12,7 @@ import processing.core.PVector;
 public class PerlinMirror implements Mirror {
 
   private PApplet context;
+  private Random rng;
 
   private CoordinateTransform cTrans;
   private AxisTransform nTrans;
@@ -23,18 +24,32 @@ public class PerlinMirror implements Mirror {
 
   public PerlinMirror( PApplet context, Random rng ) {
 
+    this.rng = rng;
+
     this.context = context;
-
-    this.cTrans = new LinearTransform(
-        new PVector( 0, 0, 0 ),
-        new PVector( 1, 1, 1 ),
-        new PVector( 0, 0, 0 ),
-        new PVector( rng.nextFloat( ) * 25, rng.nextFloat( ) * 25, 0 ) );
-
-    this.nTrans = new LinearTransform( 0, 1, 0, 0.25f );
 
     // TODO: This is hardcoded
     this.aabb = new AABB3D( new PVector( 0, 0, 0 ), new PVector( 1.0f, 0.5f, 1.0f ) );
+
+    this.reset( );
+
+  }
+
+  @Override
+  public void reset( ) {
+
+    // TODO: This scale is wrooooooooooong
+    //  I don't want a rescaling, I want an offset
+    this.cTrans = new LinearTransform(
+        new PVector( this.rng.nextFloat( ) * 25, this.rng.nextFloat( ) * 25, this.rng.nextFloat( ) * 25 ),
+        new PVector( 5, 5, 5 ) );
+    //    this.cTrans = new LinearTransform(
+    //        new PVector( 0, 0, 0 ),
+    //        new PVector( 1, 1, 1 ),
+    //        new PVector( 0, 0, 0 ),
+    //        new PVector( rng.nextFloat( ) * 25, rng.nextFloat( ) * 25, 0 ) );
+
+    this.nTrans = new LinearTransform( 0, 1, 0, 0.2f );
 
   }
 

@@ -6,16 +6,6 @@ public class LinearTransform implements AxisTransform, CoordinateTransform {
 
   private PVector inm, inM, inR, outm, outM, outR;
 
-  public LinearTransform( float inMin, float inMax, float outMin, float outMax ) {
-
-    this(
-        new PVector( inMin, inMin, inMin ),
-        new PVector( inMax, inMax, inMax ),
-        new PVector( outMin, outMin, outMin ),
-        new PVector( outMax, outMax, outMax ) );
-
-  }
-
   public LinearTransform( PVector inMin, PVector inMax, PVector outMin, PVector outMax ) {
 
     this.inm = inMin.copy( );
@@ -27,6 +17,33 @@ public class LinearTransform implements AxisTransform, CoordinateTransform {
     this.outM = outMax.copy( );
     this.outR = this.outM.copy( );
     this.outR.sub( this.outm );
+
+  }
+
+  public LinearTransform( float inMin, float inMax, float outMin, float outMax ) {
+
+    this(
+        new PVector( inMin, inMin, inMin ),
+        new PVector( inMax, inMax, inMax ),
+        new PVector( outMin, outMin, outMin ),
+        new PVector( outMax, outMax, outMax ) );
+
+  }
+
+  public LinearTransform( PVector off, PVector scale ) {
+
+    this.inm = new PVector( 0, 0, 0 );
+    this.inR = new PVector( 1, 1, 1 );
+    this.outm = off.copy( );
+    this.outR = scale.copy( );
+
+  }
+
+  public LinearTransform( float off, float scale ) {
+
+    this(
+        new PVector( off, off, off ),
+        new PVector( scale, scale, scale ) );
 
   }
 

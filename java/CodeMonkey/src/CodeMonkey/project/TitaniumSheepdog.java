@@ -6,6 +6,7 @@ import CodeMonkey.spatial.Mirror;
 import CodeMonkey.spatial.PerlinMirror;
 import CodeMonkey.spatial.Ray;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PVector;
 
 public class TitaniumSheepdog extends PApplet {
@@ -19,6 +20,11 @@ public class TitaniumSheepdog extends PApplet {
   private PVector rend;
 
   private boolean drawing = true;
+  private PGraphics canvas;
+
+  private final int a = this.color(  78, 121, 52, 15 );
+  private final int b = this.color(  43,  66, 90, 15 );
+  private final int c = this.color( 138, 133, 59, 15 );
 
   // Some 3D debugging
   //  private ArrayList<Segment> lines = new ArrayList<Segment>( );
@@ -33,14 +39,19 @@ public class TitaniumSheepdog extends PApplet {
   @Override
   public void settings( ) {
 
-    this.size( 1920, 1080 );
+    this.size( 720, 640 );
 
   }
 
   @Override
   public void setup( ) {
 
-    this.background( 0 );
+    this.canvas = this.createGraphics( 1920, 1080 );
+
+    this.canvas.beginDraw( );
+    this.canvas.noStroke( );
+    this.canvas.background( 255 );
+    this.canvas.endDraw( );
 
     // 3D debugging
     //    this.camera( 2, 2, 5, 0.5f, 0.25f, 0, 0, 0, 1 );
@@ -92,6 +103,8 @@ public class TitaniumSheepdog extends PApplet {
     if( ! this.drawing )
       return;
 
+    this.canvas.beginDraw( );
+
     for( int rdx = 0; rdx < this.NUM_RAYS; ++rdx ) {
 
       PVector o = PVector.lerp( this.lend, this.rend, this.rng.nextFloat( ) );
@@ -103,21 +116,48 @@ public class TitaniumSheepdog extends PApplet {
       if( ref == null )
         continue;
 
+      PVector norm = this.mirr.normal( ref.o );
+
       // Where the reflection hits the screen ( y = 0 )
       PVector p = ref.atT( -ref.o.y / ref.d.y );
 
       if( p.x < 0 || p.x > 1 || p.z < 0 || p.z > 1 )
         continue;
 
-      this.noStroke( );
+      int col;
+      float mh;
 
+      // Per Mom,
+      //      float ah = this.noise( p.x, p.z, 0.7439652f );
+      //      float bh = this.noise( p.x, p.z, 0.4729439f );
+      //      float ch = this.noise( p.x, p.z, 0.6627156f );
 
-      this.fill( 255, 5 );
+      // per Dad
+      float ah = this.noise( p.x, p.z, 0.7365218f );
+      float bh = this.noise( p.x, p.z, 0.9362519f );
+      float ch = this.noise( p.x, p.z, 0.0298198f );
 
+      // Try choosing based on greatest noise( intersection point )
+      if( ah > bh ) {
+        col = this.a;
+        mh = ah;
+      } else {
+        col = this.b;
+        mh = bh;
+      }
+      if( ch > mh ) {
+        col = this.c;
+      }
 
-      this.ellipse( p.x * this.pixelWidth, ( 1 - p.z ) * this.pixelHeight, 5, 5 );
+      this.canvas.fill( col );
+
+      this.canvas.ellipse( p.x * this.canvas.pixelWidth, ( 1 - p.z ) * this.canvas.pixelHeight, 5, 5 );
 
     }
+
+    this.canvas.endDraw( );
+
+    this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
 
     //    this.background( 0 );
     //
@@ -172,6 +212,20 @@ public class TitaniumSheepdog extends PApplet {
     } else if( this.key == ' ' ) {
 
       this.drawing = !this.drawing;
+
+    } else if( this.key == 'q' ) {
+
+      this.canvas.beginDraw( );
+      this.canvas.background( 255 );
+      this.canvas.endDraw( );
+
+      this.noiseSeed( this.rng.nextInt( ) );
+      this.randomSeed( this.rng.nextInt( ) );
+      this.rng = new Random( this.rng.nextInt( ) );
+
+    } else if( this.key == 'a' ) {
+
+      this.mirr.reset( );
 
     }
 

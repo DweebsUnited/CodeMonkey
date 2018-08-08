@@ -14,6 +14,11 @@ public class BillboardMirror implements Mirror {
   }
 
   @Override
+  public void reset( ) {
+
+  }
+
+  @Override
   public float intersect( Ray r ) {
 
     // First check: Do we even hit the box?
