@@ -20,7 +20,7 @@ public class PerlinMirror implements Mirror {
   private AABB3D aabb;
 
   private final float STEP = 0.001f;
-  private final float DERIV_STEP = 0.001f;
+  private final float DERIV_STEP = 0.0001f;
 
   public PerlinMirror( PApplet context, Random rng ) {
 
@@ -82,6 +82,8 @@ public class PerlinMirror implements Mirror {
 
     boolean onTop = r.o.z > h;
 
+    // TODO: Caution, rays can bounce off bottom too
+
     do {
 
       // Update t
@@ -131,7 +133,7 @@ public class PerlinMirror implements Mirror {
     px.normalize( p );
     py.normalize( p );
 
-    px.cross( py, p );
+    PVector.cross( px, py, p );
 
     p.normalize( );
 

@@ -1,5 +1,6 @@
 package CodeMonkey.coordinate;
 
+import CodeMonkey.utility.PVectorFuncs;
 import processing.core.PVector;
 
 public class Quaternion {

@@ -1,4 +1,4 @@
-package CodeMonkey.coordinate;
+package CodeMonkey.utility;
 
 import processing.core.PVector;
 
