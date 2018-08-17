@@ -48,8 +48,8 @@ public class TitaniumSheepdog extends PApplet {
 
     this.colorMode( HSB, 360, 100, 100, 100 );
 
-    this.b = this.color(  97, 57, 47, 5 );
-    this.a = this.color( 244, 52, 35, 5 );
+    this.b = this.color(  97, 57, 47, 50 );
+    this.a = this.color( 244, 52, 35, 50 );
 
     this.canvas = this.createGraphics( 3840, 2160 );
 
@@ -61,8 +61,8 @@ public class TitaniumSheepdog extends PApplet {
 
     this.mirr = new PerlinMirror( this, this.rng );
 
-    this.lend = new PVector( 0.5f, 2.5f, 2.0f );
-    this.rend = new PVector( 0.6f, 2.5f, 2.0f );
+    this.lend = new PVector( 0.45f, 2.5f, 2.0f );
+    this.rend = new PVector( 0.55f, 2.5f, 2.0f );
 
   }
 
@@ -101,7 +101,7 @@ public class TitaniumSheepdog extends PApplet {
       PVector p = ref.atT( -ref.o.y / ref.d.y );
 
       // Compensate for terrain height
-      p.add( new PVector( 0, 0, 0.0f ) );
+      p.add( new PVector( 0, 0, 0.25f ) );
 
       if( p.x < 0 || p.x > 1 || p.z < 0 || p.z > 1 || ref.d.z < 0 )
         continue;
@@ -124,7 +124,7 @@ public class TitaniumSheepdog extends PApplet {
       //      }
 
       // Try choosing based on greatest norm axis
-      if( norm.x > norm.y ) {
+      if( norm.x > 0 ) {
         col = this.a;
       } else {
         col = this.b;

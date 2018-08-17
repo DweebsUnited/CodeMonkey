@@ -47,7 +47,7 @@ public class PerlinMirror implements Mirror {
     //   1.2, 21.8
     //   2.3, 0.7
     //   6.2, 0.3
-    PVector temp = new PVector( 2.5f, 1.0f, 0 );
+    PVector temp = new PVector( 2.5f, 10.0f, 0 );
     this.cTrans = new LinearTransform(
         new PVector( 0, 0, 0 ),
         new PVector( 1, 1, 1 ),
@@ -56,7 +56,7 @@ public class PerlinMirror implements Mirror {
 
     System.out.println( temp );
 
-    this.nTrans = new LinearTransform( 0, 1, 0, 0.4f );
+    this.nTrans = new LinearTransform( 0, 1, 0, 0.25f );
 
   }
 

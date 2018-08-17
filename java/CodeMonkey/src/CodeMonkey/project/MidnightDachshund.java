@@ -64,11 +64,8 @@ public class MidnightDachshund extends PApplet {
       this.i = this.r * (float) Math.sin( Math.toRadians( 30 ) );
 
       this.a.set(  0,       1,      0 );
-      this.a.add( this.o );
       this.b.set( -this.i, -this.h, 0 );
-      this.b.add( this.o );
       this.c.set(  this.i, -this.h, 0 );
-      this.c.add( this.o );
 
       PVector axis = new PVector( );
       PVector.cross( this.up, this.norm, axis );
@@ -80,6 +77,10 @@ public class MidnightDachshund extends PApplet {
       this.a.set( q.rotate( this.a ) );
       this.b.set( q.rotate( this.b ) );
       this.c.set( q.rotate( this.c ) );
+
+      this.a.add( this.o );
+      this.b.add( this.o );
+      this.c.add( this.o );
 
     }
 
