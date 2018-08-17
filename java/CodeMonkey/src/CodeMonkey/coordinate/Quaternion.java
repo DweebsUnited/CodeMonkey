@@ -78,6 +78,16 @@ public class Quaternion {
 
   }
 
+  //This makes it not a unit quaternion
+  private Quaternion mult( float c ) {
+
+    this.w *= c;
+    this.v.mult( c );
+
+    return this;
+
+  }
+
   public Quaternion mult( Quaternion q ) {
 
     // w w' - v . v'
@@ -85,7 +95,8 @@ public class Quaternion {
 
     float w = this.w * q.w - this.v.dot( q.v );
 
-    PVector v = this.v.cross( q.v );
+    PVector v = new PVector( );
+    PVector.cross( this.v, q.v, v );
 
     PVector tv = new PVector( );
 
@@ -104,16 +115,6 @@ public class Quaternion {
   public static Quaternion mult( Quaternion q1, Quaternion q2 ) {
 
     return q1.copy( ).mult( q2 );
-
-  }
-
-  // This makes it not a unit quaternion
-  private Quaternion mult( float c ) {
-
-    this.w *= c;
-    this.v.mult( c );
-
-    return this;
 
   }
 
@@ -165,7 +166,10 @@ public class Quaternion {
 
   public static PVector rotate( Quaternion q, PVector v ) {
 
-    return Quaternion.mult( q, new Quaternion( v, 0 ) ).mult( q.copy( ).inverse( ) ).v;
+    q = q.copy( );
+    Quaternion qinv = q.copy( ).inverse( );
+
+    return Quaternion.mult( q, new Quaternion( v, 0 ) ).mult( qinv ).v;
 
   }
 

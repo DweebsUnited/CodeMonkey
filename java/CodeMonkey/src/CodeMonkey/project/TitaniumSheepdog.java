@@ -5,22 +5,22 @@ import java.util.Random;
 import CodeMonkey.spatial.Mirror;
 import CodeMonkey.spatial.PerlinMirror;
 import CodeMonkey.spatial.Ray;
-import CodeMonkey.utility.PVectorFuncs;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PVector;
 
 public class TitaniumSheepdog extends PApplet {
 
-  private final int NUM_RAYS = 16;
-  private final int NUM_TGT = 2;
+  private final int NUM_RAYS = 256;
+  private final int NUM_TGT = 1;
   private final float TGT_SD = 0.005f;
-  private final float ANG_REJECT = (float) Math.PI / 10f;
+  private final float ANG_REJECT = 0;//(float) Math.PI / 20f;
 
   private Random rng = new Random( );
   private Mirror mirr;
 
-  private PVector light;
+  private PVector lend;
+  private PVector rend;
 
   private boolean drawing = true;
   private PGraphics canvas;
@@ -39,7 +39,7 @@ public class TitaniumSheepdog extends PApplet {
   @Override
   public void settings( ) {
 
-    this.size( 720, 640 );
+    this.size( 640, 480 );
 
   }
 
@@ -48,10 +48,10 @@ public class TitaniumSheepdog extends PApplet {
 
     this.colorMode( HSB, 360, 100, 100, 100 );
 
-    this.a = this.color(  97, 57, 47, 25 );
-    this.b = this.color( 244, 52, 35, 25 );
+    this.b = this.color(  97, 57, 47, 5 );
+    this.a = this.color( 244, 52, 35, 5 );
 
-    this.canvas = this.createGraphics( 1920, 1080 );
+    this.canvas = this.createGraphics( 3840, 2160 );
 
     this.canvas.beginDraw( );
     this.canvas.noStroke( );
@@ -61,7 +61,8 @@ public class TitaniumSheepdog extends PApplet {
 
     this.mirr = new PerlinMirror( this, this.rng );
 
-    this.light = new PVector( 0.5f, 2.5f, 2.5f );
+    this.lend = new PVector( 0.5f, 2.5f, 2.0f );
+    this.rend = new PVector( 0.6f, 2.5f, 2.0f );
 
   }
 
@@ -75,71 +76,72 @@ public class TitaniumSheepdog extends PApplet {
 
     for( int rdx = 0; rdx < this.NUM_RAYS; ++rdx ) {
 
+      PVector o = PVector.lerp( this.lend, this.rend, this.rng.nextFloat( ) );
       PVector tgtCent = new PVector( this.rng.nextFloat( ), this.rng.nextFloat( ) / 2, 0 );
 
-      for( int tdx = 0; tdx < this.NUM_TGT; ++tdx ) {
+      //      for( int tdx = 0; tdx < this.NUM_TGT; ++tdx ) {
+      //
+      //        PVector tgt = PVectorFuncs.addRet( tgtCent, new PVector( (float) this.rng.nextGaussian( ) * this.TGT_SD, (float) this.rng.nextGaussian( ) * this.TGT_SD ) );
 
-        PVector tgt = PVectorFuncs.addRet( tgtCent, new PVector( (float) this.rng.nextGaussian( ) * this.TGT_SD, (float) this.rng.nextGaussian( ) * this.TGT_SD ) );
+      Ray r = Ray.fromTwoPoints( o, tgtCent );
+      r.normalize( );
 
-        Ray r = Ray.fromTwoPoints( this.light, tgt );
-        r.normalize( );
+      Ray ref = this.mirr.bounce( r );
 
-        Ray ref = this.mirr.bounce( r );
+      if( ref == null )
+        continue;
 
-        if( ref == null )
-          continue;
+      PVector norm = this.mirr.normal( ref.o );
 
-        PVector norm = this.mirr.normal( ref.o );
+      // Reject reflections that are too close to 45 deg
+      if( Math.abs( 45 - PVector.angleBetween( r.d, ref.d ) ) < this.ANG_REJECT )
+        continue;
 
-        // Reject norms that are too close to Z, ie too flat
-        if( PVector.angleBetween( norm, new PVector( 0, 0, 1 ) ) < this.ANG_REJECT )
-          continue;
+      // Where the reflection hits the screen ( y = 0 )
+      PVector p = ref.atT( -ref.o.y / ref.d.y );
 
-        // Where the reflection hits the screen ( y = 0 )
-        PVector p = ref.atT( -ref.o.y / ref.d.y );
+      // Compensate for terrain height
+      p.add( new PVector( 0, 0, 0.0f ) );
 
-        // Compensate for terrain height
-        p.add( new PVector( 0, 0, 0.25f ) );
+      if( p.x < 0 || p.x > 1 || p.z < 0 || p.z > 1 || ref.d.z < 0 )
+        continue;
 
-        if( p.x < 0 || p.x > 1 || p.z < 0 || p.z > 1 )
-          continue;
+      int col;
 
-        int col;
+      // Per Mom,
+      //        float ah = this.noise( p.x, p.z, 0.7439652f );
+      //      float bh = this.noise( p.x, p.z, 0.4729439f );
 
-        // Per Mom,
-        //        float ah = this.noise( p.x, p.z, 0.7439652f );
-        //      float bh = this.noise( p.x, p.z, 0.4729439f );
+      // per Dad
+      //      float ah = this.noise( p.x, p.z, 0.7365218f );
+      //      float bh = this.noise( p.x, p.z, 0.9362519f );
 
-        // per Dad
-        //      float ah = this.noise( p.x, p.z, 0.7365218f );
-        //      float bh = this.noise( p.x, p.z, 0.9362519f );
+      // Try choosing based on greatest noise( intersection point )
+      //      if( ah > bh ) {
+      //        col = this.a;
+      //      } else {
+      //        col = this.b;
+      //      }
 
-        // Try choosing based on greatest noise( intersection point )
-        //      if( ah > bh ) {
-        //        col = this.a;
-        //      } else {
-        //        col = this.b;
-        //      }
-
-        // Try choosing based on greatest norm axis
-        if( norm.x > norm.y ) {
-          col = this.a;
-        } else {
-          col = this.b;
-        }
-
-        // Try choosing based on prob of a
-        //        if( this.rng.nextFloat( ) < ah ) {
-        //          col = this.a;
-        //        } else {
-        //          col = this.b;
-        //        }
-
-        this.canvas.fill( col );
-
-        this.canvas.ellipse( p.x * this.canvas.pixelWidth, ( 1 - p.z ) * this.canvas.pixelHeight, 5, 5 );
-
+      // Try choosing based on greatest norm axis
+      if( norm.x > norm.y ) {
+        col = this.a;
+      } else {
+        col = this.b;
       }
+
+      // Try choosing based on prob of a
+      //        if( this.rng.nextFloat( ) < ah ) {
+      //          col = this.a;
+      //        } else {
+      //          col = this.b;
+      //        }
+
+      this.canvas.fill( col );
+
+      this.canvas.ellipse( p.x * this.canvas.pixelWidth, ( 1 - p.z ) * this.canvas.pixelHeight, 5, 5 );
+
+      //      }
 
     }
 
@@ -178,25 +180,26 @@ public class TitaniumSheepdog extends PApplet {
     } else if( this.key == 'd' ) {
       this.mFac /= 2;
       System.out.println( String.format( "Move size: %f", this.mFac ) );
-    } else if( this.key == 'j' ) {
-      this.light.add( new PVector( 0, 0, this.mFac ) );
-      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
-    } else if( this.key == 'h' ) {
-      this.light.sub( new PVector( 0, 0, this.mFac ) );
-      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
-    } else if( this.key == 'l' ) {
-      this.light.add( new PVector( this.mFac, 0, 0 ) );
-      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
-    } else if( this.key == 'n' ) {
-      this.light.sub( new PVector( this.mFac, 0, 0 ) );
-      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
-    } else if( this.key == 'u' ) {
-      this.light.add( new PVector( 0, this.mFac, 0 ) );
-      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
-    } else if( this.key == 'e' ) {
-      this.light.sub( new PVector( 0, this.mFac, 0 ) );
-      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
     }
+    //    else if( this.key == 'j' ) {
+    //      this.light.add( new PVector( 0, 0, this.mFac ) );
+    //      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
+    //    } else if( this.key == 'h' ) {
+    //      this.light.sub( new PVector( 0, 0, this.mFac ) );
+    //      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
+    //    } else if( this.key == 'l' ) {
+    //      this.light.add( new PVector( this.mFac, 0, 0 ) );
+    //      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
+    //    } else if( this.key == 'n' ) {
+    //      this.light.sub( new PVector( this.mFac, 0, 0 ) );
+    //      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
+    //    } else if( this.key == 'u' ) {
+    //      this.light.add( new PVector( 0, this.mFac, 0 ) );
+    //      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
+    //    } else if( this.key == 'e' ) {
+    //      this.light.sub( new PVector( 0, this.mFac, 0 ) );
+    //      System.out.println( String.format( "Light: %f, %f, %f", this.light.x, this.light.y, this.light.z ) );
+    //    }
 
   }
 

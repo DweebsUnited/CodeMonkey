@@ -40,16 +40,23 @@ public class PerlinMirror implements Mirror {
 
     // TODO: This scale is wrooooooooooong
     //  I don't want a rescaling, I want an offset
-    this.cTrans = new LinearTransform(
-        new PVector( this.rng.nextFloat( ) * 25, this.rng.nextFloat( ) * 25, this.rng.nextFloat( ) * 25 ),
-        new PVector( 5, 5, 5 ) );
     //    this.cTrans = new LinearTransform(
-    //        new PVector( 0, 0, 0 ),
-    //        new PVector( 1, 1, 1 ),
-    //        new PVector( 0, 0, 0 ),
-    //        new PVector( rng.nextFloat( ) * 25, rng.nextFloat( ) * 25, 0 ) );
+    //        new PVector( this.rng.nextFloat( ) * 25, this.rng.nextFloat( ) * 25, this.rng.nextFloat( ) * 25 ),
+    //        new PVector( 2, 2, 2 ) );
+    // List of good ones:
+    //   1.2, 21.8
+    //   2.3, 0.7
+    //   6.2, 0.3
+    PVector temp = new PVector( 2.5f, 1.0f, 0 );
+    this.cTrans = new LinearTransform(
+        new PVector( 0, 0, 0 ),
+        new PVector( 1, 1, 1 ),
+        new PVector( 0, 0, 0 ),
+        temp );
 
-    this.nTrans = new LinearTransform( 0, 1, 0, 0.2f );
+    System.out.println( temp );
+
+    this.nTrans = new LinearTransform( 0, 1, 0, 0.4f );
 
   }
 
