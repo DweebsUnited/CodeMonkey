@@ -35,30 +35,11 @@ BufferedWriter acctWriter;
 
 void create( ) throws IOException {
   
-  baseWriter = new BufferedWriter( new FileWriter( "/Users/ozzy/Documents/CodeMonkey/ToPeeCAAAW/ToPeeCAAAW_base.gcode" ) );
-  acctWriter = new BufferedWriter( new FileWriter( "/Users/ozzy/Documents/CodeMonkey/ToPeeCAAAW/ToPeeCAAAW_acct.gcode" ) );
+  baseWriter = new BufferedWriter( new FileWriter( "/Users/ozzy/Documents/CodeMonkey/ToPeeCAAAW/ToPeeCAAAW_base.pointlist" ) );
+  acctWriter = new BufferedWriter( new FileWriter( "/Users/ozzy/Documents/CodeMonkey/ToPeeCAAAW/ToPeeCAAAW_acct.pointlist" ) );
   
   canvas.beginDraw( );
   canvas.background( 255 );
-  
-  // Go home, then short pause
-  baseWriter.append( "M104 S0\n" );
-  baseWriter.append( "M140 S0\n" );
-  baseWriter.append( "M107\n" );
-  baseWriter.append( "G28\n" );
-  baseWriter.append( "G90\n" );
-  baseWriter.append( "G0 F" + Float.toString( spd ) + "\n" );
-  baseWriter.append( "G0 X0 Y0 Z" + Float.toString( zUp ) + "\n" );
-  baseWriter.append( "G4 S5\n" );
-  
-  acctWriter.append( "M104 S0\n" );
-  acctWriter.append( "M140 S0\n" );
-  acctWriter.append( "M107\n" );
-  acctWriter.append( "G28\n" );
-  acctWriter.append( "G90\n" );
-  acctWriter.append( "G0 F" + Float.toString( upSpd ) + "\n" );
-  acctWriter.append( "G0 X0 Y0 Z" + Float.toString( zUp ) + "\n" );
-  acctWriter.append( "G4 S5\n" );
   
   for( int ydx = 0; ydx < gY; ++ydx ) {
     
@@ -74,28 +55,14 @@ void create( ) throws IOException {
       BufferedWriter writer = sq.isBase ? baseWriter : acctWriter;
         
       // Move to square start
-      writer.append( "G0 X" + Float.toString( ( sq.max.x - sq.min.x ) * sq.cA.x + sq.min.x ) + " Y" + Float.toString( ( sq.max.y - sq.min.y ) * sq.cA.y + sq.min.y ) + "\n" );
-        
-      // Pen down
-      // I want this to happen at the slower speed
-      writer.append( "G0 Z" + Float.toString( zDown ) + " F" + Float.toString( spd ) + "\n" );
+      writer.append( "N," + Float.toString( ( sq.max.x - sq.min.x ) * sq.cA.x + sq.min.x ) + "," + Float.toString( ( sq.max.y - sq.min.y ) * sq.cA.y + sq.min.y ) + "\n" );
         
       for( int ddx = 0; ddx < nRounds; ++ddx )
         sq.draw( canvas, writer );
-      
-      // Pen up
-      // Then speed up, again Z move on slow speed
-      writer.append( "G0 Z" + Float.toString( zUp ) + "\n" );
-      writer.append( "G0 F" + Float.toString( upSpd ) + "\n" );
     
     }
     
   }
-  
-  // Final home
-  baseWriter.append( "G0 X0 Y0\n" );
-  
-  acctWriter.append( "G0 X0 Y0\n" );
   
   canvas.endDraw( );
   

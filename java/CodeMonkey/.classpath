@@ -19,5 +19,8 @@
 	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-amd64.jar"/>
 	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="ProcessingLib/jogl-all.jar"/>
+	<classpathentry kind="lib" path="VideoExport/jna-platform.jar"/>
+	<classpathentry kind="lib" path="VideoExport/jna.jar"/>
+	<classpathentry kind="lib" path="VideoExport/VideoExport.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

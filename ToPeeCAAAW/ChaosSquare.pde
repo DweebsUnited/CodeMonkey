@@ -79,7 +79,7 @@ class ChaosSquare {
       //   Scale 0.o
       //   Don't worry about it, we have a rescaler lib :D
 
-      writer.append( "G0 X" + Float.toString( sX( b.x ) ) + " Y" + Float.toString( sY( b.y ) ) + "\n" );
+      writer.append( Float.toString( sX( b.x ) ) + "," + Float.toString( sY( b.y ) ) + "\n" );
 
       canvas.line(
         sX( this.cA.x ), sY( this.cA.y ), 

@@ -1,0 +1,32 @@
+Input:
+  [
+    {
+      "id": int
+      "x" : float,
+      "y" : float,
+      "z" : float
+    },
+    ...
+  ]
+Output:
+  {
+    "edges":
+      [
+        {
+          "a": int id of point,
+          "b": int id of point
+        },
+        ...
+      ],
+    "faces":
+      [
+        {
+          "a"   : int id of point,
+          "b"   : int id of point,
+          "c"   : int id of point
+          "area": float area of face
+        },
+        ...
+      ],
+    "points": copy of input points with projection applied
+  }

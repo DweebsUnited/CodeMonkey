@@ -26,7 +26,14 @@ parser.add_argument( "-oz", type=float )    # Offset z
 parser.add_argument( "-sx", type=float )    # Scale x
 parser.add_argument( "-sy", type=float )    # Scale y
 parser.add_argument( "-sz", type=float )    # Scale z
-parser.add_argument( "-sp", type=float )    # Move speed
+
+parser.add_argument( "-iox", type=float )    # Offset x
+parser.add_argument( "-ioy", type=float )    # Offset y
+parser.add_argument( "-ioz", type=float )    # Offset z
+parser.add_argument( "-isx", type=float )    # Scale x
+parser.add_argument( "-isy", type=float )    # Scale y
+parser.add_argument( "-isz", type=float )    # Scale z
+
 parser.add_argument( "-r", "--round", action='store_true' )  # Should we round to integer coords?
 
 args = parser.parse_args( )
@@ -68,12 +75,12 @@ for line in f.readlines( ):
 
 f.seek( 0 )
 
-inoffx = fminx
-inoffy = fminy
-inoffz = fminz
-inscalex = fmaxx - fminx
-inscaley = fmaxy - fminy
-inscalez = fmaxz - fminz
+inoffx = fminx if args.iox is None else args.iox
+inoffy = fminy if args.ioy is None else args.ioy
+inoffz = fminz if args.ioz is None else args.ioz
+inscalex = ( fmaxx - fminx ) if args.isx is None else args.isx
+inscaley = ( fmaxy - fminy ) if args.isy is None else args.isy
+inscalez = ( fmaxz - fminz ) if args.isz is None else args.isz
 
 print( "Input offset:" )
 print( "  X : " + str( inoffx ) )
@@ -85,7 +92,7 @@ print( "  Y : " + str( inscaley ) )
 print( "  Z : " + str( inscalez ) )
 print( "" )
 
-if( not any( [ args.ox, args.oy, args.oz, args.sx, args.sy, args.sz, args.sp, args.round ] ) ):
+if( not any( [ args.ox, args.oy, args.oz, args.sx, args.sy, args.sz, args.round ] ) ):
     f.close( )
     exit( 0 )
 
@@ -109,6 +116,8 @@ print( "" )
 # Given args, calculate min, max, and rewrite
 with open( os.path.join( os.path.dirname( args.infilename ), "rescaled.gcode" ), "w" ) as out:
     for line in f.readlines( ):
+        line = line.rstrip( )
+
         parts = line.split( ' ' )
         for pdx, part in enumerate( parts ):
             if part[ 0 ] == 'G':
@@ -119,10 +128,7 @@ with open( os.path.join( os.path.dirname( args.infilename ), "rescaled.gcode" ),
                     break
 
             elif part[ 0 ] == 'F':
-                if args.sp is not None:
-                    c = args.sp
-                else:
-                    c = float( part[ 1: ] )
+                c = float( part[ 1: ] )
 
                 if args.round:
                     c = int( round( c ) )
