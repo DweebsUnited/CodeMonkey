@@ -8,7 +8,7 @@ import com.hamoid.VideoExport;
 
 import CodeMonkey.graph.Node;
 import CodeMonkey.graph.UnDiGraph;
-import CodeMonkey.spatial.PoissonSampler;
+import CodeMonkey.spatial.PoissonSampler3D;
 import processing.core.PApplet;
 import processing.core.PVector;
 import processing.data.JSONArray;
@@ -16,153 +16,24 @@ import processing.data.JSONObject;
 
 public class SlidingRay extends PApplet {
 
-  private class PathDrawer {
-
-    private final static int N_TAIL   = 48;           // Number of points in the tail
-    private final static int T_SEG    = 10;           // Number of tail points per segment
-    private final static float SEG_DT = 1.0f / T_SEG; // DT for movement
-    private final static int opaFalloffPow = 3;       // Power for opacity falloff
-
-    private PApplet context;
-
-    private ArrayList<Integer> path;
-    private UnDiGraph<PVector> graph;
-
-    // This will be a circular buffer
-    private PVector[] tail = new PVector[ N_TAIL ];
-    private int rC = 0;  // This will cap at N_TAIL
-    private int oO = 0;  // Opa offset, so we can run them off the screen
-    private int wH = -1; // This should always be the last one written to
-
-    // This is the segment the head is currently progressing over
-    private int currSeg = 0;
-    private float currT = 0;
-
-    // These are updated as we move, small optimization
-    private PVector segSrc;
-    private PVector segMid;
-    private PVector segTgt;
-
-    private PVector midA;
-    private PVector midB;
-
-    public PathDrawer( PApplet context, ArrayList<Integer> path, UnDiGraph<PVector> graph ) {
-
-      this.context = context;
-      this.path = path;
-      this.graph = graph;
-
-      // Set these up so step doesn't null pointer
-      this.segSrc = this.graph.getNode( this.path.get( this.currSeg++ ) ).val;
-      this.segMid = this.graph.getNode( this.path.get( this.currSeg++ ) ).val;
-      this.segTgt = this.graph.getNode( this.path.get( this.currSeg   ) ).val;
-
-      this.midA = PVector.lerp( this.segSrc, this.segMid, 0.5f );
-      this.midB = PVector.lerp( this.segMid, this.segTgt, 0.5f );
-
-    }
-
-    public boolean step( ) {
-
-      // If we need to move to next segment
-      if( this.currT > 1.0f ) {
-
-        // If we are now past last segment, let caller know
-        if( this.currSeg == this.path.size( ) - 1 ) {
-
-          this.oO++;
-
-          if( this.oO == this.rC )
-            return false;
-          else
-            return true;
-
-        } else {
-
-          // Move to next
-          this.currSeg++;
-
-          // Get new bezier control points
-          this.segSrc = this.segMid;
-          this.segMid = this.segTgt;
-          this.segTgt = this.graph.getNode( this.path.get( this.currSeg ) ).val;
-
-          this.midA = this.midB;
-          this.midB = PVector.lerp( this.segMid, this.segTgt, 0.5f );
-
-          this.currT -= 1.0f;
-
-        }
-
-      }
-
-      // Calculate new head point
-      PVector head = new PVector(
-          this.context.bezierPoint( this.midA.x, this.segMid.x, this.segMid.x, this.midB.x, this.currT ),
-          this.context.bezierPoint( this.midA.y, this.segMid.y, this.segMid.y, this.midB.y, this.currT )
-          );
-
-      // Add to buffer
-      this.wH++;
-      if( this.wH == N_TAIL )
-        this.wH = 0;
-
-      this.tail[ this.wH ] = head;
-      this.rC = this.rC == N_TAIL ? this.rC : this.rC + 1;
-
-      // And update time
-      this.currT += SEG_DT;
-
-      return true;
-
-    }
-
-    public void draw( ) {
-
-      if( this.rC < 2 )
-        return;
-
-      this.context.noFill( );
-      this.context.strokeWeight( 2 );
-
-      // Draw points in buffer with falloff opacity
-      for( int ddx = 0; ddx < this.rC - 1; ++ddx ) {
-
-        // Have to go backwards
-        int cd = this.wH - ddx;
-        // And wrap
-        cd = cd < 0 ? cd + N_TAIL : cd;
-
-        // And wrap
-        int nd = cd == 0 ? N_TAIL - 1 : cd - 1;
-
-        // Opa fall off = 1 - x^k
-        this.context.stroke( 255, (int) Math.round( 255 * ( 1 - Math.pow( ( ddx + this.oO ) / (float)N_TAIL, opaFalloffPow ) ) ) );
-
-        // Draw from cd to nd
-        this.context.line( this.tail[ cd ].x, this.tail[ cd ].y, this.tail[ nd ].x, this.tail[ nd ].y );
-
-      }
-
-    }
-
-  }
+  private static boolean saving = false;
 
   private static String CM = "/Users/ozzy/Documents/CodeMonkey/";
   private static String dataDir = CM + "data/";
 
-  private final static float POISS_MIN_DIST = 25;
+  private final static float POISS_MIN_DIST = 50;
   private final static float DELY_LEN_CUTOFF = 2 * POISS_MIN_DIST;
+  private final static float SPWN_FRM_MIN = 15;
+  private final static float SPWN_FRM_MAX = 50;
 
   private Random rng = new Random( );
 
-  private PoissonSampler samp;
+  private PoissonSampler3D samp;
   private UnDiGraph<PVector> graph;
 
   private ArrayList<PathDrawer> drawers;
   private boolean spawning = true;
   private int nSpawnCounter = 10;
-  private float spawnLambda = 1.0f / 25f;
 
   private VideoExport videoExport;
 
@@ -175,7 +46,8 @@ public class SlidingRay extends PApplet {
   @Override
   public void settings( ) {
 
-    this.size( 720, 640 );
+    this.size( 720, 640, P3D );
+    //    this.size( 1920, 1080, P3D );
 
   }
 
@@ -191,7 +63,7 @@ public class SlidingRay extends PApplet {
 
 
     // Construct a new poisson distribution
-    this.samp = new PoissonSampler( this.pixelWidth, this.pixelHeight, POISS_MIN_DIST );
+    this.samp = new PoissonSampler3D( 1024, 1024, 1024, POISS_MIN_DIST );
 
 
     // Output points to JSON file and add them to the graph
@@ -221,7 +93,7 @@ public class SlidingRay extends PApplet {
       Process p = Runtime.getRuntime( ).exec(
           new String[ ] {
               CM + "TombstoneTriangulator/TombstoneTriangulator",
-              "z",
+              "t",
               dataDir + "SlidingRay.json",
               dataDir + "triangulation.json"
           } );
@@ -258,45 +130,113 @@ public class SlidingRay extends PApplet {
 
     }
 
-    // Set up video exporter
-    this.videoExport = new VideoExport( this, dataDir + "SlidingRay.mp4" );
-    this.videoExport.startMovie( );
+    if( saving ) {
+      // Set up video exporter
+      this.videoExport = new VideoExport( this, dataDir + "SlidingRay.mp4" );
+      this.videoExport.startMovie( );
+    }
 
   }
 
   @Override
   public void draw( ) {
 
-    // Ceter the grid better
-    this.scale( ( this.pixelWidth - 10 ) / this.samp.width, ( this.pixelHeight - 10 ) / this.samp.height );
-    this.translate( 5, 5 );
+    this.camera(
+        2000 * (float)Math.cos( ( this.frameCount % 8000 ) / 8000f * 2 * Math.PI ),
+        2000 * (float)Math.sin( ( this.frameCount % 8000 ) / 8000f * 2 * Math.PI ),
+        2000,
 
+        this.samp.width / 2, this.samp.height / 2, this.samp.depth / 2,
+        0, 0, -1 );
+
+    float fac = 0.85f;
+    this.ortho(
+        -this.samp.width * fac,
+        this.samp.width * fac,
+        -this.samp.height * fac,
+        this.samp.height * fac );
 
     this.background( 0 );
 
+
+    // Draw BB
+    // Axis get a little skewed here from the sampler
+
+    //    this.stroke( 255, 0, 0 );
+    //    this.noFill( );
+    //    // Bottom front x
+    //    this.line(
+    //        0,                0,                0,
+    //        this.samp.width,  0,                0 );
+    //    // Bottom back x
+    //    this.line(
+    //        0,                this.samp.height, 0,
+    //        this.samp.width,  this.samp.height, 0 );
+    //    // Top front x
+    //    this.line(
+    //        0,                0,                this.samp.depth,
+    //        this.samp.width,  0,                this.samp.depth );
+    //    // Top back x
+    //    this.line(
+    //        0,                this.samp.height, this.samp.depth,
+    //        this.samp.width,  this.samp.height, this.samp.depth );
+    //    // Left bottom
+    //    this.line(
+    //        0,                0,                0,
+    //        0,                this.samp.height, 0 );
+    //    // Right bottom
+    //    this.line(
+    //        this.samp.width,  0,                0,
+    //        this.samp.width,  this.samp.height, 0 );
+    //    // Left top
+    //    this.line(
+    //        0,                0,                this.samp.depth,
+    //        0,                this.samp.height, this.samp.depth );
+    //    // Right top
+    //    this.line(
+    //        this.samp.width,  0,                this.samp.depth,
+    //        this.samp.width,  this.samp.height, this.samp.depth );
+    //    // Front left pillar
+    //    this.line(
+    //        0,                0,                0,
+    //        0,                0,                this.samp.depth );
+    //    // Front right pillar
+    //    this.line(
+    //        this.samp.width,  0,                0,
+    //        this.samp.width,  0,                this.samp.depth );
+    //    // Back left pillar
+    //    this.line(
+    //        0,                this.samp.height, 0,
+    //        0,                this.samp.height, this.samp.depth );
+    //    // Back right pillar
+    //    this.line(
+    //        this.samp.width,  this.samp.height, 0,
+    //        this.samp.width,  this.samp.height, this.samp.depth );
+
+
     // Draw delaunay
 
-    this.stroke( 127, 64 );
-    this.strokeWeight( 1 );
-    this.noFill( );
-
-    for( Node<PVector> n : this.graph.nodes ) {
-
-      for( Node<PVector> tgt : n.links )
-        this.line( n.val.x, n.val.y, tgt.val.x, tgt.val.y );
-
-    }
+    //    this.stroke( 127, 32 );
+    //    this.strokeWeight( 1 );
+    //    this.noFill( );
+    //
+    //    for( Node<PVector> n : this.graph.nodes ) {
+    //
+    //      for( Node<PVector> tgt : n.links )
+    //        this.line( n.val.x, n.val.y, n.val.z, tgt.val.x, tgt.val.y, tgt.val.z );
+    //
+    //    }
 
     // Draw nodes
 
-    this.noStroke( );
-    this.fill( 255, 64 );
-
-    for( Node<PVector> n : this.graph.nodes ) {
-
-      this.ellipse( n.val.x, n.val.y, 5, 5 );
-
-    }
+    //    this.noStroke( );
+    //    this.fill( 255, 64 );
+    //
+    //    for( Node<PVector> n : this.graph.nodes ) {
+    //
+    //      this.ellipse( n.val.x, n.val.y, 5, 5 );
+    //
+    //    }
 
     // Update the drawers
 
@@ -316,15 +256,19 @@ public class SlidingRay extends PApplet {
     if( this.nSpawnCounter == 0 ) {
 
       if( this.spawning )
-        this.drawers.add( new PathDrawer( this, this.newPath( ), this.graph ) );
+        this.spawnNewDrawer( );
 
-      this.nSpawnCounter = (int)Math.round( - Math.log( 1.0 - this.rng.nextFloat( ) ) / this.spawnLambda );
+      float frmFac = this.noise( this.frameCount / 1024f ) * ( SPWN_FRM_MAX - SPWN_FRM_MIN ) + SPWN_FRM_MIN;
+
+      this.nSpawnCounter = (int)Math.round( - Math.log( 1.0f - this.rng.nextFloat( ) ) * frmFac );
 
     } else
       --this.nSpawnCounter;
 
-    // Save videoframe
-    this.videoExport.saveFrame( );
+    if( saving ) {
+      // Save videoframe
+      this.videoExport.saveFrame( );
+    }
 
   }
 
@@ -336,7 +280,7 @@ public class SlidingRay extends PApplet {
     } else if( this.key == 'z' ) {
       this.spawning = !this.spawning;
     } else if( this.key == 'x' ) {
-      this.drawers.add( new PathDrawer( this, this.newPath( ), this.graph ) );
+      this.spawnNewDrawer( );
     } else if( this.key == 'q' ) {
       this.videoExport.endMovie( );
       this.exit( );
@@ -344,15 +288,124 @@ public class SlidingRay extends PApplet {
 
   }
 
-  private ArrayList<Integer> newPath( ) {
+  private void spawnNewDrawer( ) {
 
-    // TODO: x random midpoints?
+    float ax = this.rng.nextFloat( );
+
+    if( ax < 0.33f ) {
+      this.drawers.add( new PathDrawer( this.color( 234,  88, 100 ), this, this.newPathX( ), this.graph ) );
+    } else if( ax < 0.66f ) {
+      this.drawers.add( new PathDrawer( this.color( 249, 220,  92 ), this, this.newPathY( ), this.graph ) );
+    } else {
+      this.drawers.add( new PathDrawer( this.color(  67, 144, 252 ), this, this.newPathZ( ), this.graph ) );
+    }
+
+  }
+
+  private ArrayList<Integer> newPathX( ) {
 
     // Pick random points offscreen on opposite sides, use closest point to each as endpts
-    //  TODO: KD Tree, O(n) is bad, but O(log n) is better..
 
-    PVector endA = new PVector( -1, this.rng.nextFloat( ) * this.pixelHeight );
-    PVector endB = new PVector( this.pixelWidth + 1, this.rng.nextFloat( ) * this.pixelHeight );
+    boolean dir = this.rng.nextFloat( ) > 0.5f;
+
+    PVector endA = new PVector(
+        dir ? -1 : this.samp.width + 1,
+            this.rng.nextFloat( ) * this.samp.height,
+            this.rng.nextFloat( ) * this.samp.depth );
+    PVector endB = new PVector(
+        dir ? this.samp.width + 1 : -1,
+            this.rng.nextFloat( ) * this.samp.height,
+            this.rng.nextFloat( ) * this.samp.depth );
+
+    float dA = Float.POSITIVE_INFINITY;
+    int closeA = -1;
+    float dB = Float.POSITIVE_INFINITY;
+    int closeB = -1;
+
+    for( Node<PVector> n : this.graph.nodes ) {
+
+      float distA = endA.dist( n.val );
+      float distB = endB.dist( n.val );
+
+      if( distA < dA ) {
+
+        dA = distA;
+        closeA = n.ID;
+
+      }
+
+      if( distB < dB ) {
+
+        dB = distB;
+        closeB = n.ID;
+
+      }
+
+    }
+
+    return this.graph.greedyPath( closeA, closeB, ( a, b ) -> { return a.dist( b ); } );
+
+  }
+
+  private ArrayList<Integer> newPathY( ) {
+
+    // Pick random points offscreen on opposite sides, use closest point to each as endpts
+
+    boolean dir = this.rng.nextFloat( ) > 0.5f;
+
+    PVector endA = new PVector(
+        this.rng.nextFloat( ) * this.samp.width,
+        dir ? -1 : this.samp.height + 1,
+            this.rng.nextFloat( ) * this.samp.depth );
+    PVector endB = new PVector(
+        this.rng.nextFloat( ) * this.samp.width,
+        dir ? this.samp.height + 1 : -1,
+            this.rng.nextFloat( ) * this.samp.depth );
+
+    float dA = Float.POSITIVE_INFINITY;
+    int closeA = -1;
+    float dB = Float.POSITIVE_INFINITY;
+    int closeB = -1;
+
+    for( Node<PVector> n : this.graph.nodes ) {
+
+      float distA = endA.dist( n.val );
+      float distB = endB.dist( n.val );
+
+      if( distA < dA ) {
+
+        dA = distA;
+        closeA = n.ID;
+
+      }
+
+      if( distB < dB ) {
+
+        dB = distB;
+        closeB = n.ID;
+
+      }
+
+    }
+
+    return this.graph.greedyPath( closeA, closeB, ( a, b ) -> { return a.dist( b ); } );
+
+  }
+
+  private ArrayList<Integer> newPathZ( ) {
+
+    // Pick random points offscreen on opposite sides, use closest point to each as endpts
+
+    boolean dir = this.rng.nextFloat( ) > 0.5f;
+
+    PVector endA = new PVector(
+        this.rng.nextFloat( ) * this.samp.width,
+        this.rng.nextFloat( ) * this.samp.height,
+        dir ? -1 : this.samp.depth + 1 );
+    PVector endB = new PVector(
+        this.rng.nextFloat( ) * this.samp.width,
+        this.rng.nextFloat( ) * this.samp.height,
+        dir ? this.samp.depth + 1 : -1 );
 
     float dA = Float.POSITIVE_INFINITY;
     int closeA = -1;

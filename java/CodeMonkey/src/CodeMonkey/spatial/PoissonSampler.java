@@ -25,9 +25,6 @@ public class PoissonSampler {
 
   public PoissonSampler( float width, float height, float mDist, int nCount ) {
 
-    //    this.width = width;
-    //    this.height = height;
-
     this.mDist = mDist;
     this.cellSize = this.mDist / (float) Math.sqrt( 2 );
     this.nCount = nCount;
