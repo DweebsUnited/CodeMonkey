@@ -1,4 +1,4 @@
-package CodeMonkey.project;
+package CodeMonkey.utility;
 
 import java.util.ArrayList;
 
@@ -7,12 +7,15 @@ import CodeMonkey.graph.UnDiGraph;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-class PathDrawer {
+public class PathDrawer {
 
   private final static int N_TAIL   = 48;           // Number of points in the tail
   private final static int T_SEG    = 10;           // Number of tail points per segment
   private final static float SEG_DT = 1.0f / T_SEG; // DT for movement
   private final static int opaFalloffPow = 3;       // Power for opacity falloff
+
+  private final static float baseOpa = 0.05f;        // Opa that is always present (Well.. almost always)
+  private final static float pulseOpa = 1.0f - baseOpa; // Opa that can be pulsed
 
   // Non-Thread-Safe falloff factors, to save N_TAIL exp per path per frame
   private static int[] falloffFac = null;
@@ -140,27 +143,7 @@ class PathDrawer {
 
   }
 
-  public void draw( ) {
-
-    // TODO: draw delaunay links out from currSeg s: -0, -1, -2
-    //   Phase brightness by currT ( 0 -> 1 )
-    //   And falloff ( 0 -> 1 )
-    //   Superexponential! WOOOOOOOO
-    //   ? Phase with very limited noise
-
-    // We do this before the actual path to give a 2 frame warning that something is about to spawn
-    // Bit of a mental queue that something cometh
-
-    //    this.context.stroke( 255, 32 * this.currT );
-    //
-    //    // Calculate a falloff for the non-mids
-    //    for( Node<PVector> l : this.segMidN.links ) {
-    //
-    //      this.context.line(
-    //          this.segMid.x,  this.segMid.y,  this.segMid.z,
-    //          l.val.x,        l.val.y,        l.val.z );
-    //
-    //    }
+  public void draw( float pulse ) {
 
     if( this.rC < 2 )
       return;
@@ -169,7 +152,7 @@ class PathDrawer {
     this.context.strokeWeight( 2 );
 
     // Draw points in buffer with falloff opacity
-    for( int ddx = 0; ddx < this.rC - 1; ++ddx ) {
+    for( int ddx = 0; ddx < this.rC - 1 - this.oO; ++ddx ) {
 
       // Have to go backwards
       int cd = this.wH - ddx;
@@ -180,7 +163,7 @@ class PathDrawer {
       int nd = cd == 0 ? N_TAIL - 1 : cd - 1;
 
       // Opa fall off = 1 - x^k
-      this.context.stroke( this.color, falloffFac[ ddx ] );
+      this.context.stroke( this.color, falloffFac[ ddx + this.oO ] * ( baseOpa + pulseOpa * pulse ) );
 
       // Draw from cd to nd
       this.context.line(

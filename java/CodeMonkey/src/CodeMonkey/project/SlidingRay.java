@@ -9,6 +9,7 @@ import com.hamoid.VideoExport;
 import CodeMonkey.graph.Node;
 import CodeMonkey.graph.UnDiGraph;
 import CodeMonkey.spatial.PoissonSampler3D;
+import CodeMonkey.utility.PathDrawer;
 import processing.core.PApplet;
 import processing.core.PVector;
 import processing.data.JSONArray;
@@ -248,7 +249,7 @@ public class SlidingRay extends PApplet {
       if( !pd.step( ) )
         drawIter.remove( );
       else
-        pd.draw( );
+        pd.draw( ( this.frameCount % 60 ) / 60f );
 
     }
 

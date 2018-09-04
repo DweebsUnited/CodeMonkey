@@ -1,6 +1,6 @@
 package CodeMonkey.spatial;
 
-import CodeMonkey.coordinate.Quaternion;
+import CodeMonkey.transform.Quaternion;
 import processing.core.PVector;
 
 public class BillboardMirror implements Mirror {

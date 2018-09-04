@@ -1,8 +1,13 @@
 package CodeMonkey.project;
 
+import CodeMonkey.transform.AxisTransform;
+import CodeMonkey.transform.NormalAxisTransform;
+import CodeMonkey.transform.SigmoidTransform;
 import processing.core.PApplet;
 
 public class Test extends PApplet {
+
+  private AxisTransform trans = new NormalAxisTransform( new SigmoidTransform( 6.0f, 0.5f ), 1, 0 );
 
   public static void main( String [ ] args ) {
 
@@ -22,23 +27,29 @@ public class Test extends PApplet {
 
     this.background( 0 );
 
-  }
-
-  @Override
-  public void draw( ) {
-
     this.background( 0 );
 
     this.noStroke( );
     this.fill( 255 );
 
-    int steps = 10;
-    for (int i = 0; i <= steps; i++) {
-      float t = i / (float) steps;
-      float x = this.bezierPoint(85, 10, 90, 15, t);
-      float y = this.bezierPoint(20, 10, 90, 80, t);
-      this.ellipse(x, y, 5, 5);
+    for (int i = 0; i <= this.pixelWidth; i++) {
+
+      float x = i / (float) this.pixelWidth;
+
+      float y = this.trans.map( x );
+
+      this.ellipse( x * this.pixelWidth, ( 1 - y ) * this.pixelHeight, 3, 3 );
+
     }
+
+    this.noLoop( );
+
+  }
+
+  @Override
+  public void draw( ) {
+
+
 
   }
 

@@ -2,10 +2,10 @@ package CodeMonkey.spatial;
 
 import java.util.Random;
 
-import CodeMonkey.coordinate.AxisTransform;
-import CodeMonkey.coordinate.CoordinateTransform;
-import CodeMonkey.coordinate.LinearTransform;
-import CodeMonkey.coordinate.Quaternion;
+import CodeMonkey.transform.AxisTransform;
+import CodeMonkey.transform.CoordinateTransform;
+import CodeMonkey.transform.LinearTransform;
+import CodeMonkey.transform.Quaternion;
 import processing.core.PApplet;
 import processing.core.PVector;
 

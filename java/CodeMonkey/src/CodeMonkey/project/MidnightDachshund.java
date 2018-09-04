@@ -1,6 +1,6 @@
 package CodeMonkey.project;
 
-import CodeMonkey.coordinate.Quaternion;
+import CodeMonkey.transform.Quaternion;
 import processing.core.PApplet;
 import processing.core.PVector;
 

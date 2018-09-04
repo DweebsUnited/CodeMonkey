@@ -3,10 +3,10 @@ package CodeMonkey.project;
 import java.util.ArrayList;
 import java.util.Random;
 
-import CodeMonkey.coordinate.Segment;
 import CodeMonkey.spatial.Mirror;
 import CodeMonkey.spatial.PerlinMirror;
 import CodeMonkey.spatial.Ray;
+import CodeMonkey.transform.Segment;
 import CodeMonkey.utility.PVectorFuncs;
 import processing.core.PApplet;
 import processing.core.PVector;
