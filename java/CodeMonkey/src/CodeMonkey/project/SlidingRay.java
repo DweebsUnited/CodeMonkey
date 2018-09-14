@@ -9,6 +9,9 @@ import com.hamoid.VideoExport;
 import CodeMonkey.graph.Node;
 import CodeMonkey.graph.UnDiGraph;
 import CodeMonkey.spatial.PoissonSampler3D;
+import CodeMonkey.transform.AxisTransform;
+import CodeMonkey.transform.SigmoidTransform;
+import CodeMonkey.utility.OneShottr;
 import CodeMonkey.utility.PathDrawer;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -26,6 +29,7 @@ public class SlidingRay extends PApplet {
   private final static float DELY_LEN_CUTOFF = 2 * POISS_MIN_DIST;
   private final static float SPWN_FRM_MIN = 15;
   private final static float SPWN_FRM_MAX = 50;
+  private final static float PULSE_STEP = 0.05f;
 
   private Random rng = new Random( );
 
@@ -37,6 +41,10 @@ public class SlidingRay extends PApplet {
   private int nSpawnCounter = 10;
 
   private VideoExport videoExport;
+
+  private AxisTransform pulseTransform = new SigmoidTransform( 6.0f, 0.5f );
+  private OneShottr pulseFlipFlopper = new OneShottr( );
+  private float pulse = 0;
 
   public static void main( String [ ] args ) {
 
@@ -116,6 +124,10 @@ public class SlidingRay extends PApplet {
     // Add JSON links to digraph
     //   Cutoff length, so we don't get an awkward hull
     JSONArray edges = triangulation.getJSONArray( "edges" );
+
+    float lenAccum = 0;
+    int edgeCnt = 0;
+
     for( int edx = 0; edx < edges.size( ); ++edx ) {
 
       JSONObject e = edges.getJSONObject( edx );
@@ -126,10 +138,18 @@ public class SlidingRay extends PApplet {
       Node<PVector> na = this.graph.getNode( a );
       Node<PVector> nb = this.graph.getNode( b );
 
-      if( na.val.dist( nb.val ) < DELY_LEN_CUTOFF )
+      if( na.val.dist( nb.val ) < DELY_LEN_CUTOFF ) {
         this.graph.link( a, b );
 
+        lenAccum += na.val.dist( nb.val );
+        edgeCnt += 1;
+
+      }
+
     }
+
+    System.out.println( String.format( "Number of edges: %d", edgeCnt ) );
+    System.out.println( String.format( "Edge Avg Len: %f", lenAccum / edgeCnt ) );
 
     if( saving ) {
       // Set up video exporter
@@ -239,6 +259,13 @@ public class SlidingRay extends PApplet {
     //
     //    }
 
+    // Run the flipflopper
+
+    this.pulse += PULSE_STEP;
+    boolean pulsing = this.pulseFlipFlopper.step( this.pulse );
+    if( this.pulse > 1 )
+      this.pulse -= 1;
+
     // Update the drawers
 
     Iterator<PathDrawer> drawIter = this.drawers.iterator( );
@@ -249,7 +276,7 @@ public class SlidingRay extends PApplet {
       if( !pd.step( ) )
         drawIter.remove( );
       else
-        pd.draw( ( this.frameCount % 60 ) / 60f );
+        pd.draw( this.pulseTransform.map( pulsing ? ( 1 - this.pulse ) : 0 ) );
 
     }
 
@@ -282,6 +309,9 @@ public class SlidingRay extends PApplet {
       this.spawning = !this.spawning;
     } else if( this.key == 'x' ) {
       this.spawnNewDrawer( );
+    } else if( this.key == 'b' ) {
+      this.pulseFlipFlopper.reset( );
+      this.pulse = 0;
     } else if( this.key == 'q' ) {
       this.videoExport.endMovie( );
       this.exit( );

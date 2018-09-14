@@ -27,8 +27,6 @@ public class Test extends PApplet {
 
     this.background( 0 );
 
-    this.background( 0 );
-
     this.noStroke( );
     this.fill( 255 );
 
