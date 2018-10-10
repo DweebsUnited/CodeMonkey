@@ -1,13 +1,13 @@
 package CodeMonkey.transform;
 
-public class NormalAxisTransform implements AxisTransform {
+public class ATNormalize implements AxisTransform {
 
   private float mVal, MVal;
   private float rng;
 
   private AxisTransform trans;
 
-  public NormalAxisTransform( AxisTransform trans, float minCoor, float maxCoor ) {
+  public ATNormalize( AxisTransform trans, float minCoor, float maxCoor ) {
 
     this.trans = trans;
 

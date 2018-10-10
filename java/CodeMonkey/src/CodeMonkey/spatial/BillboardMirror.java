@@ -1,44 +1,38 @@
 package CodeMonkey.spatial;
 
-import CodeMonkey.transform.Quaternion;
 import processing.core.PVector;
 
 public class BillboardMirror implements Mirror {
 
-  private AABB2D aabb;
+  private float width, height;
 
-  public BillboardMirror( ) {
+  private PVector norm;
 
-    this.aabb = new AABB2D( new PVector( 0, 0 ), new PVector( 1.0f, 0.5f ) );
+  private Plane p;
 
-  }
+  public BillboardMirror( float width, float height, PVector norm, PVector mirrCent ) {
 
-  @Override
-  public void reset( ) {
+    this.width = width;
+    this.height = height;
+
+    this.norm = norm.copy( );
+
+    this.p = new Plane( norm, mirrCent );
 
   }
 
   @Override
   public float intersect( Ray r ) {
 
-    // First check: Do we even hit the box?
-    float t = this.aabb.intersect( r );
-
-    // Now we cheat, and do a simple z-hits-0 short circuit
-    if( t == Float.POSITIVE_INFINITY || ( r.o.z > 0 && r.d.z > 0 ) || ( r.o.z < 0 && r.d.z < 0 ) )
-      return t;
-    else
-      // Then return the intersection point
-      return - r.o.z / r.d.z;
+    return this.p.intersect( r );
 
   }
 
   @Override
   public PVector normal( PVector p ) {
 
-    // Lol
-
-    return new PVector( 0, 0, 1 );
+    // Billboards don't change normal
+    return this.norm;
 
   }
 
@@ -55,11 +49,23 @@ public class BillboardMirror implements Mirror {
 
     PVector pInt = r.atT( tInt );
 
-    PVector norm = this.normal( pInt );
+    PVector planeSpace = this.p.map( pInt );
 
-    r.d = Quaternion.rotate( norm, (float) Math.PI, r.d );
-    r.d.mult( -1.0f );
+    if(
+        planeSpace.x >=  this.width  / 2.0f ||
+        planeSpace.x < -this.width  / 2.0f ||
+        planeSpace.y >=  this.height / 2.0f ||
+        planeSpace.y < -this.height / 2.0f ) {
+      //      System.out.println( "Out of bounds" );
+      return null;
+    }
 
+    PVector pNorm = this.normal( planeSpace );
+
+    PVector bd = Quaternion.rotate( pNorm, (float) Math.PI, r.d );
+    bd.mult( -1 );
+
+    r.d.set( bd );
     r.o.set( pInt );
 
     return r;

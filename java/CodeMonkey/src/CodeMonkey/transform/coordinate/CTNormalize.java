@@ -1,15 +1,16 @@
-package CodeMonkey.transform;
+package CodeMonkey.transform.coordinate;
 
+import CodeMonkey.transform.CoordinateTransform;
 import processing.core.PVector;
 
-public class NormalCoordinateTransform implements CoordinateTransform {
+public class CTNormalize implements CoordinateTransform {
 
   private PVector mVal, MVal;
   private PVector rng;
 
   private CoordinateTransform trans;
 
-  public NormalCoordinateTransform( CoordinateTransform trans, PVector minCoor, PVector maxCoor ) {
+  public CTNormalize( CoordinateTransform trans, PVector minCoor, PVector maxCoor ) {
 
     this.trans = trans;
 

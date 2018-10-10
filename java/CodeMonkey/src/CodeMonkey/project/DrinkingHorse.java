@@ -3,7 +3,7 @@ package CodeMonkey.project;
 import java.util.Random;
 
 import CodeMonkey.transform.CoordinateTransform;
-import CodeMonkey.transform.LinearTransform;
+import CodeMonkey.transform.coordinate.CTLinear;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -43,7 +43,7 @@ public class DrinkingHorse extends PApplet {
 
     // Make a transform for drawing the points on screen
     // TODO: Make this determined from the basis vectors
-    this.screen = new LinearTransform(
+    this.screen = new CTLinear(
         new PVector( -this.nAxis, -this.nAxis ),
         new PVector( this.nAxis, this.nAxis ),
         new PVector( 0, 0 ),
@@ -55,7 +55,7 @@ public class DrinkingHorse extends PApplet {
 
     // Set up the basis drawing transform
 
-    this.screenBasis = new LinearTransform( -1, 1, 0, 75 );
+    this.screenBasis = new CTLinear( -1, 1, 0, 75 );
 
     // Make a new set of basis vectors
 

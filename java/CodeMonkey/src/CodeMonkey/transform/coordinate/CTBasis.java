@@ -1,14 +1,15 @@
-package CodeMonkey.transform;
+package CodeMonkey.transform.coordinate;
 
+import CodeMonkey.transform.CoordinateTransform;
 import processing.core.PVector;
 
-public class BasisCoordinateTransform implements CoordinateTransform {
+public class CTBasis implements CoordinateTransform {
 
   private PVector basisX;
   private PVector basisY;
   private PVector basisZ;
 
-  public BasisCoordinateTransform( PVector bx, PVector by, PVector bz ) {
+  public CTBasis( PVector bx, PVector by, PVector bz ) {
 
     this.basisX = bx.copy( );
     this.basisY = by.copy( );
@@ -16,7 +17,7 @@ public class BasisCoordinateTransform implements CoordinateTransform {
 
   }
 
-  public BasisCoordinateTransform( PVector bx, PVector by ) {
+  public CTBasis( PVector bx, PVector by ) {
 
     this( bx, by, new PVector( 0, 0, 0 ) );
 

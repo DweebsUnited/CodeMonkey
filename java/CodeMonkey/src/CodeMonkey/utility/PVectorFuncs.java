@@ -32,4 +32,17 @@ public class PVectorFuncs {
 
   }
 
+  public static PVector projectVector( PVector v, PVector onto ) {
+
+    float t = v.dot( onto ) / onto.magSq( );
+    return multRet( onto, t );
+
+  }
+
+  public static float projectScalar( PVector v, PVector onto ) {
+
+    return v.dot( onto ) / onto.mag( );
+
+  }
+
 }

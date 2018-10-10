@@ -1,6 +1,6 @@
 package CodeMonkey.project;
 
-import CodeMonkey.transform.Quaternion;
+import CodeMonkey.spatial.Quaternion;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -70,13 +70,13 @@ public class MidnightDachshund extends PApplet {
       PVector axis = new PVector( );
       PVector.cross( this.up, this.norm, axis );
 
-      Quaternion q = Quaternion.axisAngle( axis, PVector.angleBetween( this.up, this.norm ) );
+      Quaternion q = new Quaternion( PVector.angleBetween( this.up, this.norm ), axis );
 
-      q = q.concat( Quaternion.axisAngle( this.norm, this.rot ) );
+      q = q.mult( new Quaternion( this.rot, this.norm ) );
 
-      this.a.set( q.rotate( this.a ) );
-      this.b.set( q.rotate( this.b ) );
-      this.c.set( q.rotate( this.c ) );
+      this.a.set( q.mult( this.a ) );
+      this.b.set( q.mult( this.b ) );
+      this.c.set( q.mult( this.c ) );
 
       this.a.add( this.o );
       this.b.add( this.o );

@@ -10,7 +10,7 @@ import CodeMonkey.graph.Node;
 import CodeMonkey.graph.UnDiGraph;
 import CodeMonkey.spatial.PoissonSampler3D;
 import CodeMonkey.transform.AxisTransform;
-import CodeMonkey.transform.SigmoidTransform;
+import CodeMonkey.transform.axis.ATSigmoid;
 import CodeMonkey.utility.OneShottr;
 import CodeMonkey.utility.PathDrawer;
 import processing.core.PApplet;
@@ -42,7 +42,7 @@ public class SlidingRay extends PApplet {
 
   private VideoExport videoExport;
 
-  private AxisTransform pulseTransform = new SigmoidTransform( 6.0f, 0.5f );
+  private AxisTransform pulseTransform = new ATSigmoid( 6.0f, 0.5f );
   private OneShottr pulseFlipFlopper = new OneShottr( );
   private float pulse = 0;
 

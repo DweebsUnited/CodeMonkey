@@ -1,13 +1,17 @@
 package CodeMonkey.project;
 
-import CodeMonkey.transform.AxisTransform;
-import CodeMonkey.transform.NormalAxisTransform;
-import CodeMonkey.transform.SigmoidTransform;
+import CodeMonkey.transform.CoordinateTransform;
+import CodeMonkey.transform.color.ColorCoordinateTransform;
+import CodeMonkey.transform.color.CoordinateHue;
+import CodeMonkey.transform.coordinate.CTLinear;
 import processing.core.PApplet;
+import processing.core.PVector;
 
 public class Test extends PApplet {
 
-  private AxisTransform trans = new NormalAxisTransform( new SigmoidTransform( 6.0f, 0.5f ), 1, 0 );
+  private ColorCoordinateTransform trans = new CoordinateHue( );
+
+  CoordinateTransform ohoneToNegpos = new CTLinear( new PVector( -1, -1, -1 ), new PVector( 2, 2, 2 ) );
 
   public static void main( String [ ] args ) {
 
@@ -30,15 +34,29 @@ public class Test extends PApplet {
     this.noStroke( );
     this.fill( 255 );
 
-    for (int i = 0; i <= this.pixelWidth; i++) {
+    this.loadPixels( );
 
-      float x = i / (float) this.pixelWidth;
+    for( int xdx = 0; xdx < this.pixelWidth; ++xdx ) {
 
-      float y = this.trans.map( x );
+      for( int ydx = 0; ydx < this.pixelHeight; ++ydx ) {
 
-      this.ellipse( x * this.pixelWidth, ( 1 - y ) * this.pixelHeight, 3, 3 );
+        PVector pos = this.ohoneToNegpos.map( new PVector(
+            xdx / (float) this.pixelWidth,
+            ydx / (float) this.pixelHeight,
+            0.5f
+            ) );
+
+        //        System.out.println( String.format( "%f, %f, %f", pos.x, pos.y, pos.z ) );
+
+        this.pixels[ xdx + ydx * this.pixelWidth ] = this.trans.map(
+            this,
+            pos );
+
+      }
 
     }
+
+    this.updatePixels( );
 
     this.noLoop( );
 

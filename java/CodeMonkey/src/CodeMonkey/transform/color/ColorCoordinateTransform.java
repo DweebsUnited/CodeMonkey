@@ -1,4 +1,4 @@
-package CodeMonkey.transform;
+package CodeMonkey.transform.color;
 
 import processing.core.PApplet;
 import processing.core.PVector;
