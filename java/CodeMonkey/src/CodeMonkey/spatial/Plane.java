@@ -6,7 +6,7 @@ import processing.core.PVector;
 
 public class Plane implements Intersectable, CoordinateTransform {
 
-  PVector norm, up, right, orig;
+  protected PVector norm, up, right, orig;
 
   public Plane( PVector norm, PVector orig, PVector up, PVector right ) {
 
@@ -52,13 +52,19 @@ public class Plane implements Intersectable, CoordinateTransform {
 
     // Project along axis closest to norm
 
-    float angX = PVector.angleBetween( norm, new PVector( 1, 0, 0 ) );
-    float angY = PVector.angleBetween( norm, new PVector( 0, 1, 0 ) );
-    float angZ = PVector.angleBetween( norm, new PVector( 0, 0, 1 ) );
+    float angX = Math.min(
+        PVector.angleBetween( norm, new PVector(  1,  0,  0 ) ),
+        PVector.angleBetween( norm, new PVector( -1,  0,  0 ) ) );
+    float angY = Math.min(
+        PVector.angleBetween( norm, new PVector(  0,  1,  0 ) ),
+        PVector.angleBetween( norm, new PVector(  0, -1,  0 ) ) );
+    float angZ = Math.min(
+        PVector.angleBetween( norm, new PVector(  0,  0,  1 ) ),
+        PVector.angleBetween( norm, new PVector(  0,  0, -1 ) ) );
 
     // No Y isnt right handed, sue me
 
-    if( angX <= angY && angX <= angZ ) {
+    if( angX < angY && angX < angZ ) {
 
       //      System.out.println( "Using X" );
 
@@ -66,7 +72,7 @@ public class Plane implements Intersectable, CoordinateTransform {
       this.up    = new PVector( this.projX( o.y + 1, o.z ), o.y + 1, o.z     );
       this.right = new PVector( this.projX( o.y, o.z + 1 ), o.y,     o.z + 1 );
 
-    } else if( angY <= angZ ) {
+    } else if( angY < angZ ) {
 
       //      System.out.println( "Using Y" );
 
@@ -117,6 +123,12 @@ public class Plane implements Intersectable, CoordinateTransform {
 
   }
 
+  public PVector intersectPoint( Ray r ) {
+
+    return r.atT( this.intersect( r ) );
+
+  }
+
   @Override
   public PVector map( PVector p ) {
 
@@ -142,6 +154,22 @@ public class Plane implements Intersectable, CoordinateTransform {
 
     return ret;
 
+  }
+
+  public PVector getRight( ) {
+    return this.right;
+  }
+
+  public void setRight( PVector right ) {
+    this.right.set( right );
+  }
+
+  public PVector getUp( ) {
+    return this.up;
+  }
+
+  public void setUp( PVector up ) {
+    this.up.set( up );
   }
 
 }
