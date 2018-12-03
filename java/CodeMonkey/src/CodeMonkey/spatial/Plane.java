@@ -114,7 +114,7 @@ public class Plane implements Intersectable, CoordinateTransform {
 
     float t = r.d.dot( this.norm );
 
-    if( Math.abs( t ) <= Float.MIN_NORMAL )
+    if( Math.abs( t ) < Float.MIN_NORMAL )
       return Float.POSITIVE_INFINITY;
 
     t = t1.dot( this.norm ) / t;

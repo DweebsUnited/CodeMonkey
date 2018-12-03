@@ -22,13 +22,13 @@ public class RefractingPlane extends Plane {
     // Origin is where ray hits plane
     ref.o = this.intersectPoint( ref );
 
-    // alpha = ang( norm, ray ) must be < pi
+    // alpha = ang( norm, ray ) must be < pi / 2
     PVector n = this.norm.copy( );
     float alpha = PVector.angleBetween( ref.d, n );
+    float r = this.iRefrac;
 
     // If not, flip norm and refrac index
-    float r = this.iRefrac;
-    if( alpha > Math.PI ) {
+    if( alpha > Math.PI / 2 ) {
 
       n.mult( -1 );
       r = 1.0f / r;

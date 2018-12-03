@@ -36,7 +36,7 @@ public class Sphere implements Intersectable {
 
     if( det < 0 ) {
       return Float.POSITIVE_INFINITY;
-    } else if( det < Float.MIN_NORMAL ) {
+    } else if( det <= Float.MIN_NORMAL ) {
       return it;
     } else {
 

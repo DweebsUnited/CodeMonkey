@@ -14,7 +14,7 @@ public class DangerousTire {
 
   }
 
-  public static void main( String[ ] argv ) throws Exception {
+  public static void main( String[ ] args ) throws Exception {
 
     final int N_PTS = 64;
 
