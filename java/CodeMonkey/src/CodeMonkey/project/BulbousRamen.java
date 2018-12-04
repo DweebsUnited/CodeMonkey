@@ -25,7 +25,7 @@ public class BulbousRamen extends ProjectBase {
   private int cHeigh = 1080;
   private int nPx = this.cWidth * this.cHeigh;
 
-  private final int OFFSCALE = 4096;
+  private final int OFFSCALE = 16;
 
   private LinkedList<ICoord> frontier;
 
@@ -99,7 +99,7 @@ public class BulbousRamen extends ProjectBase {
   @Override
   public void setup( ) {
 
-    this.tex = new ImageTexture( this, dataDir + "HilbertHSB.png" );
+    this.tex = new ImageTexture( this, this.loadImage( dataDir + "StarryNight.jpg" ), 128 );
     this.texU = new int[ this.nPx ];
 
     this.used = new boolean[ this.nPx ];
@@ -155,7 +155,10 @@ public class BulbousRamen extends ProjectBase {
     this.canvas.updatePixels( );
     this.canvas.endDraw( );
 
-    this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
+    if( this.keyPressed )
+      this.image( this.tex.sn, 0, 0, this.tex.sn.width, this.tex.sn.height );
+    else
+      this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
 
   }
 

@@ -1,7 +1,5 @@
 package CodeMonkey.draw;
 
-import CodeMonkey.sort.HorizontalImageSorter;
-import CodeMonkey.sort.VerticalImageSorter;
 import CodeMonkey.spatial.ICoord;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -51,33 +49,42 @@ public class ImageTexture {
   public final int sz;
   public final int sz2;
 
-  public ImageTexture( PApplet context, String img ) {
+  private int smallPow2( int sz ) {
 
-    // Load image
-    this.sn = context.loadImage( img );
+    sz = (int)Math.floor( Math.log( sz ) / Math.log( 2 ) );
 
-    HorizontalImageSorter.sort( this.sn );
-    VerticalImageSorter.sort( this.sn );
+    sz = 0x01 << sz;
 
-    //System.out.println( String.format( "Original size: %d x %d", sn.width, sn.height ) );
+    return sz;
 
-    // Get next smallest power of 2 that fits in
-    int tsz = Math.min( this.sn.width, this.sn.height );
-    tsz = (int)Math.floor( Math.log( tsz ) / Math.log( 2 ) );
-    //System.out.println( String.format( "Next smallest = 2^%d", sz ) );
+  }
 
-    // Take 2 to it
-    this.sz = 0x01 << tsz;
-    //System.out.println( String.format( "New size: %d x %d", sz, sz ) );
+  public ImageTexture( PApplet context, PImage img, int sz ) {
+
+    this.sn = img;
+
+    // Size of image is largest power of 2 that fits in given size
+    this.sz = this.smallPow2( sz );
+    // Num pixels
+    this.sz2 = this.sz * this.sz - 1;
 
     // Resize the image
     this.sn.resize( this.sz, this.sz );
 
-    // Num pixels
-    this.sz2 = this.sz * this.sz - 1;
+    // Now sort it
+    //    HorizontalImageSorter.sort( context, this.sn );
+    //    VerticalImageSorter.sort( context, this.sn );
+
+    this.sn.filter( PApplet.BLUR, 1 );
 
     // Load the pixels array
     this.sn.loadPixels( );
+
+  }
+
+  public ImageTexture( PApplet context, PImage img ) {
+
+    this( context, img, Math.min( img.width, img.height ) );
 
   }
 
