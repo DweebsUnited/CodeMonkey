@@ -1,3 +1,6 @@
 .DS_Store
 *.mp4
 ffmpeg.txt
+
+# Mac hidden files
+._*
