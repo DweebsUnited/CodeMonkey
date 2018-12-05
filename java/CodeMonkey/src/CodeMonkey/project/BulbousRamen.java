@@ -155,10 +155,7 @@ public class BulbousRamen extends ProjectBase {
     this.canvas.updatePixels( );
     this.canvas.endDraw( );
 
-    if( this.keyPressed )
-      this.image( this.tex.sn, 0, 0, this.tex.sn.width, this.tex.sn.height );
-    else
-      this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
+    this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
 
   }
 
