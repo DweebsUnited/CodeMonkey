@@ -47,5 +47,5 @@
     "-2",
     "[output]"
   ],
-  "ffmpeg_path": "/Users/ozzy/Documents/Tools/ffmpeg-91472-g181435a4de/ffmpeg"
+  "ffmpeg_path": "C:\\ffmpeg-4.1-win64-static\\bin\\ffmpeg.exe"
 }
