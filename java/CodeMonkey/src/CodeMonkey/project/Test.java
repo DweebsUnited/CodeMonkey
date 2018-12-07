@@ -1,17 +1,9 @@
 package CodeMonkey.project;
 
-import CodeMonkey.transform.CoordinateTransform;
-import CodeMonkey.transform.color.ColorCoordinateTransform;
-import CodeMonkey.transform.color.CoordinateHue;
-import CodeMonkey.transform.coordinate.CTLinear;
 import processing.core.PApplet;
 import processing.core.PVector;
 
 public class Test extends PApplet {
-
-  private ColorCoordinateTransform trans = new CoordinateHue( );
-
-  CoordinateTransform ohoneToNegpos = new CTLinear( new PVector( -1, -1, -1 ), new PVector( 2, 2, 2 ) );
 
   public static void main( String [ ] args ) {
 
@@ -36,21 +28,19 @@ public class Test extends PApplet {
 
     this.loadPixels( );
 
+    float hW = this.pixelWidth / 2.0f;
+    float hH = this.pixelHeight / 2.0f;
+
+    PVector axis = new PVector( 1, 0 ).rotate( PI / 4 );
+
     for( int xdx = 0; xdx < this.pixelWidth; ++xdx ) {
 
       for( int ydx = 0; ydx < this.pixelHeight; ++ydx ) {
 
-        PVector pos = this.ohoneToNegpos.map( new PVector(
-            xdx / (float) this.pixelWidth,
-            ydx / (float) this.pixelHeight,
-            0.5f
-            ) );
+        PVector pos = new PVector( ( xdx - hW ) / hW, ( ydx - hH ) / hH );
 
-        //        System.out.println( String.format( "%f, %f, %f", pos.x, pos.y, pos.z ) );
-
-        this.pixels[ xdx + ydx * this.pixelWidth ] = this.trans.map(
-            this,
-            pos );
+        float cMag = ( pos.dot( axis ) + 1 ) / 2;
+        this.pixels[ xdx + ydx * this.pixelWidth ] = this.color( cMag * 255 );
 
       }
 

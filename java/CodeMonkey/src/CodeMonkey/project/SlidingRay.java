@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-import com.hamoid.VideoExport;
-
 import CodeMonkey.graph.Node;
 import CodeMonkey.graph.UnDiGraph;
 import CodeMonkey.spatial.PoissonSampler3D;
@@ -39,8 +37,6 @@ public class SlidingRay extends PApplet {
   private ArrayList<PathDrawer> drawers;
   private boolean spawning = true;
   private int nSpawnCounter = 10;
-
-  private VideoExport videoExport;
 
   private AxisTransform pulseTransform = new ATSigmoid( 6.0f, 0.5f );
   private OneShottr pulseFlipFlopper = new OneShottr( );
@@ -153,8 +149,8 @@ public class SlidingRay extends PApplet {
 
     if( saving ) {
       // Set up video exporter
-      this.videoExport = new VideoExport( this, dataDir + "SlidingRay.mp4" );
-      this.videoExport.startMovie( );
+      //      this.videoExport = new VideoExport( this, dataDir + "SlidingRay.mp4" );
+      //      this.videoExport.startMovie( );
     }
 
   }
@@ -295,7 +291,7 @@ public class SlidingRay extends PApplet {
 
     if( saving ) {
       // Save videoframe
-      this.videoExport.saveFrame( );
+      //      this.videoExport.saveFrame( );
     }
 
   }
@@ -313,7 +309,7 @@ public class SlidingRay extends PApplet {
       this.pulseFlipFlopper.reset( );
       this.pulse = 0;
     } else if( this.key == 'q' ) {
-      this.videoExport.endMovie( );
+      //      this.videoExport.endMovie( );
       this.exit( );
     }
 
