@@ -65,8 +65,8 @@ public class HessianHalitosis extends ProjectBase {
     PVector x = new PVector( this.rng.nextFloat( ) * this.cWidth, this.rng.nextFloat( ) * this.cHeigh );
     // Find flow dir
     float angle = (float)Math.atan2(
-        this.toNegPos.map( this.noise( x.x * 0.0075f, x.y * 0.0075f, 0 ) ),
-        this.toNegPos.map( this.noise( x.x * 0.0075f, x.y * 0.0075f, 5 ) ) );
+        this.toNegPos.map( this.noise( x.x * 0.005f, x.y * 0.005f, 0 ) ),
+        this.toNegPos.map( this.noise( x.x * 0.005f, x.y * 0.005f, 5 ) ) );
     // Draw a rectangle longer in the length directional than it is wide in the widthagonal directional
     float l = (float)Math.pow( this.rng.nextFloat( ), 1.0f / 4 ) * this.pxScale;
     float w = (float)Math.pow( this.rng.nextFloat( ), 4.0f / 1 ) * this.pxScale;
@@ -77,8 +77,8 @@ public class HessianHalitosis extends ProjectBase {
 
     this.canvas.pushMatrix( );
 
-    this.canvas.rotate( angle );
     this.canvas.translate( x.x, x.y );
+    this.canvas.rotate( angle );
 
     this.canvas.rect( 0, 0, l, w );
 
