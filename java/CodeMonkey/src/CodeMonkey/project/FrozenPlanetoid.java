@@ -35,6 +35,8 @@ public class FrozenPlanetoid extends ProjectBase {
   private int cHeigh = 512;
   private int nPx = this.cWidth * this.cHeigh;
 
+  AxisTransform toNegPos = new ATLinear( 0, 1, -1, 1 );
+
   private float[] AField, BField;
   private float[] APField, BPField;
 
@@ -42,7 +44,7 @@ public class FrozenPlanetoid extends ProjectBase {
   private float[] Da, Db;
   private float[] f, k;
 
-  private float gDM = 0.01f;
+  private float gDM = 0.1f;
   private float[] gDx, gDy;
 
   private float[] grad = {
@@ -77,7 +79,11 @@ public class FrozenPlanetoid extends ProjectBase {
               continue;
 
             float g = this.grad[ gx + gy * 3 + 4 ];
-            g += gx * this.gDx[ pdx + gx + gy * this.cWidth ] + gy * this.gDy[ pdx + gx + gy * this.cWidth ];
+            //            g *= ( 1 + gx * this.gDx[ pdx + gx + gy * this.cWidth ] + gy * this.gDy[ pdx + gx + gy * this.cWidth ] );
+            //            float fx = this.toNegPos.map( this.noise( ( dx + gx ) * 0.005f, ( dy + gy ) * 0.005f, 0 + this.frameCount * 0.005f ) );
+            //            float fy = this.toNegPos.map( this.noise( ( dx + gx ) * 0.005f, ( dy + gy ) * 0.005f, 5 + this.frameCount * 0.005f ) );
+            //            float fm = (float)Math.sqrt( gx * gx + gy * gy );
+            //            g *= ( 1 + ( gx * fx + gy * fy ) * this.gDM / ( fm + Float.MIN_NORMAL ) );
 
             G  += g;
             GA += g * this.AField[ pdx + gx + gy * this.cWidth ];
@@ -160,8 +166,6 @@ public class FrozenPlanetoid extends ProjectBase {
     this.Of = 0.055f;
     this.Ok = 0.062f;
 
-    AxisTransform toNegPos = new ATLinear( 0, 1, -1, 1 );
-
     float AAvg = 0, BAvg = 0;
     float DaAvg = 0, DbAvg = 0;
     float fAvg = 0, kAvg = 0;
@@ -187,8 +191,8 @@ public class FrozenPlanetoid extends ProjectBase {
 
         int pdx = dx + dy * this.cWidth;
 
-        this.Da[ pdx ] = this.ODa + toNegPos.map( this.noise( dx * 0.005f, dy * 0.005f ) ) * 0.2f;
-        this.Db[ pdx ] = this.ODb + toNegPos.map( this.noise( dx * 0.005f, dy * 0.005f ) ) * 0.2f;
+        this.Da[ pdx ] = this.ODa + this.toNegPos.map( this.noise( dx * 0.005f, dy * 0.005f ) ) * 0.2f;
+        this.Db[ pdx ] = this.ODb + this.toNegPos.map( this.noise( dx * 0.005f, dy * 0.005f ) ) * 0.2f;
 
         DaAvg += this.Da[ pdx ];
         DbAvg += this.Db[ pdx ];
@@ -202,8 +206,8 @@ public class FrozenPlanetoid extends ProjectBase {
 
         int pdx = dx + dy * this.cWidth;
 
-        this.f[ pdx ] = this.Of + toNegPos.map( this.noise( dx * 0.005f, dy * 0.005f ) ) * 0.01f;
-        this.k[ pdx ] = this.Ok + toNegPos.map( this.noise( dx * 0.005f, dy * 0.005f ) ) * 0.01f;
+        this.f[ pdx ] = this.Of + this.toNegPos.map( this.noise( dx * 0.005f, dy * 0.005f ) ) * 0.01f;
+        this.k[ pdx ] = this.Ok + this.toNegPos.map( this.noise( dx * 0.005f, dy * 0.005f ) ) * 0.01f;
 
         fAvg += this.f[ pdx ];
         kAvg += this.k[ pdx ];
@@ -217,8 +221,8 @@ public class FrozenPlanetoid extends ProjectBase {
 
         int pdx = dx + dy * this.cWidth;
 
-        float gx = toNegPos.map( this.noise( dx * 0.01f, dy * 0.01f ) );
-        float gy = toNegPos.map( this.noise( dx * 0.01f, dy * 0.01f ) );
+        float gx = this.toNegPos.map( this.noise( dx * 0.01f, dy * 0.01f ) );
+        float gy = this.toNegPos.map( this.noise( dx * 0.01f, dy * 0.01f ) );
         float gm = (float)Math.sqrt( gx * gx + gy * gy );
 
         this.gDx[ pdx ] = gx * this.gDM / gm;
@@ -246,7 +250,7 @@ public class FrozenPlanetoid extends ProjectBase {
 
     this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
 
-    System.out.println( this.frameRate );
+    System.out.println( 1f / this.frameRate );
 
   }
 
