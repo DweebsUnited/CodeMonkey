@@ -81,10 +81,10 @@ public class PluggablePluto extends ProjectBase {
       return this.rng.nextInt( 255 );
     }
     public int makeA( ) {
-      return Math.round( this.rng.nextFloat( ) * 255 );
+      return this.rng.nextInt( 50 ) + 50;
     }
     public int makeR( ) {
-      return this.rng.nextInt( 100 );
+      return this.rng.nextInt( 8 ) + 2;
     }
 
     @Override
@@ -232,7 +232,7 @@ public class PluggablePluto extends ProjectBase {
 
     this.cg = new CircleGenetics( this, this.tgtImg, 5, 0.03f );
 
-    this.genetic = new Population<Circle>( 16, 32, this.cg );
+    this.genetic = new Population<Circle>( 16, 1024, this.cg );
 
     // DEBUG: Show target image
     //    this.canvas.beginDraw( );
