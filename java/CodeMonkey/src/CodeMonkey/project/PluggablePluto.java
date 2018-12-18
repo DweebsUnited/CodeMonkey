@@ -9,6 +9,7 @@ import CodeMonkey.genetic.GeneFactory;
 import CodeMonkey.genetic.Genome;
 import CodeMonkey.genetic.Population;
 import CodeMonkey.genetic.breed.Breeder;
+import CodeMonkey.genetic.champ.BestN;
 import CodeMonkey.genetic.champ.ChampionSelector;
 import CodeMonkey.genetic.mutate.Mutator;
 import processing.core.PApplet;
@@ -23,16 +24,14 @@ public class PluggablePluto extends ProjectBase {
 
   }
 
-  private static Random rng = new Random( );
-
   private static class Circle implements Gene {
 
-    public int x, y;
-    public int color;
-    public int alpha;
-    public int rad;
+    public float x, y;
+    public float color;
+    public float alpha;
+    public float rad;
 
-    public Circle( int x, int y, int color, int alpha, int rad ) {
+    public Circle( float x, float y, float color, float alpha, float rad ) {
 
       this.x = x;
       this.y = y;
@@ -62,6 +61,8 @@ public class PluggablePluto extends ProjectBase {
     private int nChamp;
     private float mChance;
 
+    private ChampionSelector<Circle> champSelect;
+
     public CircleGenetics( PApplet context, PImage target, int nChamp, float mChance ) {
 
       this.canvas = context.createGraphics( target.width, target.height );
@@ -69,23 +70,69 @@ public class PluggablePluto extends ProjectBase {
       this.nChamp = nChamp;
       this.mChance = mChance;
 
+      this.champSelect = new BestN<Circle>( nChamp );
+
     }
 
-    public int makeX( ) {
+    public float makeX( ) {
       return this.rng.nextInt( this.target.width );
     }
-    public int makeY( ) {
+    public float makeY( ) {
       return this.rng.nextInt( this.target.height );
     }
-    public int makeC( ) {
+    public float makeC( ) {
       return this.rng.nextInt( 255 );
     }
-    public int makeA( ) {
+    public float makeA( ) {
       return this.rng.nextInt( 50 ) + 50;
     }
-    public int makeR( ) {
+    public float makeR( ) {
       return this.rng.nextInt( 8 ) + 2;
     }
+
+    public float mutateX( float x ) {
+      // Hard: New random coord
+      if( this.rng.nextFloat( ) < 0.75f )
+        return this.makeX( );
+      // Medium: Move gaussian like
+      x += 2f * (float)this.rng.nextGaussian( );
+      if( x <= 0 )
+        x = 0;
+      if( x >= this.target.width )
+        x = this.target.width;
+      return x;
+    }
+    public float mutateY( float y ) {
+      // Hard: New random coord
+      if( this.rng.nextFloat( ) < 0.75f )
+        return this.makeY( );
+      // Medium: Move gaussian like
+      y += 2f * (float)this.rng.nextGaussian( );
+      if( y < 0 )
+        y = 0;
+      if( y > this.target.height - 1 )
+        y = this.target.height - 1;
+      return y;
+    }
+    public float mutateC( float c ) {
+      // Hard: New random
+      //      return this.makeC( );
+      // Medium: Move yo gaussian hips baby
+      c += 5f * (float)this.rng.nextGaussian( );
+      if( c < 0 )
+        c = 0;
+      if( c >= 255 )
+        c = 255;
+      return c;
+
+    }
+    public float mutateA( float a ) {
+      return this.makeA( );
+    }
+    public float mutateR( float r ) {
+      return this.makeR( );
+    }
+
 
     @Override
     public Circle make( ) {
@@ -136,14 +183,7 @@ public class PluggablePluto extends ProjectBase {
 
     @Override
     public ArrayList<Genome<Circle>> filter( ArrayList<Genome<Circle>> population ) {
-
-      ArrayList<Genome<Circle>> champs = new ArrayList<Genome<Circle>>( );
-
-      for( int cdx = 0; cdx < this.nChamp; ++cdx )
-        champs.add( population.get( cdx ) );
-
-      return champs;
-
+      return this.champSelect.filter( population );
     }
 
     @Override
@@ -174,19 +214,19 @@ public class PluggablePluto extends ProjectBase {
           switch( this.rng.nextInt( 5 ) ) {
 
             case 0:
-              c.x = this.makeX( );
+              c.x = this.mutateX( c.x );
               break;
             case 1:
-              c.y = this.makeY( );
+              c.y = this.mutateY( c.y );
               break;
             case 2:
-              c.color = this.makeC( );
+              c.color = this.mutateC( c.color );
               break;
             case 3:
-              c.alpha = this.makeA( );
+              c.alpha = this.mutateA( c.alpha );
               break;
             case 4:
-              c.rad = this.makeR( );
+              c.rad = this.mutateR( c.rad );
               break;
 
           }
@@ -227,7 +267,7 @@ public class PluggablePluto extends ProjectBase {
 
     this.tgtImg = this.loadImage( dataDir + "Darwin.jpg" );
     this.tgtImg.resize( cWidth, cHeigh );
-    this.tgtImg.filter( POSTERIZE, 8 );
+    //    this.tgtImg.filter( POSTERIZE, 8 );
     this.tgtImg.filter( GRAY );
 
     this.cg = new CircleGenetics( this, this.tgtImg, 5, 0.03f );
@@ -238,6 +278,8 @@ public class PluggablePluto extends ProjectBase {
     //    this.canvas.beginDraw( );
     //    this.canvas.image( this.tgtImg, 0, 0, cWidth, cHeigh );
     //    this.canvas.endDraw( );
+    //
+    //    this.noLoop( );
 
   }
 
@@ -262,6 +304,8 @@ public class PluggablePluto extends ProjectBase {
     this.canvas.endDraw( );
 
     this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
+
+    System.out.println( String.format( "Gen: %d => %f", this.frameCount, this.genetic.bestFitness( ) ) );
 
   }
 

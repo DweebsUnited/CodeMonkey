@@ -48,6 +48,12 @@ public class Population<G extends Gene> {
 
   }
 
+  public float bestFitness( ) {
+
+    return this.population.get( 0 ).fitness;
+
+  }
+
   public void eval( Evaluator<G> e ) {
 
     for( Genome<G> genome : this.population )
