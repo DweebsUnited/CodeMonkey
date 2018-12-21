@@ -116,7 +116,8 @@ public class PluggablePluto extends ProjectBase {
     }
     public float mutateC( float c ) {
       // Hard: New random
-      //      return this.makeC( );
+      if( this.rng.nextFloat( ) < 0.75f )
+        return this.makeC( );
       // Medium: Move yo gaussian hips baby
       c += 5f * (float)this.rng.nextGaussian( );
       if( c < 0 )

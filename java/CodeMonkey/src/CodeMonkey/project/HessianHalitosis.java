@@ -16,13 +16,17 @@ public class HessianHalitosis extends ProjectBase {
 
   }
 
-  final int pxScale = 25;
+  final private int pxScale = 50;
+  final private float nScale = 0.001f;
 
   private Random rng = new Random( );
 
   private PGraphics canvas;
   private int cWidth = 1920;
   private int cHeigh = 1080;
+  private int nPx = this.cWidth * this.cHeigh;
+
+  private float[] nX, nY;
 
   private AxisTransform toNegPos = new ATLinear( 0, 1, -1, 1 );
 
@@ -46,6 +50,16 @@ public class HessianHalitosis extends ProjectBase {
     this.canvas.background( 0 );
     this.canvas.endDraw( );
 
+    this.nX = new float[ this.nPx ];
+    this.nY = new float[ this.nPx ];
+
+    for( int ydx = 0; ydx < this.cHeigh; ++ydx )
+      for( int xdx = 0; xdx < this.cWidth; ++xdx ) {
+        int pdx = xdx + ydx * this.cWidth;
+        this.nX[ pdx ] = this.toNegPos.map( this.noise( xdx * this.nScale, ydx * this.nScale, 0 ) );
+        this.nY[ pdx ] = this.toNegPos.map( this.noise( xdx * this.nScale, ydx * this.nScale, 5 ) );
+      }
+
     this.palette = new int[] {
         this.color( 72, 40, 47 ),
         this.color( 68, 82, 99 ),
@@ -64,9 +78,13 @@ public class HessianHalitosis extends ProjectBase {
     // Pick random point
     PVector x = new PVector( this.rng.nextFloat( ) * this.cWidth, this.rng.nextFloat( ) * this.cHeigh );
     // Find flow dir
+    // TODO: NO. JUST. NO.
+    int ix = (int)Math.floor( x.x );
+    int iy = (int)Math.floor( x.y );
+    int pdx = ix + iy * this.cWidth;
     float angle = (float)Math.atan2(
-        this.toNegPos.map( this.noise( x.x * 0.005f, x.y * 0.005f, 0 ) ),
-        this.toNegPos.map( this.noise( x.x * 0.005f, x.y * 0.005f, 5 ) ) );
+        this.nX[ pdx ],
+        this.nY[ pdx ] );
     // Draw a rectangle longer in the length directional than it is wide in the widthagonal directional
     float l = (float)Math.pow( this.rng.nextFloat( ), 1.0f / 4 ) * this.pxScale;
     float w = (float)Math.pow( this.rng.nextFloat( ), 4.0f / 1 ) * this.pxScale;
