@@ -210,29 +210,20 @@ public class PluggablePluto extends ProjectBase {
 
       for( Circle c : genome ) {
 
-        if( this.rng.nextFloat( ) < this.mChance ) {
+        if( this.rng.nextFloat( ) < this.mChance )
+          c.x = this.makeX( );
 
-          switch( this.rng.nextInt( 5 ) ) {
+        if( this.rng.nextFloat( ) < this.mChance )
+          c.y = this.makeY( );
 
-            case 0:
-              c.x = this.mutateX( c.x );
-              break;
-            case 1:
-              c.y = this.mutateY( c.y );
-              break;
-            case 2:
-              c.color = this.mutateC( c.color );
-              break;
-            case 3:
-              c.alpha = this.mutateA( c.alpha );
-              break;
-            case 4:
-              c.rad = this.mutateR( c.rad );
-              break;
+        if( this.rng.nextFloat( ) < this.mChance )
+          c.color = this.makeC( );
 
-          }
+        if( this.rng.nextFloat( ) < this.mChance )
+          c.alpha = this.makeA( );
 
-        }
+        if( this.rng.nextFloat( ) < this.mChance )
+          c.rad = this.makeR( );
 
       }
 
@@ -271,9 +262,9 @@ public class PluggablePluto extends ProjectBase {
     //    this.tgtImg.filter( POSTERIZE, 8 );
     this.tgtImg.filter( GRAY );
 
-    this.cg = new CircleGenetics( this, this.tgtImg, 5, 0.03f );
+    this.cg = new CircleGenetics( this, this.tgtImg, 8, 0.03f );
 
-    this.genetic = new Population<Circle>( 16, 1024, this.cg );
+    this.genetic = new Population<Circle>( 64, 1024, this.cg );
 
     // DEBUG: Show target image
     //    this.canvas.beginDraw( );

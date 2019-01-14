@@ -20,19 +20,38 @@ public class ProjectBase extends PApplet {
 
   }
 
-  protected void save( PGraphics canvas ) {
+  public void save( ) {
+
+    this.save( ".png" );
+
+  }
+
+  public void save( int sqx ) {
+
+    this.save( "_" + Integer.toString( sqx ) + ".png" );
+
+  }
+
+  @Override
+  public void save( String ext ) {
+
+    this.saveFrame( dataDir + this.name + ext );
+
+  }
+
+  public void save( PGraphics canvas ) {
 
     this.save( canvas, ".png" );
 
   }
 
-  protected void save( PGraphics canvas, int sqx ) {
+  public void save( PGraphics canvas, int sqx ) {
 
     this.save( canvas, "_" + Integer.toString( sqx ) + ".png" );
 
   }
 
-  protected void save( PGraphics canvas, String ext ) {
+  public void save( PGraphics canvas, String ext ) {
 
     canvas.save( dataDir + this.name + ext );
 

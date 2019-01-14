@@ -3,7 +3,7 @@
 
 void setup( ) {
   
-  size( 1280, 720 );
+  size( 720, 640 );
   
   noiseSeed( System.currentTimeMillis( ) );
   noiseDetail( 12, 0.5 );
@@ -16,7 +16,7 @@ void setup( ) {
   for( int idx = 0; idx < pixelHeight; ++idx ) {
     for( int jdx = 0; jdx < pixelWidth; ++jdx ) {
       
-      int nV = int( noise( idx / (float)pixelHeight, jdx / (float)pixelWidth ) * 255 );
+      int nV = int( noise( idx * 0.001f, jdx * 0.001f ) * 255 );
       
       if( nV > MV )
         MV = nV;
