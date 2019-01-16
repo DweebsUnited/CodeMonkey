@@ -17,7 +17,7 @@ public class HungryMagpie extends ProjectBase {
   }
 
   //  private static final int SQ_W_m = 4;
-  private static final int SQ_W_M = 16;
+  private static final int SQ_W_M = 8;
 
   private static final int LAYER_OPA_M = 255;
   //  private static final int LAYER_OPA_m = 255;
@@ -29,8 +29,8 @@ public class HungryMagpie extends ProjectBase {
   //
   //  private static final int RANGE_OVERLAP = 25;
 
-  private static final int SQ_DIFFERENCE = 3 * 225 * 225;
-  private static final float H_DIFFERENCE = 320;
+  private static final int SQ_DIFFERENCE = 3 * 195 * 195;
+  //  private static final float H_DIFFERENCE = 320;
 
   //  private static final float GRAD_T = 1;
   //  private static final float GRAD_B = 0f;
@@ -42,7 +42,7 @@ public class HungryMagpie extends ProjectBase {
     public long r = 0, g = 0, b = 0;
     public int nPx;
 
-    public float maxDiff = 0;
+    public boolean tooBig = false;
 
   }
 
@@ -53,6 +53,8 @@ public class HungryMagpie extends ProjectBase {
     int cdx, ccdx, c, cc, r, cr, g, cg, b, cb, d;
 
     s.nPx = w * h;
+
+    s.tooBig = false;
 
     for( int ydx = 0; ydx < h; ++ydx ) {
       for( int xdx = 0; xdx < w; ++xdx ) {
@@ -65,8 +67,8 @@ public class HungryMagpie extends ProjectBase {
         g = ( c >> 8  ) & 0xFF;
         b = ( c >> 0  ) & 0xFF;
 
-        for( int yydx = ydx; yydx < h; ++ yydx ) {
-          for( int xxdx = xdx + 1; xxdx < w; ++xxdx ) {
+        for( int yydx = ydx; yydx < h && s.tooBig == false; ++ yydx ) {
+          for( int xxdx = xdx + 1; xxdx < w && s.tooBig == false; ++xxdx ) {
 
             ccdx = ( x + xxdx ) + ( y + yydx ) * img.width;
 
@@ -77,8 +79,8 @@ public class HungryMagpie extends ProjectBase {
             cb = b - ( ( cc >> 0  ) & 0xFF );
 
             d = cr * cr + cg * cg + cb * cb;
-            if( d > s.maxDiff )
-              s.maxDiff = d;
+            if( d > SQ_DIFFERENCE )
+              s.tooBig = true;
 
           }
         }
@@ -187,13 +189,13 @@ public class HungryMagpie extends ProjectBase {
       //        return;
 
       // Split valdity per quadrant by biggest color difference
-      if( TLS.maxDiff > SQ_DIFFERENCE )
+      if( TLS.tooBig )
         this.TL = new Rect( img, x,      y,      hw,     hh,     a, SQ_W, TLS );
-      if( TRS.maxDiff > SQ_DIFFERENCE )
+      if( TRS.tooBig )
         this.TR = new Rect( img, x + hw, y,      w - hw, hh,     a, SQ_W, TRS );
-      if( BLS.maxDiff > SQ_DIFFERENCE )
+      if( BLS.tooBig )
         this.BL = new Rect( img, x,      y + hh, hw,     h - hh, a, SQ_W, BLS );
-      if( BRS.maxDiff > SQ_DIFFERENCE )
+      if( BRS.tooBig )
         this.BR = new Rect( img, x + hw, y + hh, w - hw, h - hh, a, SQ_W, BRS );
 
       //      }
