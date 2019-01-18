@@ -4,19 +4,25 @@ import processing.core.PVector;
 
 public class InverseSpring {
 
-  private float k, s, x;
+  private float k, x, p;
 
-  public InverseSpring( float k, float s ) {
+  public InverseSpring( float k ) {
 
-    this( k, s, 0 );
+    this( k, 0, 2 );
 
   }
 
-  public InverseSpring( float k, float s, float x ) {
+  public InverseSpring( float k, float x ) {
+
+    this( k, x, 2 );
+
+  }
+
+  public InverseSpring( float k, float x, float p ) {
 
     this.k = k;
-    this.s = s;
     this.x = x;
+    this.p = p;
 
   }
 
@@ -25,13 +31,13 @@ public class InverseSpring {
     if( fa != null ) {
       fa.set( b );
       fa.sub( a );
-      fa.setMag( this.k / (float) Math.pow( this.s * ( fa.mag( ) - this.x ), 2 ) );
+      fa.setMag( this.k / (float) Math.pow( fa.mag( ) - this.x, this.p ) );
     }
 
     if( fb != null ) {
       fb.set( a );
       fb.sub( b );
-      fb.setMag( this.k / (float) Math.pow( this.s * ( fb.mag( ) - this.x ), 2 ) );
+      fb.setMag( this.k / (float) Math.pow( fb.mag( ) - this.x, this.p ) );
     }
 
   }

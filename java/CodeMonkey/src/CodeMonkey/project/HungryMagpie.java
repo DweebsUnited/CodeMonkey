@@ -16,6 +16,23 @@ public class HungryMagpie extends ProjectBase {
 
   }
 
+  public static float hue( int r, int g, int b, int m, int M ) {
+
+    float h;
+
+    if( r == M ) {
+      h = ( g - b ) / (float)( M - m );
+    } else if( g == M ) {
+      h = 2f + ( b - r ) / (float)( M - m );
+    } else {
+      h = 4f + ( r - g ) / (float)( M - m );
+    }
+
+    h *= 60;
+    return ( h < 0 ? h + 360 : h );
+
+  }
+
   //  private static final int SQ_W_m = 4;
   private static final int SQ_W_M = 8;
 
@@ -29,8 +46,8 @@ public class HungryMagpie extends ProjectBase {
   //
   //  private static final int RANGE_OVERLAP = 25;
 
-  private static final int SQ_DIFFERENCE = 3 * 195 * 195;
-  //  private static final float H_DIFFERENCE = 320;
+  //  private static final int SQ_DIFFERENCE = 3 * 195 * 195;
+  private static final float H_DIFFERENCE = 275;
 
   //  private static final float GRAD_T = 1;
   //  private static final float GRAD_B = 0f;
@@ -50,7 +67,9 @@ public class HungryMagpie extends ProjectBase {
 
     Stats s = new Stats( );
 
-    int cdx, ccdx, c, cc, r, cr, g, cg, b, cb, d;
+    int cdx, ccdx, c, cc, r, cr, g, cg, b, cb, d, m, M;
+
+    float hue, chue;
 
     s.nPx = w * h;
 
@@ -67,6 +86,10 @@ public class HungryMagpie extends ProjectBase {
         g = ( c >> 8  ) & 0xFF;
         b = ( c >> 0  ) & 0xFF;
 
+        m = Math.min( Math.min( r, g ), b );
+        M = Math.max( Math.max( r, g ), b );
+        hue = HungryMagpie.hue( r, g, b, m, M );
+
         for( int yydx = ydx; yydx < h && s.tooBig == false; ++ yydx ) {
           for( int xxdx = xdx + 1; xxdx < w && s.tooBig == false; ++xxdx ) {
 
@@ -77,9 +100,12 @@ public class HungryMagpie extends ProjectBase {
             cr = r - ( ( cc >> 16 ) & 0xFF );
             cg = g - ( ( cc >> 8  ) & 0xFF );
             cb = b - ( ( cc >> 0  ) & 0xFF );
+            m = Math.min( Math.min( cr, cg ), cb );
+            M = Math.max( Math.max( cr, cg ), cb );
 
-            d = cr * cr + cg * cg + cb * cb;
-            if( d > SQ_DIFFERENCE )
+            //            d = cr * cr + cg * cg + cb * cb;
+            //if( d > SQ_DIFFERENCE )
+            if( Math.abs( hue - HungryMagpie.hue( cr, cg, cb, m, M ) ) > H_DIFFERENCE )
               s.tooBig = true;
 
           }
