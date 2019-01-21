@@ -2,78 +2,149 @@ package CodeMonkey.spatial.HalfEdge;
 
 import java.util.ArrayList;
 
-import CodeMonkey.utility.Factory;
-import CodeMonkey.utility.Pair;
-import CodeMonkey.utility.Triple;
-
 public class Mesh<VD, ED, PD> {
 
-  ArrayList<VertexData<VD>> vertices;
-  ArrayList<EdgeData<ED>> edges;
-  ArrayList<PolygonData<PD>> polygons;
+  public ArrayList<VertexData<VD>> vds;
+  public ArrayList<EdgeData<ED>> eds;
+  public ArrayList<PolygonData<PD>> pds;
 
-  Factory<ED> ef;
+  public Mesh( ) {
 
-  public Mesh( Factory<ED> ef ) {
-
-    this.vertices = new ArrayList<VertexData<VD>>( );
-    this.edges    = new ArrayList<EdgeData<ED>>( );
-    this.polygons = new ArrayList<PolygonData<PD>>( );
-
-    this.ef = ef;
+    this.vds = new ArrayList<VertexData<VD>>( );
+    this.eds = new ArrayList<EdgeData<ED>>( );
+    this.pds = new ArrayList<PolygonData<PD>>( );
 
   }
 
-  public int init( VD seed ) {
+  private VertexData<VD> newV( ) {
 
-    int adx = this.newVertex( new VertexData<VD>( seed ) );
+    VertexData<VD> v = new VertexData<VD>( );
+    this.vds.add( v );
+    return v;
 
-    return adx;
+  }
+  private VertexData<VD> newV( VD data ) {
+
+    VertexData<VD> v = new VertexData<VD>( data );
+    this.vds.add( v );
+    return v;
+
+  }
+  private EdgeData<ED> newE( ) {
+
+    EdgeData<ED> e = new EdgeData<ED>( );
+    this.eds.add( e );
+    return e;
+
+  }
+  private EdgeData<ED> newE( ED data ) {
+
+    EdgeData<ED> e = new EdgeData<ED>( data );
+    this.eds.add( e );
+    return e;
 
   }
 
-  public Triple<Integer> init( VD seedA, VD seedB ) {
+  public VertexData<VD> init( VD seed ) {
 
-    int adx = this.newVertex( new VertexData<VD>( seedA ) );
-    Pair<Integer> rdx = this.exVertex( seedB );
-
-    return new Triple<Integer>( adx, rdx.a, rdx.b );
+    VertexData<VD> vd = this.newV( seed );
+    return vd;
 
   }
 
-  private int newVertex( VertexData<VD> vtx ) {
+  public EdgeData<ED> init( VD seedA, VD seedB ) {
 
-    this.vertices.add( vtx );
-    return this.vertices.size( ) - 1;
+    return this.connect( this.newV( seedA ), this.newV( seedB ) );
 
   }
 
-  public void exVertex( int vdx, VD vtx ) {
+  public EdgeData<ED> connect( VertexData<VD> vsx, VertexData<VD> vtx ) {
 
-    int ndx = this.newVertex( new VertexData( vtx ) );
+    // We make one new edge - two new HE
+    HalfEdge<VD, ED, PD> f = new HalfEdge<VD, ED, PD>( );
+    HalfEdge<VD, ED, PD> b = new HalfEdge<VD, ED, PD>( );
 
-    // We make one new edge - two new
-    HalfEdge f = new HalfEdge( );
-    HalfEdge b = new HalfEdge( );
-
-    // Connect the half edges
+    // Connect the HE
     f.pair = b;
     b.pair = f;
 
     f.next = b;
+    f.prev = b;
+    b.next = f;
     b.prev = f;
 
-    VertexData<VD> orig = this.vertices.get( vdx );
+    f.vertexData = vsx;
+    b.vertexData = vtx;
+    vtx.he = b;
 
-    HalfEdge origN = orig.he;
+    // Create the edge, connect it to all the HE
+    EdgeData<ED> e = this.newE( );
+    e.he = f;
+    f.edgeData = e;
+    b.edgeData = e;
 
-    // Insert in loop
-    f.prev = origN.prev;
-    origN.prev.next = f;
-    b.next = origN;
-    origN.prev = b;
+    // Find free edge sequence to insert this into
+    if( vsx.he != null ) {
 
-    //    throw new RuntimeException( "Not yet implemented" );
+      // Check connected HE around source
+      HalfEdge<VD, ED, PD> he = vsx.he;
+      HalfEdge<VD, ED, PD> first = he;
+      do {
+
+        // If both free
+        if( he.free( ) && he.prev.free( ) ) {
+
+          // Insert newest loop
+          f.prev = he.prev;
+          he.prev.next = f;
+          b.next = he;
+          he.prev = b;
+
+          break;
+
+        }
+
+        // Cycle around source
+        he = he.prev.pair;
+
+      } while( he != first );
+
+    }
+
+    // Connect source to HE
+    vsx.he = f;
+
+    // Return the new edge
+    //    return e;
+
+    // Check for polygon closure
+    // Find 2-length edge sequence between the two to create a polygon
+    if( vsx.he != null ) {
+
+      // Check connected HE around source
+      HalfEdge<VD, ED, PD> he = vsx.he;
+      HalfEdge<VD, ED, PD> first = he;
+      do {
+
+        // If both free
+        if( he.free( ) && he.prev.free( ) ) {
+
+          // Insert newest loop
+          f.prev = he.prev;
+          he.prev.next = f;
+          b.next = he;
+          he.prev = b;
+
+          break;
+
+        }
+
+        // Cycle around source
+        he = he.prev.pair;
+
+      } while( he != first );
+
+    }
 
   }
 

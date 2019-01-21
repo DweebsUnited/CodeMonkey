@@ -2,17 +2,17 @@ package CodeMonkey.spatial.HalfEdge;
 
 public class HalfEdge<VD, ED, PD> {
 
-  HalfEdge next;
-  HalfEdge prev;
-  HalfEdge pair;
+  public HalfEdge<VD, ED, PD> next;
+  public HalfEdge<VD, ED, PD> prev;
+  public HalfEdge<VD, ED, PD> pair;
 
-  VertexData<VD> vertexData;
-  EdgeData<ED> edgeData;
-  PolygonData<PD> polygonData;
+  public VertexData<VD> vertexData;
+  public EdgeData<ED> edgeData;
+  public PolygonData<PD> polygonData;
 
   public boolean free( ) {
 
-    return this.pair.polygonData == null;
+    return this.polygonData == null;
 
   }
 
