@@ -1,7 +1,6 @@
 package CodeMonkey.project;
 
 import CodeMonkey.spatial.HalfEdge.EdgeData;
-import CodeMonkey.spatial.HalfEdge.HalfEdge;
 import CodeMonkey.spatial.HalfEdge.Mesh;
 import CodeMonkey.spatial.HalfEdge.VertexData;
 import processing.core.PApplet;
@@ -15,7 +14,10 @@ public class FullBottle extends ProjectBase {
 
   }
 
+  private static final float PICKOFF = 10f;
+
   private Mesh<PVector, Object, Object> mesh;
+  private VertexData<PVector> active;
 
   @Override
   public void settings( ) {
@@ -42,22 +44,28 @@ public class FullBottle extends ProjectBase {
 
       this.ellipse( vtx.data.x, vtx.data.y, 5, 5 );
 
-      // Cycle edges, line each
-      HalfEdge<PVector, Object, Object> he = vtx.he;
-      if( he == null )
-        continue;
-      HalfEdge<PVector, Object, Object> first = he;
-      do {
+    }
 
-        this.line(
-            he.vertexData.data.x,
-            he.vertexData.data.y,
-            he.pair.vertexData.data.x,
-            he.pair.vertexData.data.y );
+    if( this.active != null ) {
 
-        he = he.prev.pair;
+      this.fill( 255, 0, 0 );
+      this.noStroke( );
+      this.ellipse( this.active.data.x, this.active.data.y, 5, 5 );
 
-      } while( he != first );
+    }
+
+    this.noFill( );
+    this.stroke( 0 );
+    for( EdgeData<Object> etx : this.mesh.eds ) {
+
+      VertexData<PVector> vsx = etx.he.vertexData;
+      VertexData<PVector> vtx = etx.he.pair.vertexData;
+
+      this.line(
+          vsx.data.x,
+          vsx.data.y,
+          vtx.data.x,
+          vtx.data.y );
 
     }
 
@@ -87,38 +95,70 @@ public class FullBottle extends ProjectBase {
 
       }
 
-      if( closest != null )
-        this.mesh.exVertex( closest, m );
-      else
-        this.mesh.init( m );
+      if( d < PICKOFF ) {
 
-    } else if( this.mouseButton == RIGHT ) {
+        // Pick a point - If one already picked, if same null, else connect
+        if( this.active == null )
+          this.active = closest;
+        else if( this.active == closest )
+          this.active = null;
+        else {
 
-      // Find closest Edge
-      EdgeData<Object> closest = null;
-      float d = Float.POSITIVE_INFINITY;
+          this.mesh.connect( this.active, closest );
+          this.active = null;
 
-      for( EdgeData<Object> etx : this.mesh.eds ) {
+        }
 
-        PVector epv = new PVector( );
-        epv.set( (PVector) etx.he.vertexData.data );
-        epv.add( (PVector) etx.he.pair.vertexData.data );
-        epv.mult( 0.5f );
-        float dd = PVector.dist( epv, m );
+      } else {
 
-        if( dd < d ) {
+        if( this.active != null )
+          this.active = null;
+        else {
 
-          d = dd;
-          closest = etx;
+          if( closest != null )
+            this.mesh.connect( closest, m );
+          else
+            this.mesh.init( m );
 
         }
 
       }
 
-      if( closest != null )
-        this.mesh.exEdge( closest, m );
-      else
-        this.mesh.init( m );
+    } else if( this.mouseButton == RIGHT ) {
+
+      // Reset active picked
+      if( this.active != null ) {
+        this.active = null;
+      } else {
+
+        // Find closest Edge
+        EdgeData<Object> closest = null;
+        float d = Float.POSITIVE_INFINITY;
+
+        for( EdgeData<Object> etx : this.mesh.eds ) {
+
+          PVector epv = new PVector( );
+          epv.set( (PVector) etx.he.vertexData.data );
+          epv.add( (PVector) etx.he.pair.vertexData.data );
+          epv.mult( 0.5f );
+          float dd = PVector.dist( epv, m );
+
+          if( dd < d ) {
+
+            d = dd;
+            closest = etx;
+
+          }
+
+        }
+
+        if( closest != null ) {
+          this.mesh.connect( closest.he.vertexData, m );
+          this.mesh.connect( closest.he.pair.vertexData, m );
+        } else
+          this.mesh.init( m );
+
+      }
 
     }
 

@@ -1,14 +1,10 @@
 package CodeMonkey.utility;
 
-public class Triple<T> {
-
-  T a, b, c;
+public class Triple<T> extends TripleT<T, T, T> {
 
   public Triple( T a, T b, T c ) {
 
-    this.a = a;
-    this.b = b;
-    this.c = c;
+    super( a, b, c );
 
   }
 

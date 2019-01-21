@@ -1,13 +1,10 @@
 package CodeMonkey.utility;
 
-public class Pair<T> {
-
-  public T a, b;
+public class Pair<T> extends PairT<T, T> {
 
   public Pair( T a, T b ) {
 
-    this.a = a;
-    this.b = b;
+    super( a, b );
 
   }
 
