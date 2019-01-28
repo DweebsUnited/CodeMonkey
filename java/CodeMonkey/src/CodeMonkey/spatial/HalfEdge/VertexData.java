@@ -13,4 +13,10 @@ public class VertexData<VD> {
 
   }
 
+  public boolean isolated( ) {
+
+    return this.he == null;
+
+  }
+
 }

@@ -8,6 +8,12 @@ public class PointMassAccum {
 
   private PVector F;
 
+  public PointMassAccum( PVector p, float m ) {
+
+    this( p.x, p.y, m );
+
+  }
+
   public PointMassAccum( float x, float y, float m ) {
 
     this.m = new PointMass( x, y, m );

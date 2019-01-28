@@ -1,7 +1,10 @@
 package CodeMonkey.project;
 
+import CodeMonkey.physics.PointMassAccum;
 import CodeMonkey.spatial.HalfEdge.EdgeData;
+import CodeMonkey.spatial.HalfEdge.HalfEdge;
 import CodeMonkey.spatial.HalfEdge.Mesh;
+import CodeMonkey.spatial.HalfEdge.PolygonData;
 import CodeMonkey.spatial.HalfEdge.VertexData;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -14,10 +17,50 @@ public class FullBottle extends ProjectBase {
 
   }
 
-  private static final float PICKOFF = 10f;
+  private class VertAppData {
 
-  private Mesh<PVector, Object, Object> mesh;
-  private VertexData<PVector> active;
+    PointMassAccum pm;
+
+  }
+
+  public PVector getBary( PolygonData<Object> ptx ) {
+
+    PVector b = new PVector( 0, 0 );
+
+    HalfEdge<PointMassAccum, Object, Object> he = ptx.he;
+    HalfEdge<PointMassAccum, Object, Object> fhe = he;
+
+    do {
+
+      b.add( he.vertexData.data.get( ) );
+
+      he = he.next;
+
+    } while( he != fhe );
+
+    b.mult( 0.33f );
+
+    return b;
+
+  }
+
+  public PVector getHalf( EdgeData<Object> e ) {
+
+    PVector b = new PVector( 0, 0 );
+    b.add( ( (PointMassAccum) e.he.vertexData.data ).get( ) );
+    b.add( ( (PointMassAccum) e.he.pair.vertexData.data ).get( ) );
+    b.mult( 0.5f );
+
+    return b;
+
+  }
+
+  private Mesh<PointMassAccum, Object, Object> mesh;
+
+  private EdgeData<Object> etx;
+
+  private PVector iA;
+  private boolean initd = false;
 
   @Override
   public void settings( ) {
@@ -30,7 +73,7 @@ public class FullBottle extends ProjectBase {
   @Override
   public void setup( ) {
 
-    this.mesh = new Mesh<PVector, Object, Object>( );
+    this.mesh = new Mesh<PointMassAccum, Object, Object>( );
 
   }
 
@@ -38,34 +81,158 @@ public class FullBottle extends ProjectBase {
   public void draw( ) {
 
     this.background( 255 );
-    this.noFill( );
-    this.stroke( 0 );
-    for( VertexData<PVector> vtx : this.mesh.vds ) {
 
-      this.ellipse( vtx.data.x, vtx.data.y, 5, 5 );
+    if( this.initd ) {
 
-    }
+      VertexData<PointMassAccum> vsx, vtx;
+      HalfEdge<PointMassAccum, Object, Object> he, nhe, phe;
+      EdgeData<Object> pe, ne;
 
-    if( this.active != null ) {
 
+      // Draw all the vertices
+      this.noFill( );
+      this.stroke( 0 );
+      for( VertexData<PointMassAccum> vt : this.mesh.vds ) {
+
+        this.ellipse( vt.data.get( ).x, vt.data.get( ).y, 5, 5 );
+
+      }
+
+      // Draw all the edges
+      this.noFill( );
+      this.stroke( 0 );
+      for( EdgeData<Object> etx : this.mesh.eds ) {
+
+        vsx = etx.he.vertexData;
+        vtx = etx.he.pair.vertexData;
+
+        this.line(
+            vsx.data.get( ).x,
+            vsx.data.get( ).y,
+            vtx.data.get( ).x,
+            vtx.data.get( ).y );
+
+      }
+
+      // Draw lines from barycenter to each polygon vertex
+      this.stroke( 0, 255, 0 );
+      for( PolygonData<Object> ptx : this.mesh.pds ) {
+
+        PVector bary = this.getBary( ptx );
+
+        he = ptx.he;
+        HalfEdge<PointMassAccum, Object, Object> first = he;
+
+        do {
+
+          this.line( bary.x, bary.y, he.vertexData.data.get( ).x, he.vertexData.data.get( ).y );
+
+          he = he.next;
+
+        } while( he != first );
+
+      }
+
+
+      // Draw splines on last edge added
+      if( this.etx != null ) {
+        PVector h, ho;
+        PVector eh = this.getHalf( this.etx );
+        PVector eho = eh.copy( );
+        eho.cross( new PVector( 0, 0, 1 ) );
+        eho.mult( 0.25f );
+
+
+        this.stroke( 0, 255, 0 );
+        this.line(
+            eh.x + eho.x,
+            eh.y + eho.y,
+            eh.x - eho.x,
+            eh.y - eho.y );
+
+
+        // HE
+        this.stroke( 0, 0, 255 );
+
+        he = this.etx.he;
+        phe = he.prev;
+        pe = phe.edgeData;
+        nhe = he.next;
+        ne = nhe.edgeData;
+        this.beginShape( );
+
+        h = this.getHalf( pe );
+        ho = h.copy( );
+        ho.cross( new PVector( 0, 0, 1 ) );
+        ho.mult( 0.25f );
+        if( pe.he == phe )
+          h.add( ho );
+        else
+          h.sub( ho );
+
+        this.curveVertex( h.x, h.y );
+        this.curveVertex( h.x, h.y );
+
+        this.curveVertex( eh.x + eho.x, eh.y + eho.y );
+
+        h = this.getHalf( ne );
+        if( ne.he == nhe )
+          h.add( ho );
+        else
+          h.sub( ho );
+
+        this.curveVertex( h.x, h.y );
+        this.curveVertex( h.x, h.y );
+
+        this.endShape( );
+
+
+        // Pair
+        this.stroke( 255, 0, 0 );
+
+        he = this.etx.he.pair;
+        phe = he.prev;
+        pe = phe.edgeData;
+        nhe = he.next;
+        ne = nhe.edgeData;
+        this.beginShape( );
+
+        h = this.getHalf( pe );
+        ho = h.copy( );
+        ho.cross( new PVector( 0, 0, 1 ) );
+        ho.mult( 0.25f );
+        if( pe.he == phe )
+          h.add( ho );
+        else
+          h.sub( ho );
+
+        this.curveVertex( h.x, h.y );
+        this.curveVertex( h.x, h.y );
+
+        this.curveVertex( eh.x - eho.x, eh.y - eho.y );
+
+        h = this.getHalf( ne );
+        ho = h.copy( );
+        ho.cross( new PVector( 0, 0, 1 ) );
+        ho.mult( 0.25f );
+        if( ne.he == nhe )
+          h.add( ho );
+        else
+          h.sub( ho );
+
+        this.curveVertex( h.x, h.y );
+        this.curveVertex( h.x, h.y );
+
+        this.endShape( );
+
+      }
+
+    } else {
+
+      this.stroke( 0 );
       this.fill( 255, 0, 0 );
-      this.noStroke( );
-      this.ellipse( this.active.data.x, this.active.data.y, 5, 5 );
-
-    }
-
-    this.noFill( );
-    this.stroke( 0 );
-    for( EdgeData<Object> etx : this.mesh.eds ) {
-
-      VertexData<PVector> vsx = etx.he.vertexData;
-      VertexData<PVector> vtx = etx.he.pair.vertexData;
-
-      this.line(
-          vsx.data.x,
-          vsx.data.y,
-          vtx.data.x,
-          vtx.data.y );
+      if( this.iA != null )
+        this.ellipse( this.iA.x, this.iA.y, 5, 5 );
 
     }
 
@@ -78,57 +245,16 @@ public class FullBottle extends ProjectBase {
 
     if( this.mouseButton == LEFT ) {
 
-      // Find closest Vertex
-      VertexData<PVector> closest = null;
-      float d = Float.POSITIVE_INFINITY;
+      // Only if not initd
+      if( ! this.initd ) {
 
-      for( VertexData<PVector> vtx : this.mesh.vds ) {
-
-        float dd = PVector.dist( vtx.data, m );
-
-        if( dd < d ) {
-
-          d = dd;
-          closest = vtx;
-
+        if( this.iA == null ) {
+          this.iA = m;
+        } else {
+          this.mesh.init( new PointMassAccum( this.iA, 1 ), new PointMassAccum( m, 1 ) );
+          this.initd = true;
         }
 
-      }
-
-      if( d < PICKOFF ) {
-
-        // Pick a point - If one already picked, if same null, else connect
-        if( this.active == null )
-          this.active = closest;
-        else if( this.active == closest )
-          this.active = null;
-        else {
-
-          this.mesh.connect( this.active, closest );
-          this.active = null;
-
-        }
-
-      } else {
-
-        if( this.active != null )
-          this.active = null;
-        else {
-
-          if( closest != null )
-            this.mesh.connect( closest, m );
-          else
-            this.mesh.init( m );
-
-        }
-
-      }
-
-    } else if( this.mouseButton == RIGHT ) {
-
-      // Reset active picked
-      if( this.active != null ) {
-        this.active = null;
       } else {
 
         // Find closest Edge
@@ -138,10 +264,10 @@ public class FullBottle extends ProjectBase {
         for( EdgeData<Object> etx : this.mesh.eds ) {
 
           PVector epv = new PVector( );
-          epv.set( (PVector) etx.he.vertexData.data );
-          epv.add( (PVector) etx.he.pair.vertexData.data );
+          epv.set( ( (PointMassAccum) etx.he.vertexData.data ).get( ) );
+          epv.add( ( (PointMassAccum) etx.he.pair.vertexData.data ).get( ) );
           epv.mult( 0.5f );
-          float dd = PVector.dist( epv, m );
+          float dd = PVector.dist( this.getHalf( etx ), m );
 
           if( dd < d ) {
 
@@ -152,11 +278,7 @@ public class FullBottle extends ProjectBase {
 
         }
 
-        if( closest != null ) {
-          this.mesh.connect( closest.he.vertexData, m );
-          this.mesh.connect( closest.he.pair.vertexData, m );
-        } else
-          this.mesh.init( m );
+        this.mesh.growEdge( closest, new PointMassAccum( m, 1 ) );
 
       }
 
