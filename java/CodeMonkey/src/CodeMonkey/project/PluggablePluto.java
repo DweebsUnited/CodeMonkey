@@ -92,37 +92,37 @@ public class PluggablePluto extends ProjectBase {
 
     public float mutateX( float x ) {
       // Hard: New random coord
-      if( this.rng.nextFloat( ) < 0.75f )
+      if( this.rng.nextFloat( ) < 0.25f )
         return this.makeX( );
       // Medium: Move gaussian like
-      x += 2f * (float)this.rng.nextGaussian( );
+      x += 25f * (float)this.rng.nextGaussian( );
       if( x <= 0 )
         x = 0;
-      if( x >= this.target.width )
-        x = this.target.width;
+      if( x >= this.target.width - 1 )
+        x = this.target.width - 1;
       return x;
     }
     public float mutateY( float y ) {
       // Hard: New random coord
-      if( this.rng.nextFloat( ) < 0.75f )
+      if( this.rng.nextFloat( ) < 0.25f )
         return this.makeY( );
       // Medium: Move gaussian like
-      y += 2f * (float)this.rng.nextGaussian( );
+      y += 25f * (float)this.rng.nextGaussian( );
       if( y < 0 )
         y = 0;
-      if( y > this.target.height - 1 )
+      if( y >= this.target.height - 1 )
         y = this.target.height - 1;
       return y;
     }
     public float mutateC( float c ) {
       // Hard: New random
-      if( this.rng.nextFloat( ) < 0.75f )
+      if( this.rng.nextFloat( ) < 0.25f )
         return this.makeC( );
       // Medium: Move yo gaussian hips baby
-      c += 5f * (float)this.rng.nextGaussian( );
+      c += 2f * (float)this.rng.nextGaussian( );
       if( c < 0 )
         c = 0;
-      if( c >= 255 )
+      if( c > 255 )
         c = 255;
       return c;
 
@@ -211,19 +211,19 @@ public class PluggablePluto extends ProjectBase {
       for( Circle c : genome ) {
 
         if( this.rng.nextFloat( ) < this.mChance )
-          c.x = this.makeX( );
+          c.x = this.mutateX( c.x );
 
         if( this.rng.nextFloat( ) < this.mChance )
-          c.y = this.makeY( );
+          c.y = this.mutateY( c.y );
 
         if( this.rng.nextFloat( ) < this.mChance )
-          c.color = this.makeC( );
+          c.color = this.mutateC( c.color );
 
         if( this.rng.nextFloat( ) < this.mChance )
-          c.alpha = this.makeA( );
+          c.alpha = this.mutateA( c.alpha );
 
         if( this.rng.nextFloat( ) < this.mChance )
-          c.rad = this.makeR( );
+          c.rad = this.mutateR( c.rad );
 
       }
 
@@ -259,19 +259,12 @@ public class PluggablePluto extends ProjectBase {
 
     this.tgtImg = this.loadImage( dataDir + "Darwin.jpg" );
     this.tgtImg.resize( cWidth, cHeigh );
-    //    this.tgtImg.filter( POSTERIZE, 8 );
     this.tgtImg.filter( GRAY );
+    //    this.tgtImg.filter( POSTERIZE, 16 );
 
-    this.cg = new CircleGenetics( this, this.tgtImg, 8, 0.03f );
+    this.cg = new CircleGenetics( this, this.tgtImg, 16, 0.03f );
 
-    this.genetic = new Population<Circle>( 64, 1024, this.cg );
-
-    // DEBUG: Show target image
-    //    this.canvas.beginDraw( );
-    //    this.canvas.image( this.tgtImg, 0, 0, cWidth, cHeigh );
-    //    this.canvas.endDraw( );
-    //
-    //    this.noLoop( );
+    this.genetic = new Population<Circle>( 128, 2048, this.cg );
 
   }
 
@@ -298,6 +291,15 @@ public class PluggablePluto extends ProjectBase {
     this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
 
     System.out.println( String.format( "Gen: %d => %f", this.frameCount, this.genetic.bestFitness( ) ) );
+
+    // DEBUG: Show target image
+    //    this.canvas.beginDraw( );
+    //    this.canvas.image( this.tgtImg, 0, 0, cWidth, cHeigh );
+    //    this.canvas.endDraw( );
+    //
+    //    this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
+    //
+    //    this.noLoop( );
 
   }
 
