@@ -28,6 +28,9 @@ public class Population<G extends Gene> {
   private ArrayList<Genome<G>> population;
   private int size;
 
+  private Genome<G> ch = null;
+  private int nGenCh = 0;
+
   public Population( int size, int genomeSize, GeneFactory<G> factory ) {
 
     this.size = size;
@@ -54,6 +57,12 @@ public class Population<G extends Gene> {
 
   }
 
+  public int nGen( ) {
+
+    return this.nGenCh;
+
+  }
+
   public void eval( Evaluator<G> e ) {
 
     for( Genome<G> genome : this.population )
@@ -72,6 +81,22 @@ public class Population<G extends Gene> {
 
     this.population = champs;
 
+    Genome<G> tch = this.population.get( 0 );
+    if( this.ch == null )
+      this.ch = tch;
+    else {
+
+      if( tch == this.ch )
+        this.nGenCh += 1;
+      else {
+
+        this.ch = tch;
+        this.nGenCh = 0;
+
+      }
+
+    }
+
     while( this.population.size( ) < this.size ) {
 
       Genome<G> offspring = new Genome<G>(
@@ -79,7 +104,7 @@ public class Population<G extends Gene> {
               this.population.get( rng.nextInt( nChamps ) ).genome,
               this.population.get( rng.nextInt( nChamps ) ).genome ) );
 
-      mutator.mutate( offspring.genome );
+      mutator.mutate( offspring.genome, this.nGenCh );
 
       this.population.add( offspring );
 

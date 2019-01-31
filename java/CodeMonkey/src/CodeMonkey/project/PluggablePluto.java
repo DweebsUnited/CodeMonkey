@@ -60,15 +60,17 @@ public class PluggablePluto extends ProjectBase {
     private PImage target;
     private int nChamp;
     private float mChance;
+    private float mStep;
 
     private ChampionSelector<Circle> champSelect;
 
-    public CircleGenetics( PApplet context, PImage target, int nChamp, float mChance ) {
+    public CircleGenetics( PApplet context, PImage target, int nChamp, float mChance, float mStep ) {
 
       this.canvas = context.createGraphics( target.width, target.height );
       this.target = target;
       this.nChamp = nChamp;
       this.mChance = mChance;
+      this.mStep = mStep;
 
       this.champSelect = new StochasticUniversal<Circle>( nChamp );
 
@@ -171,7 +173,7 @@ public class PluggablePluto extends ProjectBase {
 
           int pdx = xdx + ydx * this.canvas.width;
 
-          f += 1.0f - Math.abs( ( this.target.pixels[ pdx ] & 0xFF ) - ( this.canvas.pixels[ pdx ] & 0xFF ) ) / 255f;
+          f += Math.pow( 1.0f - Math.abs( ( this.target.pixels[ pdx ] & 0xFF ) - ( this.canvas.pixels[ pdx ] & 0xFF ) ) / 255f, 2f );
 
         }
       }
@@ -206,23 +208,25 @@ public class PluggablePluto extends ProjectBase {
     }
 
     @Override
-    public void mutate( ArrayList<Circle> genome ) {
+    public void mutate( ArrayList<Circle> genome, int nGenChamp ) {
+
+      float chance = this.mChance + this.mStep * nGenChamp;
 
       for( Circle c : genome ) {
 
-        if( this.rng.nextFloat( ) < this.mChance )
+        if( this.rng.nextFloat( ) < chance )
           c.x = this.mutateX( c.x );
 
-        if( this.rng.nextFloat( ) < this.mChance )
+        if( this.rng.nextFloat( ) < chance )
           c.y = this.mutateY( c.y );
 
-        if( this.rng.nextFloat( ) < this.mChance )
+        if( this.rng.nextFloat( ) < chance )
           c.color = this.mutateC( c.color );
 
-        if( this.rng.nextFloat( ) < this.mChance )
+        if( this.rng.nextFloat( ) < chance )
           c.alpha = this.mutateA( c.alpha );
 
-        if( this.rng.nextFloat( ) < this.mChance )
+        if( this.rng.nextFloat( ) < chance )
           c.rad = this.mutateR( c.rad );
 
       }
@@ -261,9 +265,9 @@ public class PluggablePluto extends ProjectBase {
     this.tgtImg.filter( GRAY );
     //    this.tgtImg.filter( POSTERIZE, 16 );
 
-    this.cg = new CircleGenetics( this, this.tgtImg, 16, 0.03f );
+    this.cg = new CircleGenetics( this, this.tgtImg, 16, 0.03f, 0.001f );
 
-    this.genetic = new Population<Circle>( 128, 2048, this.cg );
+    this.genetic = new Population<Circle>( 128, 1024, this.cg );
 
   }
 
@@ -289,7 +293,7 @@ public class PluggablePluto extends ProjectBase {
 
     this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
 
-    System.out.println( String.format( "Gen: %d => %f", this.frameCount, this.genetic.bestFitness( ) ) );
+    System.out.println( String.format( "Gen %d => %f, %d", this.frameCount, this.genetic.bestFitness( ), this.genetic.nGen( ) ) );
 
     // DEBUG: Show target image
     //    this.canvas.beginDraw( );

@@ -6,6 +6,6 @@ import CodeMonkey.genetic.Gene;
 
 public interface Mutator<G extends Gene> {
 
-  public void mutate( ArrayList<G> genome );
+  public void mutate( ArrayList<G> genome, int nGenChamp );
 
 }
