@@ -9,8 +9,8 @@ import CodeMonkey.genetic.GeneFactory;
 import CodeMonkey.genetic.Genome;
 import CodeMonkey.genetic.Population;
 import CodeMonkey.genetic.breed.Breeder;
-import CodeMonkey.genetic.champ.BestN;
 import CodeMonkey.genetic.champ.ChampionSelector;
+import CodeMonkey.genetic.champ.StochasticUniversal;
 import CodeMonkey.genetic.mutate.Mutator;
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -70,7 +70,7 @@ public class PluggablePluto extends ProjectBase {
       this.nChamp = nChamp;
       this.mChance = mChance;
 
-      this.champSelect = new BestN<Circle>( nChamp );
+      this.champSelect = new StochasticUniversal<Circle>( nChamp );
 
     }
 
@@ -253,7 +253,6 @@ public class PluggablePluto extends ProjectBase {
 
   @Override
   public void setup( ) {
-
 
     this.canvas = this.createGraphics( cWidth, cHeigh );
 

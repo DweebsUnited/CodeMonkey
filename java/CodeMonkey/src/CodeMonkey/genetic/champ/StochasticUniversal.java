@@ -30,8 +30,8 @@ public class StochasticUniversal<G extends Gene> implements ChampionSelector<G> 
 
     ArrayList<Genome<G>> champs = new ArrayList<Genome<G>>( );
 
-    float r = this.rng.nextFloat( ) * FN;
-    F = FN;
+    float r = - this.rng.nextFloat( ) * population.get( 0 ).fitness;
+    F = 0;
 
     for( Genome<G> genome : population ) {
 
@@ -44,7 +44,7 @@ public class StochasticUniversal<G extends Gene> implements ChampionSelector<G> 
         if( champs.size( ) == this.nChamps )
           break;
 
-        F = FN * ( champs.size( ) + 1 );
+        F = FN * champs.size( );
 
       }
 
