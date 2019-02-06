@@ -265,7 +265,7 @@ public class PluggablePluto extends ProjectBase {
     this.tgtImg.filter( GRAY );
     //    this.tgtImg.filter( POSTERIZE, 16 );
 
-    this.cg = new CircleGenetics( this, this.tgtImg, 16, 0.03f, 0.001f );
+    this.cg = new CircleGenetics( this, this.tgtImg, 16, 0.03f, 0.0001f );
 
     this.genetic = new Population<Circle>( 128, 1024, this.cg );
 

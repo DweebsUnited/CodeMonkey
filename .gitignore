@@ -4,3 +4,6 @@ ffmpeg.txt
 
 # Mac hidden files
 ._*
+
+# Java bin
+java/CodeMonkey/bin
