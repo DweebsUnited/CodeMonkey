@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 import CodeMonkey.utility.Trie;
 
-public class CryptoSearch {
+public class CryptoSearch extends Project {
 
   private static boolean isOnlyLetters( String name ) {
     return name.matches( "[a-zA-Z]+" );
@@ -16,13 +16,15 @@ public class CryptoSearch {
 
   public static void main( String[ ] args ) {
 
+    Project.setData( );
+
     Trie trie = new Trie( );
 
     // Insert each line of file
     BufferedReader reader;
     try {
 
-      reader = new BufferedReader( new FileReader( "/Users/ozzy/Desktop/medium.txt" ) );
+      reader = new BufferedReader( new FileReader( Project.dataDir + "5000.txt" ) );
       String line = reader.readLine( );
 
       while( line != null ) {
@@ -34,9 +36,9 @@ public class CryptoSearch {
         line = line.toLowerCase( );
 
         // Only short and only letters
-        if( line.length( ) <= 10 && isOnlyLetters( line ) ) {
+        if( isOnlyLetters( line ) ) {
 
-          System.out.println( String.format( "Inserting: %s:%d", line, line.length( ) ) );
+          // System.out.println( String.format( "Inserting: %s:%d", line, line.length( ) ) );
 
           trie.insert( line );
 
