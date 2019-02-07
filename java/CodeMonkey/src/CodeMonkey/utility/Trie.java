@@ -1,6 +1,8 @@
 package CodeMonkey.utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Trie {
 
@@ -26,6 +28,17 @@ public class Trie {
     // STATISTIIIIIIIICS!!!
     long usedCount = 0;
     long eosCount = 0;
+
+  }
+
+  private class QueryComparator implements Comparator<PairT<Long,String>> {
+
+    @Override
+    public int compare( PairT<Long,String> a, PairT<Long,String> b ) {
+
+      return (int) ( b.a - a.a );
+
+    }
 
   }
 
@@ -61,7 +74,19 @@ public class Trie {
 
   public ArrayList<String> query( String q ) {
 
-    return this.query( q, this.root );
+    ArrayList<PairT<Long,String>> qres = this.query( q, this.root );
+
+    Collections.sort( qres, new QueryComparator( ) );
+
+    ArrayList<String> res = new ArrayList<String>( );
+
+    for( PairT<Long,String> r : qres ) {
+
+      res.add( r.b );
+
+    }
+
+    return res;
 
   }
 
@@ -188,14 +213,14 @@ public class Trie {
 
   }
 
-  private void rquery( String q, Node trie, int cdx, ArrayList<Character> progress, ArrayList<String> res ) {
+  private void rquery( String q, Node trie, int cdx, ArrayList<Character> progress, ArrayList<PairT<Long,String>> res ) {
 
     // End of recursion: Past end of query
     if( cdx >= q.length( ) ) {
 
       // But only output if end of string marker
       if( trie.eos )
-        res.add( this.getStringRep( progress ) );
+        res.add( new PairT<Long,String>( trie.eosCount, this.getStringRep( progress ) ) );
 
       return;
 
@@ -272,14 +297,14 @@ public class Trie {
 
   }
 
-  private ArrayList<String> query( String q, Node trie ) {
+  private ArrayList<PairT<Long,String>> query( String q, Node trie ) {
 
     if( trie == null )
       throw new RuntimeException( "Querying a null trie.. Naughty, naughty" );
 
     // Kick off the recursion
     ArrayList<Character> temp = new ArrayList<Character>( );
-    ArrayList<String> res = new ArrayList<String>( );
+    ArrayList<PairT<Long,String>> res = new ArrayList<PairT<Long,String>>( );
 
     this.rquery( q, trie, 0, temp, res );
 
