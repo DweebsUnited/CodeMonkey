@@ -23,10 +23,15 @@ public class Trie {
     // First child of us
     public Node child;
 
+    // STATISTIIIIIIIICS!!!
+    long usedCount = 0;
+    long eosCount = 0;
+
   }
 
   private Node root;
-  private int nEntry = 0;
+
+  private int longest = 0;
 
   public Trie( ) {
 
@@ -34,13 +39,22 @@ public class Trie {
 
   }
 
-  public int size( ) {
-    return this.nEntry;
+  public long size( ) {
+    return this.root.usedCount;
   }
+
+  public int longest( ) {
+    return this.longest;
+  }
+
 
   public void insert( String s ) {
 
-    this.nEntry += 1;
+    if( s.length( ) > this.longest ) {
+      this.longest = s.length( );
+      System.out.println( String.format( "New longest: %s:%d", s, s.length( ) ) );
+    }
+
     this.insert( s, this.root );
 
   }
@@ -54,6 +68,94 @@ public class Trie {
   public void print( ) {
 
     this.rprint( this.root, new ArrayList<Character>( ) );
+
+  }
+
+
+  public ArrayList<Pair<Long>> countStats( ) {
+
+    ArrayList<Pair<Long>> ret = new ArrayList<Pair<Long>>( );
+
+    for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+
+      ret.add( new Pair<Long>( new Long( 0 ), new Long( 0 ) ) );
+
+    }
+
+    this.rCounts( this.root, ret );
+
+    return ret;
+
+  }
+
+  public ArrayList<ArrayList<Pair<Long>>> posStats( ) {
+
+    ArrayList<ArrayList<Pair<Long>>> ret = new ArrayList<ArrayList<Pair<Long>>>( );
+
+    for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+
+      ArrayList<Pair<Long>> pList = new ArrayList<Pair<Long>>( );
+
+      for( int pdx = 0; pdx < this.longest; ++pdx ) {
+
+        Pair<Long> p = new Pair<Long>( new Long( 0 ), new Long( 0 ) );
+
+        pList.add( p );
+
+      }
+
+      ret.add( pList );
+
+    }
+
+    this.rPos( this.root, 0, ret );
+
+    return ret;
+
+  }
+
+
+  public void rPos( Node trie, int pdx, ArrayList<ArrayList<Pair<Long>>> stats ) {
+
+    Node child = trie.child;
+
+    // Exit condition
+    if( child == null )
+      return;
+
+    while( child.next != null ) {
+
+      ArrayList<Pair<Long>> ls = stats.get( child.c - 'a' );
+      Pair<Long> s = ls.get( pdx );
+      s.a += child.usedCount;
+      s.b += child.eosCount;
+
+      this.rPos( child, pdx + 1, stats );
+
+      child = child.next;
+
+    }
+
+  }
+
+  public void rCounts( Node trie, ArrayList<Pair<Long>> stats ) {
+
+    Node child = trie.child;
+
+    if( child == null )
+      return;
+
+    while( child.next != null ) {
+
+      Pair<Long> s = stats.get( child.c - 'a' );
+      s.a += child.usedCount;
+      s.b += child.eosCount;
+
+      this.rCounts( child, stats );
+
+      child = child.next;
+
+    }
 
   }
 
@@ -179,49 +281,6 @@ public class Trie {
 
   }
 
-  //  private void rinsert( String s, Node trie, char cdx ) {
-  //
-  //    // End of recursion: Past end of query
-  //    if( cdx >= s.length( ) ) {
-  //
-  //      // But only output if end of string marker
-  //      trie.eos = true;
-  //
-  //      return;
-  //
-  //    }
-  //
-  //    char c = s.charAt( cdx );
-  //
-  //    //std::cout << cdx << ": Target: " << c << std::endl;
-  //
-  //    Node child = trie.child;
-  //
-  //    // Make sure there is a child list, otherwise no match
-  //    if( child == null )
-  //      return;
-  //
-  //    // Go till we can't, or we arrive
-  //    while( child.next != null && child.c < c )
-  //      child = child.next;
-  //
-  //    // No match
-  //    if( child == null )
-  //      ;
-  //    // Match!
-  //    else if( child.c == c ) {
-  //
-  //      //std::cout << cdx << ": Match" << std::endl;
-  //
-  //      progress.add( c );
-  //      this.rquery( q, child, cdx + 1, progress, res );
-  //      progress.remove( progress.size( ) - 1 );
-  //
-  //    }
-  //    // Else no match
-  //
-  //  }
-
   // For each character, move along tree until next is null or past
   //   Basically a singly linked list insertion, with a few edge cases
   //   If last, mark
@@ -311,11 +370,13 @@ public class Trie {
       }
 
       // Move down a level
+      trie.usedCount += 1;
       trie = child;
 
     }
 
     // Mark end of string
+    trie.eosCount += 1;
     trie.eos = true;
 
   }

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import CodeMonkey.utility.Pair;
 import CodeMonkey.utility.Trie;
 
 public class CryptoSearch extends Project {
@@ -24,7 +25,7 @@ public class CryptoSearch extends Project {
     BufferedReader reader;
     try {
 
-      reader = new BufferedReader( new FileReader( Project.dataDir + "5000.txt" ) );
+      reader = new BufferedReader( new FileReader( Project.dataDir + "popular.txt" ) );
       String line = reader.readLine( );
 
       while( line != null ) {
@@ -79,6 +80,39 @@ public class CryptoSearch extends Project {
 
       if( line.equals( "exit" ) || line.equals( "quit" ) )
         break;
+      else if( line.equals( "p" ) )
+        trie.print( );
+      else if( line.equals( "s" ) ) {
+
+        ArrayList<Pair<Long>> stats = trie.countStats( );
+
+        for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+
+          Pair<Long> s = stats.get( cdx - 'a' );
+
+          System.out.println( String.format( "%c, %d:%d", cdx, s.a, s.b ) );
+
+        }
+
+      } else if( line.equals( "sp" ) ) {
+
+        ArrayList<ArrayList<Pair<Long>>> stats = trie.posStats( );
+
+        for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+
+          System.out.println( String.format( "%c", cdx ) );
+
+          for( int pdx = 0; pdx < trie.longest( ); ++pdx ) {
+
+            Pair<Long> s = stats.get( cdx - 'a' ).get( pdx );
+
+            System.out.println( String.format( "  %d:%d", s.a, s.b ) );
+
+          }
+
+        }
+
+      }
 
       System.out.println( String.format( "Searching: %s", line ) );
 
