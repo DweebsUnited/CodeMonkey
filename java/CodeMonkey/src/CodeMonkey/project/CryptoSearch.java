@@ -1,7 +1,9 @@
 package CodeMonkey.project;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,21 +13,17 @@ import CodeMonkey.utility.Trie;
 
 public class CryptoSearch extends Project {
 
-  private static boolean isOnlyLetters( String name ) {
-    return name.matches( "[a-zA-Z]+" );
+  private static boolean accept( String name ) {
+    return name.matches( "[a-z]+" );
   }
 
-  public static void main( String[ ] args ) {
+  private static void loadFile( String fname, Trie trie ) {
 
-    Project.setData( );
-
-    Trie trie = new Trie( );
-
-    // Insert each line of file
+    //Insert each line of file
     BufferedReader reader;
     try {
 
-      reader = new BufferedReader( new FileReader( Project.dataDir + "popular.txt" ) );
+      reader = new BufferedReader( new FileReader( fname ) );
       String line = reader.readLine( );
 
       while( line != null ) {
@@ -37,7 +35,7 @@ public class CryptoSearch extends Project {
         line = line.toLowerCase( );
 
         // Only short and only letters
-        if( isOnlyLetters( line ) ) {
+        if( accept( line ) ) {
 
           // System.out.println( String.format( "Inserting: %s:%d", line, line.length( ) ) );
 
@@ -58,9 +56,75 @@ public class CryptoSearch extends Project {
 
     } catch( IOException e ) {
 
-      e.printStackTrace();
+      e.printStackTrace( );
 
     }
+
+  }
+
+  private static void writeStats( String sname, String pname, Trie trie ) {
+
+    BufferedWriter writer;
+    ArrayList<Pair<Long>> stats = trie.countStats( );
+    ArrayList<ArrayList<Pair<Long>>> pstats = trie.posStats( );
+
+    try {
+
+      writer = new BufferedWriter( new FileWriter( sname ) );
+
+      for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+
+        Pair<Long> s = stats.get( cdx - 'a' );
+
+        System.out.println( String.format( "%c, %d:%d", cdx, s.a, s.b ) );
+
+      }
+
+      writer.close( );
+
+    } catch( IOException e ) {
+
+      System.err.println( "Couldn't write stats" );
+      e.printStackTrace( );
+
+    }
+
+    try {
+
+      writer = new BufferedWriter( new FileWriter( pname ) );
+
+      for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+
+        System.out.println( String.format( "%c", cdx ) );
+
+        for( int pdx = 0; pdx < trie.longest( ); ++pdx ) {
+
+          Pair<Long> s = pstats.get( cdx - 'a' ).get( pdx );
+
+          System.out.println( String.format( "  %d:%d", s.a, s.b ) );
+
+        }
+
+      }
+
+    } catch( IOException e ) {
+
+      System.err.println( "Couldn't write pos stats" );
+      e.printStackTrace( );
+
+    }
+
+  }
+
+  public static void main( String[ ] args ) {
+
+    Project.setData( );
+
+    Trie trie = new Trie( );
+
+    // Load files
+    loadFile( Project.dataDir + "popular.txt", trie );
+    loadFile( Project.dataDir + "5000.txt", trie );
 
     //    trie.print( );
     System.out.println( String.format( "Entries added: %d", trie.size( ) ) );
@@ -111,6 +175,10 @@ public class CryptoSearch extends Project {
           }
 
         }
+
+      } else if( line.equals( "ws" ) ) {
+
+        writeStats( Project.dataDir + "stats.csv", Project.dataDir + "posstats.csv", trie );
 
       }
 

@@ -31,11 +31,12 @@ public class PluggablePluto extends ProjectBase {
     public float alpha;
     public float rad;
 
-    public Circle( float x, float y, float color, float alpha, float rad ) {
+    //    public Circle( float x, float y, float color, float alpha, float rad ) {
+    public Circle( float x, float y, float alpha, float rad ) {
 
       this.x = x;
       this.y = y;
-      this.color = color;
+      this.color = 255;
       this.alpha = alpha;
       this.rad = rad;
 
@@ -55,6 +56,15 @@ public class PluggablePluto extends ProjectBase {
 
   private class CircleGenetics implements GeneFactory<Circle>, Evaluator<Circle>, ChampionSelector<Circle>, Breeder<Circle>, Mutator<Circle> {
 
+    private final int x_M;
+    private final int y_M;
+    //    private final int c_m = 0;
+    //    private final int c_M = 255;
+    private final int a_m = 25;
+    private final int a_M = 50;
+    private final int r_m = 2;
+    private final int r_M = 10;
+
     private Random rng = new Random( );
     private PGraphics canvas;
     private PImage target;
@@ -65,6 +75,9 @@ public class PluggablePluto extends ProjectBase {
     private ChampionSelector<Circle> champSelect;
 
     public CircleGenetics( PApplet context, PImage target, int nChamp, float mChance, float mStep ) {
+
+      this.x_M = target.width;
+      this.y_M = target.height;
 
       this.canvas = context.createGraphics( target.width, target.height );
       this.target = target;
@@ -77,19 +90,19 @@ public class PluggablePluto extends ProjectBase {
     }
 
     public float makeX( ) {
-      return this.rng.nextInt( this.target.width );
+      return this.rng.nextInt( this.x_M );
     }
     public float makeY( ) {
-      return this.rng.nextInt( this.target.height );
+      return this.rng.nextInt( this.y_M );
     }
-    public float makeC( ) {
-      return this.rng.nextInt( 255 );
-    }
+    //    public float makeC( ) {
+    //      return this.rng.nextInt( c_M - c_m ) + c_m;
+    //    }
     public float makeA( ) {
-      return this.rng.nextInt( 50 ) + 50;
+      return this.rng.nextInt( this.a_M - this.a_m ) + this.a_m;
     }
     public float makeR( ) {
-      return this.rng.nextInt( 8 ) + 2;
+      return this.rng.nextInt( this.r_M - this.r_m ) + this.r_m;
     }
 
     public float mutateX( float x ) {
@@ -97,7 +110,7 @@ public class PluggablePluto extends ProjectBase {
       if( this.rng.nextFloat( ) < 0.25f )
         return this.makeX( );
       // Medium: Move gaussian like
-      x += 25f * (float)this.rng.nextGaussian( );
+      x += 15f * (float)this.rng.nextGaussian( );
       if( x <= 0 )
         x = 0;
       if( x >= this.target.width - 1 )
@@ -109,26 +122,26 @@ public class PluggablePluto extends ProjectBase {
       if( this.rng.nextFloat( ) < 0.25f )
         return this.makeY( );
       // Medium: Move gaussian like
-      y += 25f * (float)this.rng.nextGaussian( );
+      y += 15f * (float)this.rng.nextGaussian( );
       if( y < 0 )
         y = 0;
       if( y >= this.target.height - 1 )
         y = this.target.height - 1;
       return y;
     }
-    public float mutateC( float c ) {
-      // Hard: New random
-      if( this.rng.nextFloat( ) < 0.25f )
-        return this.makeC( );
-      // Medium: Move yo gaussian hips baby
-      c += 2f * (float)this.rng.nextGaussian( );
-      if( c < 0 )
-        c = 0;
-      if( c > 255 )
-        c = 255;
-      return c;
-
-    }
+    //    public float mutateC( float c ) {
+    //      // Hard: New random
+    //      if( this.rng.nextFloat( ) < 0.25f )
+    //        return this.makeC( );
+    //      // Medium: Move yo gaussian hips baby
+    //      c += 2f * (float)this.rng.nextGaussian( );
+    //      if( c < 0 )
+    //        c = 0;
+    //      if( c > 255 )
+    //        c = 255;
+    //      return c;
+    //
+    //    }
     public float mutateA( float a ) {
       return this.makeA( );
     }
@@ -143,7 +156,7 @@ public class PluggablePluto extends ProjectBase {
       return new Circle(
           this.makeX( ),
           this.makeY( ),
-          this.makeC( ),
+          //          this.makeC( ),
           this.makeA( ),
           this.makeR( ) );
 
@@ -220,8 +233,8 @@ public class PluggablePluto extends ProjectBase {
         if( this.rng.nextFloat( ) < chance )
           c.y = this.mutateY( c.y );
 
-        if( this.rng.nextFloat( ) < chance )
-          c.color = this.mutateC( c.color );
+        //        if( this.rng.nextFloat( ) < chance )
+        //          c.color = this.mutateC( c.color );
 
         if( this.rng.nextFloat( ) < chance )
           c.alpha = this.mutateA( c.alpha );

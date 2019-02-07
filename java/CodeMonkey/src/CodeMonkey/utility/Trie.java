@@ -52,7 +52,7 @@ public class Trie {
 
     if( s.length( ) > this.longest ) {
       this.longest = s.length( );
-      System.out.println( String.format( "New longest: %s:%d", s, s.length( ) ) );
+      //      System.out.println( String.format( "New longest: %s:%d", s, s.length( ) ) );
     }
 
     this.insert( s, this.root );
@@ -123,18 +123,27 @@ public class Trie {
     if( child == null )
       return;
 
-    while( child.next != null ) {
+    do {
 
-      ArrayList<Pair<Long>> ls = stats.get( child.c - 'a' );
-      Pair<Long> s = ls.get( pdx );
-      s.a += child.usedCount;
-      s.b += child.eosCount;
+      // Block out punctuation
+      if( child.c <= 'z' && child.c >= 'a') {
 
-      this.rPos( child, pdx + 1, stats );
+        ArrayList<Pair<Long>> ls = stats.get( child.c - 'a' );
+        Pair<Long> s = ls.get( pdx );
+        s.a += child.usedCount;
+        s.b += child.eosCount;
+
+        this.rPos( child, pdx + 1, stats );
+
+      } else {
+
+        this.rPos( child, pdx, stats );
+
+      }
 
       child = child.next;
 
-    }
+    } while( child != null );
 
   }
 
@@ -145,7 +154,7 @@ public class Trie {
     if( child == null )
       return;
 
-    while( child.next != null ) {
+    do {
 
       Pair<Long> s = stats.get( child.c - 'a' );
       s.a += child.usedCount;
@@ -155,7 +164,7 @@ public class Trie {
 
       child = child.next;
 
-    }
+    } while( child != null );
 
   }
 
@@ -244,11 +253,8 @@ public class Trie {
       while( child.next != null && child.c < c )
         child = child.next;
 
-      // No match
-      if( child == null )
-        ;
       // Match!
-      else if( child.c == c ) {
+      if( child.c == c ) {
 
         //        System.out.println( String.format( "%d: Match", cdx ) );
 
@@ -376,6 +382,7 @@ public class Trie {
     }
 
     // Mark end of string
+    trie.usedCount += 1;
     trie.eosCount += 1;
     trie.eos = true;
 
