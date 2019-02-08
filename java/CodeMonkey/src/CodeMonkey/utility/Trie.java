@@ -44,12 +44,14 @@ public class Trie {
 
   }
 
+
   private String getStringRep( ArrayList<Character> list ) {
     StringBuilder builder = new StringBuilder( list.size( ) );
     for( Character ch: list )
       builder.append( ch );
     return builder.toString( );
   }
+
 
   private class Node {
     // Character this node represents
@@ -439,6 +441,7 @@ public class Trie {
     reader.close( );
 
   }
+
 
   public ArrayList<Pair<Long>> countStats( ) {
 
