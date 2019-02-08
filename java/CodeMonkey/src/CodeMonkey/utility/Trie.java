@@ -363,10 +363,17 @@ public class Trie {
       boolean cHasChild = seg[ 3 ].equals( "C" );
       boolean cHasNext = seg[ 4 ].equals( "N" );
 
+      // For stats, add eosCount to root used
+      this.root.usedCount += newChild.eosCount;
+
       // If node has kids, push to stack, link in below
       if( hasChild ) {
 
         stack.push( new TripleT<Node,Boolean,Boolean>( curr, new Boolean( hasChild ), new Boolean( hasNext ) ) );
+
+        // For stats, increment longest as needed
+        if( stack.size( ) > this.longest )
+          this.longest = stack.size( );
 
         // Link in, move to
         curr.child = newChild;
@@ -397,8 +404,17 @@ public class Trie {
 
         } while( !stack.empty( ) && hasNext == false );
 
-        // In base case: no next, set to null ==> ===
-        curr = null;
+        // Link as next
+        if( !hasNext ) {
+          reader.close( );
+          throw new RuntimeException( "Malformed file, ran out of stack before EOF: " + ldx );
+        }
+
+        curr.next = newChild;
+        curr = newChild;
+
+        hasChild = cHasChild;
+        hasNext = cHasNext;
 
       }
 
@@ -406,7 +422,16 @@ public class Trie {
 
     }
 
-    if( stack.size( ) != 0 || curr != null ) {
+    // Consume rest of stack w/o next for error checking
+    do {
+
+      TripleT<Node,Boolean,Boolean> state = stack.pop( );
+      hasNext = state.c;
+
+    } while( !stack.empty( ) && hasNext == false );
+
+    // Final error check
+    if( stack.size( ) != 0 ) {
       reader.close( );
       throw new RuntimeException( "Malformed file, stack not empty when done parsing file" );
     }

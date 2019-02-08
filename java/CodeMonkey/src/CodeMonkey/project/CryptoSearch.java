@@ -129,6 +129,7 @@ public class CryptoSearch extends Project {
 
     //    trie.print( );
     System.out.println( String.format( "Entries added: %d", trie.size( ) ) );
+    System.out.println( String.format( "Longest entry: %d", trie.longest( ) ) );
 
     // Now for the queries
     System.out.print( ">" );
