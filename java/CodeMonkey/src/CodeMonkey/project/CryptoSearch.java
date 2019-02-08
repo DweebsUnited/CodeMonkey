@@ -13,10 +13,6 @@ import CodeMonkey.utility.Trie;
 
 public class CryptoSearch extends Project {
 
-  private static boolean accept( String name ) {
-    return name.matches( "[a-z]+" );
-  }
-
   private static void loadFile( String fname, Trie trie ) {
 
     //Insert each line of file
@@ -35,7 +31,7 @@ public class CryptoSearch extends Project {
         line = line.toLowerCase( );
 
         // Only short and only letters
-        if( accept( line ) ) {
+        if( Trie.accept( line ) ) {
 
           // System.out.println( String.format( "Inserting: %s:%d", line, line.length( ) ) );
 
@@ -72,11 +68,11 @@ public class CryptoSearch extends Project {
 
       writer = new BufferedWriter( new FileWriter( sname ) );
 
-      for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+      for( char cdx = 0; cdx < Trie.alphabet.length( ); ++cdx ) {
 
-        Pair<Long> s = stats.get( cdx - 'a' );
+        Pair<Long> s = stats.get( cdx );
 
-        System.out.println( String.format( "%c, %d:%d", cdx, s.a, s.b ) );
+        System.out.println( String.format( "%c, %d:%d", Trie.alphabet.charAt( cdx ), s.a, s.b ) );
 
       }
 
@@ -93,13 +89,13 @@ public class CryptoSearch extends Project {
 
       writer = new BufferedWriter( new FileWriter( pname ) );
 
-      for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+      for( char cdx = 0; cdx < Trie.alphabet.length( ); ++cdx ) {
 
-        System.out.println( String.format( "%c", cdx ) );
+        System.out.println( String.format( "%c", Trie.alphabet.charAt( cdx ) ) );
 
         for( int pdx = 0; pdx < trie.longest( ); ++pdx ) {
 
-          Pair<Long> s = pstats.get( cdx - 'a' ).get( pdx );
+          Pair<Long> s = pstats.get( cdx ).get( pdx );
 
           System.out.println( String.format( "  %d:%d", s.a, s.b ) );
 
@@ -116,15 +112,20 @@ public class CryptoSearch extends Project {
 
   }
 
-  public static void main( String[ ] args ) {
+  public static void main( String[ ] args ) throws IOException {
 
     Project.setData( );
 
     Trie trie = new Trie( );
 
     // Load files
-    loadFile( Project.dataDir + "popular.txt", trie );
-    loadFile( Project.dataDir + "5000.txt", trie );
+
+    //    loadFile( Project.dataDir + "popular.txt", trie );
+    //    loadFile( Project.dataDir + "5000.txt", trie );
+    //    loadFile( "C:\\Users\\ElysiumTech\\Downloads\\WestburyLab.Wikipedia.Corpus\\WestburyLab.Wikipedia.Corpus.txt\\wordlist.txt", trie );
+    //    trie.save( Project.dataDir + "trie" );
+
+    trie.load( Project.dataDir + "trie" );
 
     //    trie.print( );
     System.out.println( String.format( "Entries added: %d", trie.size( ) ) );
@@ -150,11 +151,11 @@ public class CryptoSearch extends Project {
 
         ArrayList<Pair<Long>> stats = trie.countStats( );
 
-        for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+        for( char cdx = 0; cdx < Trie.alphabet.length( ); ++cdx ) {
 
-          Pair<Long> s = stats.get( cdx - 'a' );
+          Pair<Long> s = stats.get( cdx );
 
-          System.out.println( String.format( "%c, %d:%d", cdx, s.a, s.b ) );
+          System.out.println( String.format( "%c, %d:%d", Trie.alphabet.charAt( cdx ), s.a, s.b ) );
 
         }
 
@@ -162,13 +163,13 @@ public class CryptoSearch extends Project {
 
         ArrayList<ArrayList<Pair<Long>>> stats = trie.posStats( );
 
-        for( char cdx = 'a'; cdx <= 'z'; ++cdx ) {
+        for( char cdx = 0; cdx < Trie.alphabet.length( ); ++cdx ) {
 
-          System.out.println( String.format( "%c", cdx ) );
+          System.out.println( String.format( "%c", Trie.alphabet.charAt( cdx ) ) );
 
           for( int pdx = 0; pdx < trie.longest( ); ++pdx ) {
 
-            Pair<Long> s = stats.get( cdx - 'a' ).get( pdx );
+            Pair<Long> s = stats.get( cdx ).get( pdx );
 
             System.out.println( String.format( "  %d:%d", s.a, s.b ) );
 
@@ -202,6 +203,8 @@ public class CryptoSearch extends Project {
       System.out.print( ">" );
 
     }
+
+    scan.close( );
 
   }
 
