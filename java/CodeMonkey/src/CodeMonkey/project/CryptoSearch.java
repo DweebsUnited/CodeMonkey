@@ -67,12 +67,13 @@ public class CryptoSearch extends Project {
     try {
 
       writer = new BufferedWriter( new FileWriter( sname ) );
+      writer.write( String.format( "c,usedCount,eosCount\n" ) );
 
       for( char cdx = 0; cdx < Trie.alphabet.length( ); ++cdx ) {
 
         Pair<Long> s = stats.get( cdx );
 
-        System.out.println( String.format( "%c, %d:%d", Trie.alphabet.charAt( cdx ), s.a, s.b ) );
+        writer.write( String.format( "%c,%d,%d\n", Trie.alphabet.charAt( cdx ), s.a, s.b ) );
 
       }
 
@@ -87,19 +88,24 @@ public class CryptoSearch extends Project {
 
     try {
 
-      writer = new BufferedWriter( new FileWriter( pname ) );
-
       for( char cdx = 0; cdx < Trie.alphabet.length( ); ++cdx ) {
 
-        System.out.println( String.format( "%c", Trie.alphabet.charAt( cdx ) ) );
+        writer = new BufferedWriter( new FileWriter( pname + Trie.alphabet.charAt( cdx ) + ".csv" ) );
+
+        writer.write( String.format( "%c\n", Trie.alphabet.charAt( cdx ) ) );
+        writer.write( String.format( "pdx,usedCount,eosCount\n" ) );
+
+        //        System.out.println( String.format( "Writing: %c", Trie.alphabet.charAt( cdx ) ) );
 
         for( int pdx = 0; pdx < trie.longest( ); ++pdx ) {
 
           Pair<Long> s = pstats.get( cdx ).get( pdx );
 
-          System.out.println( String.format( "  %d:%d", s.a, s.b ) );
+          writer.write( String.format( "%d,%d,%d\n", pdx, s.a, s.b ) );
 
         }
+
+        writer.close( );
 
       }
 
@@ -122,10 +128,10 @@ public class CryptoSearch extends Project {
 
     //    loadFile( Project.dataDir + "popular.txt", trie );
     //    loadFile( Project.dataDir + "5000.txt", trie );
-    //    loadFile( "C:\\Users\\ElysiumTech\\Downloads\\WestburyLab.Wikipedia.Corpus\\WestburyLab.Wikipedia.Corpus.txt\\wordlist.txt", trie );
     //    trie.save( Project.dataDir + "trie" );
 
-    trie.load( Project.dataDir + "trie" );
+    //    trie.load( Project.dataDir + "trie" );
+    trie.load( Project.dataDir + "Wikipedia" );
 
     //    trie.print( );
     System.out.println( String.format( "Entries added: %d", trie.size( ) ) );
@@ -180,7 +186,7 @@ public class CryptoSearch extends Project {
 
       } else if( line.equals( "ws" ) ) {
 
-        writeStats( Project.dataDir + "stats.csv", Project.dataDir + "posstats.csv", trie );
+        writeStats( Project.dataDir + "stats.csv", Project.dataDir + "posstats/", trie );
 
       }
 
