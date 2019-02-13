@@ -274,7 +274,7 @@ public class Trie {
 
   }
 
-  public ArrayList<String> query( String q ) {
+  public ArrayList<PairT<Long,String>> query( String q ) {
 
     // Kick off the recursion
     ArrayList<Character> temp = new ArrayList<Character>( );
@@ -286,13 +286,8 @@ public class Trie {
     // Sort by frequency (count)
     Collections.sort( qres, new QueryComparator( ) );
 
-    // Now map for return
-    ArrayList<String> res = new ArrayList<String>( );
-
-    for( PairT<Long,String> r : qres )
-      res.add( r.b );
-
-    return res;
+    // Return
+    return qres;
 
   }
 

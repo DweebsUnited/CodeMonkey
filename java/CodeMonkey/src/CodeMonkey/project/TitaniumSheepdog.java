@@ -156,8 +156,8 @@ public class TitaniumSheepdog extends PApplet {
         new PVector( 0.5f, 0.25f, 0 ),
         this.normMap );
 
-    this.lend = new PVector( 0.45f, 2.5f, 2.0f );
-    this.rend = new PVector( 0.55f, 2.5f, 2.0f );
+    this.lend = new PVector( 0.05f, 2.5f, 2.0f );
+    this.rend = new PVector( 0.95f, 2.5f, 2.0f );
 
   }
 
@@ -216,7 +216,7 @@ public class TitaniumSheepdog extends PApplet {
       col = this.rng.nextFloat( ) > ah ? this.a : this.b;
 
       this.canvas.fill( col );
-      this.canvas.ellipse( p.x * this.canvas.pixelWidth, ( 1 - p.z ) * this.canvas.pixelHeight, 5, 5 );
+      this.canvas.ellipse( p.x * this.canvas.pixelWidth, ( 1 - p.z ) * this.canvas.pixelHeight, 5, 2 );
       //      System.out.println( String.format( "Hit: %f, %f", p.x, p.z ) );
 
       if( ! this.is2D && c3d++ < this.NUM_RAYS_3D ) {

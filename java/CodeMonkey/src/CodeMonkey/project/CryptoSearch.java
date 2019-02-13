@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import CodeMonkey.utility.Pair;
+import CodeMonkey.utility.PairT;
 import CodeMonkey.utility.Trie;
 
 public class CryptoSearch extends Project {
@@ -127,11 +128,10 @@ public class CryptoSearch extends Project {
     // Load files
 
     //    loadFile( Project.dataDir + "popular.txt", trie );
-    //    loadFile( Project.dataDir + "5000.txt", trie );
-    //    trie.save( Project.dataDir + "trie" );
+    //    loadFile( "C:\\Users\\ElysiumTech\\Downloads\\OANC\\wordlist.txt", trie );
+    //    trie.save( Project.dataDir + "OANC.trie" );
 
-    //    trie.load( Project.dataDir + "trie" );
-    trie.load( Project.dataDir + "Wikipedia" );
+    trie.load( Project.dataDir + "OANC.trie" );
 
     //    trie.print( );
     System.out.println( String.format( "Entries added: %d", trie.size( ) ) );
@@ -192,14 +192,21 @@ public class CryptoSearch extends Project {
 
       System.out.println( String.format( "Searching: %s", line ) );
 
-      ArrayList<String> res = trie.query( line );
+      ArrayList<PairT<Long,String>> res = trie.query( line );
+
+      // Max, used for filtering
+      long maxC = res.get( 0 ).a;
 
       // Num per line
-      int nLine = (int)Math.floor( 80f / ( line.length( ) + 2 ) );
+      int nLine = (int)Math.floor( 80f / ( line.length( ) + 2 + 4 ) );
 
       for( int rdx = 0; rdx < res.size( ); ++rdx ) {
 
-        System.out.print( String.format( ":%s ", res.get( rdx ) ) );
+        // Guaranteed top 100, then only top 95%
+        if( res.get( rdx ).a < maxC * 0.05f && rdx > 100 )
+          break;
+
+        System.out.print( String.format( "%04d:%s ", res.get( rdx ).a, res.get( rdx ).b ) );
 
         if( rdx % nLine == nLine - 1 )
           System.out.println( );
