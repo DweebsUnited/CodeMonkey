@@ -131,7 +131,7 @@ public class CryptoSearch extends Project {
     //    loadFile( "C:\\Users\\ElysiumTech\\Downloads\\OANC\\wordlist.txt", trie );
     //    trie.save( Project.dataDir + "OANC.trie" );
 
-    trie.load( Project.dataDir + "OANC.trie" );
+    trie.load( Project.dataDir + "Wikipedia.trie" );
 
     //    trie.print( );
     System.out.println( String.format( "Entries added: %d", trie.size( ) ) );
