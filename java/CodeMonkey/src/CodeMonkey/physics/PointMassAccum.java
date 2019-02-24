@@ -7,6 +7,7 @@ public class PointMassAccum {
   private PointMass m;
 
   private PVector F;
+  public PVector p;
 
   public PointMassAccum( PVector p, float m ) {
 
@@ -19,6 +20,7 @@ public class PointMassAccum {
     this.m = new PointMass( x, y, m );
 
     this.F = new PVector( 0, 0, 0 );
+    this.p = new PVector( x, y );
 
   }
 
@@ -32,12 +34,7 @@ public class PointMassAccum {
 
     this.m.verlet( this.F, dt );
     this.F.set( 0, 0, 0 );
-
-  }
-
-  public PVector get( ) {
-
-    return this.m.c;
+    this.p.set( this.m.c );
 
   }
 

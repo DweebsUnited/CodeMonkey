@@ -52,4 +52,20 @@ public class Spring {
 
   }
 
+  public static void spring( float k, float x, PVector a, PVector b, PVector fa, PVector fb ) {
+
+    if( fa != null ) {
+      fa.set( b );
+      fa.sub( a );
+      fa.setMag( ( fa.mag( ) - x ) * k );
+    }
+
+    if( fb != null ) {
+      fb.set( a );
+      fb.sub( b );
+      fb.setMag( ( fb.mag( ) - x ) * k );
+    }
+
+  }
+
 }
