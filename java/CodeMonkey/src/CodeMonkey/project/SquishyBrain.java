@@ -36,6 +36,8 @@ public class SquishyBrain extends ProjectBase {
 
   @Override
   public void setup( ) {
+    
+    // TODO: Poisson sample a bunch in the middle, plus the four corners fixed connected to the extremis
 
     // Set up some points and link
     SpringNeuron pa = new Driven( new PVector( this.pixelWidth / 2 - 50, this.pixelHeight / 2 ) );
@@ -46,12 +48,17 @@ public class SquishyBrain extends ProjectBase {
     SpringNeuron pc = new Responsive( new PVector( this.pixelWidth / 2 + 50, this.pixelHeight / 2 ) );
 
     pa.links.add( pba );
+    pba.links.add( pa );
     pa.links.add( pbb );
+    pbb.links.add( pa );
 
     pba.links.add( pc );
     pba.links.add( pbb );
     pbb.links.add( pc );
     pbb.links.add( pba );
+    
+    pc.links.add( pba );
+    pc.links.add( pbb );
 
     this.ps.add( pa );
     this.ps.add( pba );

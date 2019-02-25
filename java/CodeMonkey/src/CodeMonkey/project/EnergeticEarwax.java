@@ -116,16 +116,16 @@ public class EnergeticEarwax extends ProjectBase {
     for( int pdx = 0; pdx < this.pool.size( ); ++pdx ) {
       Point p = this.pool.get( pdx );
 
-      if( this.rng.nextFloat( ) < this.P_SPLIT * Math.pow( this.noise( p.m.get( ).x * this.N_SCALE, p.m.get( ).y * this.N_SCALE ), 2 ) ) {
+      if( this.rng.nextFloat( ) < this.P_SPLIT * Math.pow( this.noise( p.m.p.x * this.N_SCALE, p.m.p.y * this.N_SCALE ), 2 ) ) {
 
         // Check if edge long enough to split
 
-        //        if( PVector.dist( p.m.get( ), p.F.m.get( ) ) < this.D_SPLIT )
+        //        if( PVector.dist( p.m.p, p.F.m.p ) < this.D_SPLIT )
         //          continue;
 
         // Split the edge going forwards
-        PVector h = p.m.get( ).copy( );
-        h.add( p.F.m.get( ) );
+        PVector h = p.m.p.copy( );
+        h.add( p.F.m.p );
         h.mult( 0.5f );
 
         Point s = new Point( );
@@ -150,9 +150,9 @@ public class EnergeticEarwax extends ProjectBase {
     for( int pdx = 0; pdx < this.pool.size( ); ++pdx ) {
       Point p = this.pool.get( pdx );
 
-      this.sE.spring( p.m.get( ), p.B.m.get( ), sFs, null );
+      this.sE.spring( p.m.p, p.B.m.p, sFs, null );
       p.m.accum( sFs );
-      this.sE.spring( p.m.get( ), p.F.m.get( ), sFs, null );
+      this.sE.spring( p.m.p, p.F.m.p, sFs, null );
       p.m.accum( sFs );
 
       for( int ppdx = pdx + 1; ppdx < this.pool.size( ); ++ppdx ) {
@@ -161,10 +161,10 @@ public class EnergeticEarwax extends ProjectBase {
         // Repulsion from all others
         // TODO: Use spatial grid
 
-        if( PVector.dist( p.m.get( ), t.m.get( ) ) > this.R_DIST )
+        if( PVector.dist( p.m.p, t.m.p ) > this.R_DIST )
           continue;
 
-        this.sN.spring( p.m.get( ), t.m.get( ), sFs, sFt );
+        this.sN.spring( p.m.p, t.m.p, sFs, sFt );
         p.m.accum( sFs );
         t.m.accum( sFt );
 
@@ -191,24 +191,24 @@ public class EnergeticEarwax extends ProjectBase {
     this.canvas.fill( 255, 5 );
 
     //    this.canvas.beginShape( );
-    //    this.canvas.curveVertex( this.loop.m.get( ).x, this.loop.m.get( ).y );
+    //    this.canvas.curveVertex( this.loop.m.p.x, this.loop.m.p.y );
     Point p = this.loop;
     while( p.F != this.loop ) {
 
       // Hull line, jagged
-      //      this.canvas.line( p.m.get( ).x, p.m.get( ).y, p.F.m.get( ).x, p.F.m.get( ).y );
+      //      this.canvas.line( p.m.p.x, p.m.p.y, p.F.m.p.x, p.F.m.p.y );
 
       // Points - actually kinda cool
-      this.canvas.ellipse( p.m.get( ).x, p.m.get( ).y, 3, 3 );
+      this.canvas.ellipse( p.m.p.x, p.m.p.y, 3, 3 );
 
       // Smooth hull
-      //      this.canvas.curveVertex( p.m.get( ).x, p.m.get( ).y );
+      //      this.canvas.curveVertex( p.m.p.x, p.m.p.y );
 
       p = p.F;
 
     }
-    //    this.canvas.curveVertex( this.loop.m.get( ).x, this.loop.m.get( ).y );
-    //    this.canvas.curveVertex( this.loop.m.get( ).x, this.loop.m.get( ).y );
+    //    this.canvas.curveVertex( this.loop.m.p.x, this.loop.m.p.y );
+    //    this.canvas.curveVertex( this.loop.m.p.x, this.loop.m.p.y );
     //    this.canvas.endShape( );
 
     this.canvas.endDraw( );

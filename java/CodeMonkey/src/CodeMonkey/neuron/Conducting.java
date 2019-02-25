@@ -5,7 +5,7 @@ import processing.core.PVector;
 public class Conducting extends SpringNeuron {
 
   private static float[] resp;
-  private static final int respStep = 256;
+  private static final int respStep = 32;
   private static final float Q = -0.05f;
   private static final float R = 1.0f;
   private static final float S = -0.15f;

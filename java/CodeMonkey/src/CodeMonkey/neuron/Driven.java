@@ -25,7 +25,7 @@ public class Driven extends Insulating {
 
     this.v = (float)Math.sin( this.uCount++ * Math.PI / ( 30 * 2 ) ); // TODO: Hardcoded to 30 fps
 
-    this.dLen = - this.v * this.dMag / 4;
+    this.dLen = this.v * this.dMag;
 
   }
 

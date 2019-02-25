@@ -24,7 +24,7 @@ public class Responsive extends Conducting {
 
     super.update( );
 
-    this.dLen = - 1000000000000000000f * this.v * this.dMag;
+    this.dLen = - this.v * this.dMag;
 
   }
 

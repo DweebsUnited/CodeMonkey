@@ -32,7 +32,7 @@ public class FullBottle extends ProjectBase {
 
     do {
 
-      b.add( he.vertexData.data.get( ) );
+      b.add( he.vertexData.data.p );
 
       he = he.next;
 
@@ -47,8 +47,8 @@ public class FullBottle extends ProjectBase {
   public PVector getHalf( EdgeData<Object> e ) {
 
     PVector b = new PVector( 0, 0 );
-    b.add( ( (PointMassAccum) e.he.vertexData.data ).get( ) );
-    b.add( ( (PointMassAccum) e.he.pair.vertexData.data ).get( ) );
+    b.add( ( (PointMassAccum) e.he.vertexData.data ).p );
+    b.add( ( (PointMassAccum) e.he.pair.vertexData.data ).p );
     b.mult( 0.5f );
 
     return b;
@@ -94,7 +94,7 @@ public class FullBottle extends ProjectBase {
       this.stroke( 0 );
       for( VertexData<PointMassAccum> vt : this.mesh.vds ) {
 
-        this.ellipse( vt.data.get( ).x, vt.data.get( ).y, 5, 5 );
+        this.ellipse( vt.data.p.x, vt.data.p.y, 5, 5 );
 
       }
 
@@ -107,10 +107,10 @@ public class FullBottle extends ProjectBase {
         vtx = etx.he.pair.vertexData;
 
         this.line(
-            vsx.data.get( ).x,
-            vsx.data.get( ).y,
-            vtx.data.get( ).x,
-            vtx.data.get( ).y );
+            vsx.data.p.x,
+            vsx.data.p.y,
+            vtx.data.p.x,
+            vtx.data.p.y );
 
       }
 
@@ -125,7 +125,7 @@ public class FullBottle extends ProjectBase {
 
         do {
 
-          this.line( bary.x, bary.y, he.vertexData.data.get( ).x, he.vertexData.data.get( ).y );
+          this.line( bary.x, bary.y, he.vertexData.data.p.x, he.vertexData.data.p.y );
 
           he = he.next;
 
@@ -264,8 +264,8 @@ public class FullBottle extends ProjectBase {
         for( EdgeData<Object> etx : this.mesh.eds ) {
 
           PVector epv = new PVector( );
-          epv.set( ( (PointMassAccum) etx.he.vertexData.data ).get( ) );
-          epv.add( ( (PointMassAccum) etx.he.pair.vertexData.data ).get( ) );
+          epv.set( ( (PointMassAccum) etx.he.vertexData.data ).p );
+          epv.add( ( (PointMassAccum) etx.he.pair.vertexData.data ).p );
           epv.mult( 0.5f );
           float dd = PVector.dist( this.getHalf( etx ), m );
 

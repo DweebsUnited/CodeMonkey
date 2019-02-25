@@ -9,7 +9,7 @@ import processing.core.PVector;
 // Base class for neurons with physics
 abstract public class SpringNeuron {
 
-  final float SPRING_K = 15;
+  final float SPRING_K = 25;
 
   // These are needed to draw
   // Stroke color
@@ -20,7 +20,8 @@ abstract public class SpringNeuron {
   public float v;
 
   // Points linked to
-  public ArrayList<SpringNeuron> links;
+  private ArrayList<SpringNeuron> links;
+  private ArrayList<Float> linkDist;
 
   // Physics!
   // Pointmass
@@ -30,14 +31,12 @@ abstract public class SpringNeuron {
 
   // Springs
   // Nominal length
-  // TODO: Parameter
-  private float nomLen = 75;
   // Driven length
   abstract protected float driveLen( );
 
 
   // Constants for child usage
-  protected final float dMag = this.nomLen;
+  protected final float dMag = 25;
 
 
   private void verlet( ) {
@@ -53,9 +52,12 @@ abstract public class SpringNeuron {
     PVector fa = new PVector( 0, 0 );
     PVector fb = new PVector( 0, 0 );
 
-    for( SpringNeuron tp : this.links ) {
+    for( int ldx = 0; ldx < this.links.size( ); ++ldx ) {
+      
+      SpringNeuron tp = this.links.get( ldx );
+      float nomLen = this.linkDist.get( ldx );
 
-      Spring.spring( this.SPRING_K, this.nomLen + this.driveLen( ), this.p, tp.p, fa, fb );
+      Spring.spring( this.SPRING_K, nomLen + this.driveLen( ), this.p, tp.p, fa, fb );
 
       this.receive( fa );
       tp.receive( this.v );
