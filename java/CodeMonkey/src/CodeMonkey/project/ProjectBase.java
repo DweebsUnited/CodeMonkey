@@ -5,7 +5,7 @@ import processing.core.PGraphics;
 
 public class ProjectBase extends PApplet {
 
-  private static String CM = "/Users/ozzy/Documents/CodeMonkey/";
+  protected static String CM = "/Users/ozzy/Documents/CodeMonkey/";
   private static String CMW = "C:\\Users\\ElysiumTech\\Documents\\Personal\\CodeMonkey\\";
   protected static String dataDir = CM + "data/";
   private String name = "DICKSYOUFORGOTTOsetName";
@@ -15,7 +15,8 @@ public class ProjectBase extends PApplet {
     this.name = this.getClass( ).getSimpleName( );
 
     if( System.getProperty( "os.name" ).toLowerCase( ).contains( "windows" ) ) {
-      ProjectBase.dataDir = CMW + "data/";
+      CM = CMW;
+      ProjectBase.dataDir = CM + "data/";
     }
 
   }

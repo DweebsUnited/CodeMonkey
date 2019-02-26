@@ -45,6 +45,14 @@ abstract public class SpringNeuron {
     this.p = this.pm.p.copy( );
 
   }
+  
+  public void link( SpringNeuron n ) {
+    
+    this.links.add( n );
+    
+    this.linkDist.add( PVector.dist( this.p, n.p ) );
+    
+  }
 
   // Send values and forces to links
   public void transmit( ) {
@@ -91,6 +99,7 @@ abstract public class SpringNeuron {
     this.p = new PVector( );
     this.v = 0;
     this.links = new ArrayList<SpringNeuron>( );
+    this.linkDist = new ArrayList<Float>( );
     this.pm = new PointMassAccum( 0, 0, 2.5f );
 
   }

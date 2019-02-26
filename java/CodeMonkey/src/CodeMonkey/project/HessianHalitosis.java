@@ -60,12 +60,19 @@ public class HessianHalitosis extends ProjectBase {
         this.nY[ pdx ] = this.toNegPos.map( this.noise( xdx * this.nScale, ydx * this.nScale, 5 ) );
       }
 
+//    this.palette = new int[] {
+//        this.color( 72, 40, 47 ),
+//        this.color( 68, 82, 99 ),
+//        this.color( 48, 56, 60 ),
+//        this.color( 93, 92, 113 ),
+//        this.color( 224, 188, 85 ),
+//    };
     this.palette = new int[] {
-        this.color( 72, 40, 47 ),
-        this.color( 68, 82, 99 ),
-        this.color( 48, 56, 60 ),
-        this.color( 93, 92, 113 ),
-        this.color( 224, 188, 85 ),
+        this.color(216,129,160),
+        this.color(243,193,120),
+        this.color(0,163,149),
+        this.color(254,94,65),
+        this.color(11,5,0)
     };
 
   }
