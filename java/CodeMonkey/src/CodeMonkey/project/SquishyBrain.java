@@ -3,7 +3,6 @@ package CodeMonkey.project;
 import java.util.ArrayList;
 import java.util.Random;
 
-import CodeMonkey.graph.Node;
 import CodeMonkey.neuron.Conducting;
 import CodeMonkey.neuron.Driven;
 import CodeMonkey.neuron.Fixed;
@@ -18,14 +17,14 @@ import processing.data.JSONObject;
 
 public class SquishyBrain extends ProjectBase {
 
-  private static final float DELY_SQ_LEN_CUTOFF = 500;
+  private static final float DELY_SQ_LEN_CUTOFF = 500 * 500;
 
   public static void main( String[] args ) {
 
     PApplet.main( "CodeMonkey.project.SquishyBrain" );
 
   }
-  
+
   private Random rng = new Random( );
 
   final int sWidth = 720;
@@ -46,44 +45,47 @@ public class SquishyBrain extends ProjectBase {
 
   @Override
   public void setup( ) {
-    
+
     // Poisson sample a bunch in the middle, plus the four corners fixed connected to the extremis
-    PoissonSampler ps = new PoissonSampler( 100, 100, 5 );
-    
+    PoissonSampler ps = new PoissonSampler( this.sWidth * 3f / 4, this.sHeigh * 3f / 4, 50 );
+    PVector offset = new PVector( this.sWidth / 8f, this.sHeigh / 8f );
+
     // Add points to JSON file for triangulation
     JSONArray pts = new JSONArray( );
 
     // But set them up as we go
     for( PVector p : ps.sample ) {
 
+      p.add( offset );
+
       // Index and object
       int ndx = this.ns.size( );
       SpringNeuron sn;
-      
+
       // Probabilities to become of each type
-      float rf = rng.nextFloat( );
+      float rf = this.rng.nextFloat( );
       if( rf < 0.25 ) {
-        
+
         sn = new Conducting( p );
-        
+
       } else if( rf < 0.5 ) {
-        
+
         sn = new Insulating( p );
-        
+
       } else if( rf < 0.75 ) {
-        
+
         sn = new Responsive( p );
-        
+
       } else if( rf < 0.875 ){
-        
-        sn = new Fixed( p );
-        
+
+        sn = new Conducting( p );
+
       } else {
-        
+
         sn = new Driven( p );
-        
+
       }
-      
+
       // Add to the list
       this.ns.add( sn );
 
@@ -98,44 +100,34 @@ public class SquishyBrain extends ProjectBase {
       pts.append( pt );
 
     }
-    
+
     // Hardcoded, add in a few fixed at the corners to keep it from flying off
     int ndxtl = this.ns.size( );
-    SpringNeuron sntl = new Fixed( new PVector( -10, -10 ) );
-    SpringNeuron sntr = new Fixed( new PVector(  10, -10 ) );
-    SpringNeuron snbl = new Fixed( new PVector( -10,  10 ) );
-    SpringNeuron snbr = new Fixed( new PVector(  10,  10 ) );
-    
+    SpringNeuron sntl = new Fixed( new PVector( this.sWidth / 8f * 7 + 15, this.sHeigh / 8f * 7 + 15 ) );
+    SpringNeuron sntr = new Fixed( new PVector( this.sWidth / 8f - 15,     this.sHeigh / 8f * 7 + 15 ) );
+    SpringNeuron snbl = new Fixed( new PVector( this.sWidth / 8f * 7 + 15, this.sHeigh / 8f - 15     ) );
+    SpringNeuron snbr = new Fixed( new PVector( this.sWidth / 8f - 15,     this.sHeigh / 8f - 15     ) );
+
     this.ns.add( sntl );
     this.ns.add( sntr );
     this.ns.add( snbl );
     this.ns.add( snbr );
-    
-    JSONObject pttl = new JSONObject( );
-    pttl.setInt(   "id", ndxtl );
-    pttl.setFloat( "x",  -10 );
-    pttl.setFloat( "y",  -10 );
-    pttl.setFloat( "z",    0 );
-    pts.append( pttl );
-    JSONObject pttr = new JSONObject( );
-    pttr.setInt(   "id", ndxtl + 1 );
-    pttr.setFloat( "x",   10 );
-    pttr.setFloat( "y",  -10 );
-    pttr.setFloat( "z",    0 );
-    pts.append( pttr );
-    JSONObject ptbl = new JSONObject( );
-    ptbl.setInt(   "id", ndxtl + 2 );
-    ptbl.setFloat( "x",  -10 );
-    ptbl.setFloat( "y",   10 );
-    ptbl.setFloat( "z",    0 );
-    pts.append( ptbl );
-    JSONObject ptbr = new JSONObject( );
-    ptbr.setInt(   "id", ndxtl + 3 );
-    ptbr.setFloat( "x",   10 );
-    ptbr.setFloat( "y",   10 );
-    ptbr.setFloat( "z",    0 );
-    pts.append( ptbr );
-    
+
+    for( int cdx = 0; cdx < 4; ++cdx ) {
+
+      SpringNeuron sn = this.ns.get( ndxtl + cdx );
+
+      JSONObject pt = new JSONObject( );
+
+      pt.setInt(   "id", ndxtl + cdx );
+      pt.setFloat( "x",  sn.p.x );
+      pt.setFloat( "y",  sn.p.y );
+      pt.setFloat( "z",  sn.p.z );
+
+      pts.append( pt );
+
+    }
+
 
     this.saveJSONArray( pts, dataDir + "SquishyBrain.json" );
 
@@ -146,8 +138,8 @@ public class SquishyBrain extends ProjectBase {
       Process p = Runtime.getRuntime( ).exec(
           new String[ ] {
               CM + "TombstoneTriangulator/TombstoneTriangulator",
-              "t",
-              dataDir + "SquisyBrain.json",
+              "z",
+              dataDir + "SquishyBrain.json",
               dataDir + "SBTriang.json"
           } );
 
@@ -168,6 +160,9 @@ public class SquishyBrain extends ProjectBase {
     //   Cutoff length, so we don't get an awkward hull
     JSONArray edges = triangulation.getJSONArray( "edges" );
 
+    int eCount = 0;
+    float dAccum = 0;
+
     for( int edx = 0; edx < edges.size( ); ++edx ) {
 
       JSONObject e = edges.getJSONObject( edx );
@@ -178,14 +173,19 @@ public class SquishyBrain extends ProjectBase {
       SpringNeuron na = this.ns.get( a );
       SpringNeuron nb = this.ns.get( b );
 
+      dAccum += na.p.dist( nb.p );
+      eCount += 1;
+
       if( na.p.dist( nb.p ) < DELY_SQ_LEN_CUTOFF ) {
-        
+
         na.link( nb );
         nb.link( na );
-        
+
       }
 
     }
+
+    System.out.println( String.format( "Avg Len: %f", dAccum / eCount ) );
 
   }
 

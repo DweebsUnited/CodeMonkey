@@ -49,14 +49,21 @@ class ChaosSquare {
     this.min = min.copy( );
     this.max = max.copy( );
     
-    if( this.rng.nextFloat( ) < 6.0 / 25 ) {
+    float rf = this.rng.nextFloat( );
+    if( rf < 3.0 / 25 ) {
       
-      this.c = color( 137, 207, 240, this.opa );
+      //this.c = color( 137, 207, 240, this.opa );
+      this.c = color( #F3B61F );
+      this.isBase = false;
+      
+    } else if( rf < 6.0 / 25 ) {
+      
+      this.c = color( #8EC1BD );
       this.isBase = false;
       
     } else {
       
-      this.c = color( 128, this.opa );
+      this.c = color( #848484 );
       this.isBase = true;
       
     }

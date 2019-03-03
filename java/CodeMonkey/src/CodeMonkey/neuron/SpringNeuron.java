@@ -21,7 +21,8 @@ abstract public class SpringNeuron {
 
   // Points linked to
   private ArrayList<SpringNeuron> links;
-  private ArrayList<Float> linkDist;
+  private float linkDist = 15;
+  //  private ArrayList<Float> linkDist;
 
   // Physics!
   // Pointmass
@@ -45,13 +46,13 @@ abstract public class SpringNeuron {
     this.p = this.pm.p.copy( );
 
   }
-  
+
   public void link( SpringNeuron n ) {
-    
+
     this.links.add( n );
-    
-    this.linkDist.add( PVector.dist( this.p, n.p ) );
-    
+
+    //    this.linkDist.add( PVector.dist( this.p, n.p ) );
+
   }
 
   // Send values and forces to links
@@ -61,11 +62,11 @@ abstract public class SpringNeuron {
     PVector fb = new PVector( 0, 0 );
 
     for( int ldx = 0; ldx < this.links.size( ); ++ldx ) {
-      
-      SpringNeuron tp = this.links.get( ldx );
-      float nomLen = this.linkDist.get( ldx );
 
-      Spring.spring( this.SPRING_K, nomLen + this.driveLen( ), this.p, tp.p, fa, fb );
+      SpringNeuron tp = this.links.get( ldx );
+      //      float nomLen = this.linkDist.get( ldx );
+
+      Spring.spring( this.SPRING_K, this.linkDist + this.driveLen( ), this.p, tp.p, fa, fb );
 
       this.receive( fa );
       tp.receive( this.v );
@@ -99,7 +100,7 @@ abstract public class SpringNeuron {
     this.p = new PVector( );
     this.v = 0;
     this.links = new ArrayList<SpringNeuron>( );
-    this.linkDist = new ArrayList<Float>( );
+    //    this.linkDist = new ArrayList<Float>( );
     this.pm = new PointMassAccum( 0, 0, 2.5f );
 
   }
