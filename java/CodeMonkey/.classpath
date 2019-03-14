@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="HEMesh"/>
-	<classpathentry kind="lib" path="HEMeshLib/arpack-combo.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/csparsej.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/eclipse-collections-9.0.0.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/eclipse-collections-api-9.0.0.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/exp4j-0.4.7.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/hemesh-data-3_0_0.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/hemesh-external-4_0_0.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/jplasma.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/jtransforms.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/jts-1.14.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/junit.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/netlib-java.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/optimization.jar"/>
-	<classpathentry kind="lib" path="HEMeshLib/parallelcolt-0.9.4.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/core.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-aarch64.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-amd64.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-armv6hf.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-i586.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-macosx-universal.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-windows-amd64.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-windows-i586.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-linux-aarch64.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-linux-amd64.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-linux-armv6hf.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-linux-i586.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-macosx-universal.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-amd64.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-i586.jar"/>
-	<classpathentry kind="lib" path="ProcessingLib/jogl-all.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/arpack-combo.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/csparsej.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/eclipse-collections-9.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/eclipse-collections-api-9.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/exp4j-0.4.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/hemesh-data-3_0_0.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/hemesh-external-4_0_0.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/jplasma.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/jtransforms.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/jts-1.14.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/junit.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/netlib-java.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/optimization.jar"/>
+	<classpathentry exported="true" kind="lib" path="HEMeshLib/parallelcolt-0.9.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/core.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-aarch64.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-armv6hf.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-macosx-universal.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-windows-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-windows-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-linux-aarch64.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-linux-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-linux-armv6hf.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-linux-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-macosx-universal.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-windows-amd64.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-windows-i586.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -38,9 +38,9 @@ public class MovingPlates extends ProjectBase {
 	// Number of subdivision rounds to run
 	private final int nSub = 3;
 	// Probability to pick an edge
-	private final double eProb = 0.05;
+	private final double eProb = 0.1;
 	// Number of edges to flip before relaxing
-	private final int nFlip = 1;
+	private final int nFlip = 4;
 
 	private HE_Mesh mesh, dual;
 	private WB_Render render;
