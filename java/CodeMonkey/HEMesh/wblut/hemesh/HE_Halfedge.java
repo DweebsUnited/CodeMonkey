@@ -175,6 +175,10 @@ public class HE_Halfedge extends HE_MeshElement implements Comparable<HE_Halfedg
 		_next = he;
 	}
 
+	public void setNext(final HE_Halfedge he) {
+		this._setNext( he );
+	}
+
 	/**
 	 * Sets previous halfedge in face, only to be called by setNext.
 	 *
@@ -185,6 +189,10 @@ public class HE_Halfedge extends HE_MeshElement implements Comparable<HE_Halfedg
 		_prev = he;
 	}
 
+	public void setPrev(final HE_Halfedge he) {
+		this._setPrev( he );
+	}
+
 	/**
 	 * Pair halfedges.
 	 *
@@ -193,6 +201,10 @@ public class HE_Halfedge extends HE_MeshElement implements Comparable<HE_Halfedg
 	 */
 	protected void _setPair(final HE_Halfedge he) {
 		_pair = he;
+	}
+
+	public void setPair(final HE_Halfedge he) {
+		this._setPair( he );
 	}
 
 	/**
@@ -341,6 +353,11 @@ public class HE_Halfedge extends HE_MeshElement implements Comparable<HE_Halfedg
 		_face = face;
 	}
 
+	public void setFace(final HE_Face face) {
+		this._setFace( face );
+	}
+
+
 	/**
 	 * Get vertex of halfedge.
 	 *
@@ -375,6 +392,10 @@ public class HE_Halfedge extends HE_MeshElement implements Comparable<HE_Halfedg
 	 */
 	protected void _setVertex(final HE_Vertex vertex) {
 		_vertex = vertex;
+	}
+
+	public void setVertex(final HE_Vertex vertex) {
+		this._setVertex( vertex );
 	}
 
 	/**

@@ -452,6 +452,11 @@ public class HE_Face extends HE_MeshElement implements Comparable<HE_Face>, WB_T
 		_halfedge = halfedge;
 	}
 
+	public void setHalfedge(final HE_Halfedge halfedge) {
+		this._setHalfedge( halfedge );
+		this.clearPrecomputed( );
+	}
+
 	/**
 	 *
 	 *

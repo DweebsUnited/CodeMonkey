@@ -9,6 +9,7 @@ import wblut.hemesh.HEM_Spherify;
 import wblut.hemesh.HES_PlanarMidEdge;
 import wblut.hemesh.HES_Subdividor;
 import wblut.hemesh.HE_EdgeIterator;
+import wblut.hemesh.HE_Face;
 import wblut.hemesh.HE_Halfedge;
 import wblut.hemesh.HE_Mesh;
 import wblut.hemesh.HE_Selection;
@@ -37,9 +38,9 @@ public class MovingPlates extends ProjectBase {
 	// Number of subdivision rounds to run
 	private final int nSub = 3;
 	// Probability to pick an edge
-	private final double eProb = 0.1;
+	private final double eProb = 0.05;
 	// Number of edges to flip before relaxing
-	private final int nFlip = 16;
+	private final int nFlip = 1;
 
 	private HE_Mesh mesh, dual;
 	private WB_Render render;
@@ -53,7 +54,39 @@ public class MovingPlates extends ProjectBase {
 	public void flipEdge( HE_Halfedge e ) {
 
 		// Step one: gather relevant objects
-		e._setPair( e );
+		HE_Halfedge e0 = e;
+		HE_Halfedge e1 = e0.getPair( );
+		HE_Halfedge e2 = e0.getNextInFace( );
+		HE_Halfedge e3 = e2.getNextInFace( );
+		HE_Halfedge e4 = e1.getNextInFace( );
+		HE_Halfedge e5 = e4.getNextInFace( );
+
+		HE_Face f0 = e0.getFace( );
+		HE_Face f1 = e1.getFace( );
+
+		e0.setNext( e3 );
+		e0.setPrev( e4 );
+
+		e1.setNext( e5 );
+		e1.setPrev( e2 );
+
+		e2.setNext( e1 );
+		e2.setPrev( e5 );
+
+		e3.setNext( e4 );
+		e3.setPrev( e0 );
+
+		e4.setNext( e0 );
+		e4.setPrev( e3 );
+
+		e5.setNext( e2 );
+		e5.setPrev( e1 );
+
+		e4.setFace( f0 );
+		e2.setFace( f1 );
+
+		f0.setHalfedge( e0 );
+		f1.setHalfedge( e1 );
 
 	}
 
@@ -114,7 +147,8 @@ public class MovingPlates extends ProjectBase {
 
 			HE_Halfedge e = iter.next( );
 
-			// TODO: rotateEdge if valid
+			// TODO: check if valid before flipping
+			this.flipEdge( e );
 
 			// Batch flip then smooth
 			if( nFlipped % nFlip == 0 )
