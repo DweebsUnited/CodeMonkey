@@ -1,22 +1,22 @@
 package CodeMonkey.spatial.HalfEdge;
 
-public class VertexData<VD> {
+public class VertexData< VD > {
 
-  public VD data;
-  public HalfEdge he;
+	public VD data;
+	public HalfEdge he;
 
-  public VertexData( ) { }
+	public VertexData( ) {}
 
-  public VertexData( VD data ) {
+	public VertexData( VD data ) {
 
-    this.data = data;
+		this.data = data;
 
-  }
+	}
 
-  public boolean isolated( ) {
+	public boolean isolated( ) {
 
-    return this.he == null;
+		return this.he == null;
 
-  }
+	}
 
 }

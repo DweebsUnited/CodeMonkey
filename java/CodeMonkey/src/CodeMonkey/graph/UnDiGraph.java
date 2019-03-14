@@ -3,76 +3,77 @@ package CodeMonkey.graph;
 import java.util.ArrayList;
 import java.util.function.ToDoubleBiFunction;
 
-public class UnDiGraph<T> extends DiGraph<T> {
 
-  private static final int PATH_CUTOFF = 50;
+public class UnDiGraph< T > extends DiGraph< T > {
 
-  public UnDiGraph( ) {
+	private static final int PATH_CUTOFF = 50;
 
-    super( );
+	public UnDiGraph( ) {
 
-  }
+		super( );
 
-  @Override
-  public boolean link( int a, int b ) {
+	}
 
-    Node<T> na = this.getNode( a );
-    Node<T> nb = this.getNode( b );
+	@Override
+	public boolean link( int a, int b ) {
 
-    if( na == null || nb == null )
-      return false;
+		Node< T > na = this.getNode( a );
+		Node< T > nb = this.getNode( b );
 
-    na.link( nb );
-    nb.link( na );
+		if( na == null || nb == null )
+			return false;
 
-    return true;
+		na.link( nb );
+		nb.link( na );
 
-  }
+		return true;
 
-  public ArrayList<Integer> greedyPath( int a, int b, ToDoubleBiFunction<T, T> dist ) {
+	}
 
-    ArrayList<Integer> path = new ArrayList<Integer>( );
+	public ArrayList< Integer > greedyPath( int a, int b, ToDoubleBiFunction< T, T > dist ) {
 
-    path.add( a );
+		ArrayList< Integer > path = new ArrayList< Integer >( );
 
-    Node<T> src  = this.getNode( a );
-    Node<T> dest = this.getNode( b );
+		path.add( a );
 
-    int curr = a;
-    Node<T> currN = src;
+		Node< T > src = this.getNode( a );
+		Node< T > dest = this.getNode( b );
 
-    while( curr != b ) {
+		int curr = a;
+		Node< T > currN = src;
 
-      // Bail if we get too long -> greedy can be trapped
+		while( curr != b ) {
 
-      if( path.size( ) > PATH_CUTOFF )
-        return null;
+			// Bail if we get too long -> greedy can be trapped
 
-      // Find neighbor of curr closest to b
-      //   TODO: Don't allow using same node twice
-      double closen = Float.POSITIVE_INFINITY;
+			if( path.size( ) > UnDiGraph.PATH_CUTOFF )
+				return null;
 
-      for( Node<T> neigh : currN.links ) {
+			// Find neighbor of curr closest to b
+			// TODO: Don't allow using same node twice
+			double closen = Float.POSITIVE_INFINITY;
 
-        double neighd = dist.applyAsDouble( dest.val, neigh.val );
+			for( Node< T > neigh : currN.links ) {
 
-        if( neighd < closen ) {
+				double neighd = dist.applyAsDouble( dest.val, neigh.val );
 
-          closen = neighd;
+				if( neighd < closen ) {
 
-          curr = neigh.ID;
-          currN = neigh;
+					closen = neighd;
 
-        }
+					curr = neigh.ID;
+					currN = neigh;
 
-      }
+				}
 
-      path.add( curr );
+			}
 
-    }
+			path.add( curr );
 
-    return path;
+		}
 
-  }
+		return path;
+
+	}
 
 }

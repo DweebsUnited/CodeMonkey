@@ -2,51 +2,53 @@ package CodeMonkey.utility;
 
 import java.util.ArrayList;
 
-public class Grid2D<T> {
 
-  private ArrayList<ArrayList<T>> grid;
-  public int width, height;
+public class Grid2D< T > {
 
-  public Grid2D( int width, int height ) {
+	private ArrayList< ArrayList< T > > grid;
+	public int width, height;
 
-    this.width = width;
-    this.height = height;
+	public Grid2D( int width, int height ) {
 
-    this.grid = new ArrayList<ArrayList<T>>( );
+		this.width = width;
+		this.height = height;
 
-    for( int hdx = 0; hdx < height; ++hdx ) {
+		this.grid = new ArrayList< ArrayList< T > >( );
 
-      ArrayList<T> row = new ArrayList<T>( );
+		for( int hdx = 0; hdx < height; ++hdx ) {
 
-      this.grid.add( row );
+			ArrayList< T > row = new ArrayList< T >( );
 
-      for( int wdx = 0; wdx < width; ++wdx ) {
+			this.grid.add( row );
 
-        row.add( null );
+			for( int wdx = 0; wdx < width; ++wdx ) {
 
-      }
+				row.add( null );
 
-    }
+			}
 
-  }
+		}
 
-  public void set( int x, int y, T val ) {
+	}
 
-    this.grid.get( y ).set( x, val );
+	public void set( int x, int y, T val ) {
 
-  }
+		this.grid.get( y ).set( x, val );
 
-  public T get( int x, int y ) {
+	}
 
-    try {
-      return this.grid.get( y ).get( x );
-    } catch( Exception e ) {
+	public T get( int x, int y ) {
 
-      System.out.println( String.format( "Error getting: %d, %d in size %d, %d", x, y, this.grid.get( 0 ).size( ), this.grid.size( ) ) );
-      return null;
+		try {
+			return this.grid.get( y ).get( x );
+		} catch( Exception e ) {
 
-    }
+			System.out.println( String.format( "Error getting: %d, %d in size %d, %d", x, y, this.grid.get( 0 ).size( ),
+					this.grid.size( ) ) );
+			return null;
 
-  }
+		}
+
+	}
 
 }

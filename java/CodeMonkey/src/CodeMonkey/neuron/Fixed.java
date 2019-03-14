@@ -2,19 +2,26 @@ package CodeMonkey.neuron;
 
 import processing.core.PVector;
 
+
 public class Fixed extends Insulating {
 
-  public Fixed( ) {
-    super( );
-  }
-  public Fixed( PVector sp ) {
-    super( sp );
-  }
+	public Fixed( ) {
 
-  @Override
-  public void update( ) { }
+		super( );
+	}
 
-  @Override
-  public int c( ) { return 0xFF7F7F7F; }
+	public Fixed( PVector sp ) {
+
+		super( sp );
+	}
+
+	@Override
+	public void update( ) {}
+
+	@Override
+	public int c( ) {
+
+		return 0xFF7F7F7F;
+	}
 
 }

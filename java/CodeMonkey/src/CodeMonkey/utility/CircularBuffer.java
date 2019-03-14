@@ -2,27 +2,28 @@ package CodeMonkey.utility;
 
 import java.util.ArrayList;
 
-public class CircularBuffer<T> {
 
-  public ArrayList<T> buffer;
+public class CircularBuffer< T > {
 
-  private int wH = 0;
+	public ArrayList< T > buffer;
 
-  public CircularBuffer( int size ) {
+	private int wH = 0;
 
-    this.buffer = new ArrayList<T>( );
+	public CircularBuffer( int size ) {
 
-    for( int odx = 0; odx < size; ++odx )
-      this.buffer.add( null );
+		this.buffer = new ArrayList< T >( );
 
-  }
+		for( int odx = 0; odx < size; ++odx )
+			this.buffer.add( null );
 
-  public void add( T val ) {
+	}
 
-    this.buffer.set( this.wH++, val );
+	public void add( T val ) {
 
-    this.wH = ( this.wH >= this.buffer.size( ) ) ? 0 : this.wH;
+		this.buffer.set( this.wH++, val );
 
-  }
+		this.wH = ( this.wH >= this.buffer.size( ) ) ? 0 : this.wH;
+
+	}
 
 }

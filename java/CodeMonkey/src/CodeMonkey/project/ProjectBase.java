@@ -3,59 +3,60 @@ package CodeMonkey.project;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
+
 public class ProjectBase extends PApplet {
 
-  protected static String CM = "/Users/ozzy/Documents/CodeMonkey/";
-  private static String CMW = "C:\\Users\\ElysiumTech\\Documents\\Personal\\CodeMonkey\\";
-  protected static String dataDir = CM + "data/";
-  private String name = "DICKSYOUFORGOTTOsetName";
+	protected static String CM = "/Users/ozzy/Documents/CodeMonkey/";
+	private static String CMW = "C:\\Users\\ElysiumTech\\Documents\\Personal\\CodeMonkey\\";
+	protected static String dataDir = ProjectBase.CM + "data/";
+	private String name = "DICKSYOUFORGOTTOsetName";
 
-  protected void setName( ) {
+	protected void setName( ) {
 
-    this.name = this.getClass( ).getSimpleName( );
+		this.name = this.getClass( ).getSimpleName( );
 
-    if( System.getProperty( "os.name" ).toLowerCase( ).contains( "windows" ) ) {
-      CM = CMW;
-      ProjectBase.dataDir = CM + "data/";
-    }
+		if( System.getProperty( "os.name" ).toLowerCase( ).contains( "windows" ) ) {
+			ProjectBase.CM = ProjectBase.CMW;
+			ProjectBase.dataDir = ProjectBase.CM + "data/";
+		}
 
-  }
+	}
 
-  public void save( ) {
+	public void save( ) {
 
-    this.save( ".png" );
+		this.save( ".png" );
 
-  }
+	}
 
-  public void save( int sqx ) {
+	public void save( int sqx ) {
 
-    this.save( "_" + Integer.toString( sqx ) + ".png" );
+		this.save( "_" + Integer.toString( sqx ) + ".png" );
 
-  }
+	}
 
-  @Override
-  public void save( String ext ) {
+	@Override
+	public void save( String ext ) {
 
-    this.saveFrame( dataDir + this.name + ext );
+		this.saveFrame( ProjectBase.dataDir + this.name + ext );
 
-  }
+	}
 
-  public void save( PGraphics canvas ) {
+	public void save( PGraphics canvas ) {
 
-    this.save( canvas, ".png" );
+		this.save( canvas, ".png" );
 
-  }
+	}
 
-  public void save( PGraphics canvas, int sqx ) {
+	public void save( PGraphics canvas, int sqx ) {
 
-    this.save( canvas, "_" + Integer.toString( sqx ) + ".png" );
+		this.save( canvas, "_" + Integer.toString( sqx ) + ".png" );
 
-  }
+	}
 
-  public void save( PGraphics canvas, String ext ) {
+	public void save( PGraphics canvas, String ext ) {
 
-    canvas.save( dataDir + this.name + ext );
+		canvas.save( ProjectBase.dataDir + this.name + ext );
 
-  }
+	}
 
 }

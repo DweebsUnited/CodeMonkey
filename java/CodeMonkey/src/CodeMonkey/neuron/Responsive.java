@@ -2,37 +2,41 @@ package CodeMonkey.neuron;
 
 import processing.core.PVector;
 
+
 public class Responsive extends Conducting {
 
-  private float dLen;
+	private float dLen;
 
-  public Responsive( ) {
-    super( );
-  }
+	public Responsive( ) {
 
-  public Responsive( PVector sp ) {
-    super( sp );
-  }
+		super( );
+	}
 
-  @Override
-  public int c( ) {
-    return 0xFF00FF00;
-  }
+	public Responsive( PVector sp ) {
 
-  @Override
-  public void update( ) {
+		super( sp );
+	}
 
-    super.update( );
+	@Override
+	public int c( ) {
 
-    this.dLen = - this.v * this.dMag;
+		return 0xFF00FF00;
+	}
 
-  }
+	@Override
+	public void update( ) {
 
-  @Override
-  protected float driveLen( ) {
+		super.update( );
 
-    return this.dLen;
+		this.dLen = -this.v * this.dMag;
 
-  }
+	}
+
+	@Override
+	protected float driveLen( ) {
+
+		return this.dLen;
+
+	}
 
 }

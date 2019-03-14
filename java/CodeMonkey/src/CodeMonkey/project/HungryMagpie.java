@@ -4,238 +4,236 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
+
 public class HungryMagpie extends ProjectBase {
 
-  // Starting with squares of certain size, subdivide if range of colors too big
+	// Starting with squares of certain size, subdivide if range of colors too big
 
-  public static void main( String[] args ) {
+	public static void main( String[ ] args ) {
 
-    PApplet.main( "CodeMonkey.project.HungryMagpie" );
+		PApplet.main( "CodeMonkey.project.HungryMagpie" );
 
-  }
+	}
 
-  private static PApplet context;
+	private static PApplet context;
 
-  private static final int SQ_W_M = 4;
-  private static final float SQ_DIFFERENCE = 175 * 175 * 3;
-  private static final float H_DIFFERENCE = 160f;
+	private static final int SQ_W_M = 4;
+	private static final float SQ_DIFFERENCE = 175 * 175 * 3;
+	private static final float H_DIFFERENCE = 160f;
 
-  //  private static Random rng = new Random( );
+	// private static Random rng = new Random( );
 
-  private final int cWidth = 640;
+	private final int cWidth = 640;
 
-  private static class Stats {
+	private static class Stats {
 
-    public long r = 0, g = 0, b = 0;
-    public int nPx;
+		public long r = 0, g = 0, b = 0;
+		public int nPx;
 
-    public float Mhue = Float.NEGATIVE_INFINITY;
-    public float mhue = Float.POSITIVE_INFINITY;
+		public float Mhue = Float.NEGATIVE_INFINITY;
+		public float mhue = Float.POSITIVE_INFINITY;
 
-    public boolean tooBig = false;
+		public boolean tooBig = false;
 
-  }
+	}
 
-  private static Stats getStats( PImage img, int x, int y, int w, int h ) {
+	private static Stats getStats( PImage img, int x, int y, int w, int h ) {
 
-    System.out.println( String.format( "Stats: %d, %d", w, h ) );
+		System.out.println( String.format( "Stats: %d, %d", w, h ) );
 
-    Stats s = new Stats( );
+		Stats s = new Stats( );
 
-    int cdx, ccdx, c, cc, r, cr, g, cg, b, cb, d;
+		int cdx, ccdx, c, cc, r, cr, g, cg, b, cb, d;
 
-    float hue, chue, hd;
+		float hue, chue, hd;
 
-    s.nPx = w * h;
+		s.nPx = w * h;
 
-    s.tooBig = false;
+		s.tooBig = false;
 
-    for( int ydx = 0; ydx < h; ++ydx ) {
-      for( int xdx = 0; xdx < w; ++xdx ) {
+		for( int ydx = 0; ydx < h; ++ydx ) {
+			for( int xdx = 0; xdx < w; ++xdx ) {
 
-        cdx = ( x + xdx ) + ( y + ydx ) * img.width;
+				cdx = ( x + xdx ) + ( y + ydx ) * img.width;
 
-        c = img.pixels[ cdx ];
+				c = img.pixels[ cdx ];
 
-        r = ( c >> 16 ) & 0xFF;
-        g = ( c >> 8  ) & 0xFF;
-        b = ( c >> 0  ) & 0xFF;
+				r = ( c >> 16 ) & 0xFF;
+				g = ( c >> 8 ) & 0xFF;
+				b = ( c >> 0 ) & 0xFF;
 
-        hue = context.hue( c );
+				hue = HungryMagpie.context.hue( c );
 
-        if( hue > s.Mhue )
-          s.Mhue = hue;
-        if( hue < s.mhue )
-          s.mhue = hue;
+				if( hue > s.Mhue )
+					s.Mhue = hue;
+				if( hue < s.mhue )
+					s.mhue = hue;
 
-        for( int yydx = ydx; yydx < h && s.tooBig == false; ++ yydx ) {
-          for( int xxdx = xdx + 1; xxdx < w && s.tooBig == false; ++xxdx ) {
+				for( int yydx = ydx; yydx < h && s.tooBig == false; ++yydx ) {
+					for( int xxdx = xdx + 1; xxdx < w && s.tooBig == false; ++xxdx ) {
 
-            ccdx = ( x + xxdx ) + ( y + yydx ) * img.width;
+						ccdx = ( x + xxdx ) + ( y + yydx ) * img.width;
 
-            cc = img.pixels[ ccdx ];
+						cc = img.pixels[ ccdx ];
 
-            //            cr = r - ( ( cc >> 16 ) & 0xFF );
-            //            cg = g - ( ( cc >> 8  ) & 0xFF );
-            //            cb = b - ( ( cc >> 0  ) & 0xFF );
+						// cr = r - ( ( cc >> 16 ) & 0xFF );
+						// cg = g - ( ( cc >> 8 ) & 0xFF );
+						// cb = b - ( ( cc >> 0 ) & 0xFF );
 
-            hd = Math.abs( hue - context.hue( cc ) );
-            hd = Math.min( hd, 360 - hd );
+						hd = Math.abs( hue - HungryMagpie.context.hue( cc ) );
+						hd = Math.min( hd, 360 - hd );
 
-            //            d = cr * cr + cg * cg + cb * cb;
-            //            if( d > SQ_DIFFERENCE )
-            if( hd > H_DIFFERENCE )
-              s.tooBig = true;
+						// d = cr * cr + cg * cg + cb * cb;
+						// if( d > SQ_DIFFERENCE )
+						if( hd > HungryMagpie.H_DIFFERENCE )
+							s.tooBig = true;
 
-          }
-        }
+					}
+				}
 
-        s.r += r * r;
-        s.g += g * g;
-        s.b += b * b;
+				s.r += r * r;
+				s.g += g * g;
+				s.b += b * b;
 
-      }
-    }
+			}
+		}
 
-    s.r = Math.round( Math.sqrt( s.r / s.nPx ) );
-    s.g = Math.round( Math.sqrt( s.g / s.nPx ) );
-    s.b = Math.round( Math.sqrt( s.b / s.nPx ) );
+		s.r = Math.round( Math.sqrt( s.r / s.nPx ) );
+		s.g = Math.round( Math.sqrt( s.g / s.nPx ) );
+		s.b = Math.round( Math.sqrt( s.b / s.nPx ) );
 
-    return s;
+		return s;
 
-  }
+	}
 
-  private class Rect {
+	private class Rect {
 
-    public int tlx, tly;
-    public int wx, wy;
+		public int tlx, tly;
+		public int wx, wy;
 
-    public int color;
+		public int color;
 
-    public Rect TL, TR, BL, BR;
+		public Rect TL, TR, BL, BR;
 
-    public Rect( PImage img, int x, int y, int w, int h, int SQ_W, Stats s ) {
+		public Rect( PImage img, int x, int y, int w, int h, int SQ_W, Stats s ) {
 
-      System.out.println( String.format( "Starting square with width and height: %d, %d", w, h ) );
+			System.out.println( String.format( "Starting square with width and height: %d, %d", w, h ) );
 
-      this.tlx = x;
-      this.tly = y;
-      this.wx = w;
-      this.wy = h;
+			this.tlx = x;
+			this.tly = y;
+			this.wx = w;
+			this.wy = h;
 
-      // Half width and height
-      int hw = w / 2;
-      int hh = h / 2;
+			// Half width and height
+			int hw = w / 2;
+			int hh = h / 2;
 
-      // Calculate the stats
-      Stats TLS = getStats( img, x,      y,      hw,     hh     );
-      Stats TRS = getStats( img, x + hw, y,      w - hw, hh     );
-      Stats BLS = getStats( img, x,      y + hh, hw,     h - hh );
-      Stats BRS = getStats( img, x + hw, y + hh, w - hw, h - hh );
+			// Calculate the stats
+			Stats TLS = HungryMagpie.getStats( img, x, y, hw, hh );
+			Stats TRS = HungryMagpie.getStats( img, x + hw, y, w - hw, hh );
+			Stats BLS = HungryMagpie.getStats( img, x, y + hh, hw, h - hh );
+			Stats BRS = HungryMagpie.getStats( img, x + hw, y + hh, w - hw, h - hh );
 
-      // Our color
-      this.color = HungryMagpie.this.color( s.r, s.g, s.b );
+			// Our color
+			this.color = HungryMagpie.this.color( s.r, s.g, s.b );
 
-      // Split conditions
-      // Minimum size block, don't split past
-      if( this.wx < SQ_W || this.wy < SQ_W )
-        return;
+			// Split conditions
+			// Minimum size block, don't split past
+			if( this.wx < SQ_W || this.wy < SQ_W )
+				return;
 
-      // Split valdity per quadrant by biggest color difference
-      if( TLS.tooBig )
-        this.TL = new Rect( img, x,      y,      hw,     hh,     SQ_W, TLS );
-      if( TRS.tooBig )
-        this.TR = new Rect( img, x + hw, y,      w - hw, hh,     SQ_W, TRS );
-      if( BLS.tooBig )
-        this.BL = new Rect( img, x,      y + hh, hw,     h - hh, SQ_W, BLS );
-      if( BRS.tooBig )
-        this.BR = new Rect( img, x + hw, y + hh, w - hw, h - hh, SQ_W, BRS );
+			// Split valdity per quadrant by biggest color difference
+			if( TLS.tooBig )
+				this.TL = new Rect( img, x, y, hw, hh, SQ_W, TLS );
+			if( TRS.tooBig )
+				this.TR = new Rect( img, x + hw, y, w - hw, hh, SQ_W, TRS );
+			if( BLS.tooBig )
+				this.BL = new Rect( img, x, y + hh, hw, h - hh, SQ_W, BLS );
+			if( BRS.tooBig )
+				this.BR = new Rect( img, x + hw, y + hh, w - hw, h - hh, SQ_W, BRS );
 
-    }
+		}
 
-    public Rect( PImage img, int x, int y, int w, int h, int SQ_W ) {
+		public Rect( PImage img, int x, int y, int w, int h, int SQ_W ) {
 
-      this( img, x, y, w, h, SQ_W, getStats( img, x, y, w, h ) );
+			this( img, x, y, w, h, SQ_W, HungryMagpie.getStats( img, x, y, w, h ) );
 
-    }
+		}
 
-    public void draw( PGraphics canvas ) {
+		public void draw( PGraphics canvas ) {
 
-      // Expects startdraw to have been called
-      canvas.noStroke( );
-      canvas.fill( this.color );
+			// Expects startdraw to have been called
+			canvas.noStroke( );
+			canvas.fill( this.color );
 
-      canvas.rect( this.tlx, this.tly, this.wx, this.wy );
+			canvas.rect( this.tlx, this.tly, this.wx, this.wy );
 
-      if( this.TL != null )
-        this.TL.draw( canvas );
-      if( this.TR != null )
-        this.TR.draw( canvas );
-      if( this.BL != null )
-        this.BL.draw( canvas );
-      if( this.BR != null )
-        this.BR.draw( canvas );
+			if( this.TL != null )
+				this.TL.draw( canvas );
+			if( this.TR != null )
+				this.TR.draw( canvas );
+			if( this.BL != null )
+				this.BL.draw( canvas );
+			if( this.BR != null )
+				this.BR.draw( canvas );
 
-    }
+		}
 
-  }
+	}
 
-  private static PGraphics canvas;
-  private PImage img;
-  private Rect rimg;
+	private static PGraphics canvas;
+	private PImage img;
+	private Rect rimg;
 
-  @Override
-  public void settings( ) {
+	@Override
+	public void settings( ) {
 
-    this.size( 720, 640 );
+		this.size( 720, 640 );
 
-    this.setName( );
+		this.setName( );
 
-    context = this;
+		HungryMagpie.context = this;
 
-  }
+	}
 
-  @Override
-  public void setup( ) {
+	@Override
+	public void setup( ) {
 
-    // Load target image
-    this.img = this.loadImage( dataDir + "DSC_0088-3.jpg" );
-    //    this.img.resize( this.cWidth, (int)Math.floor( this.img.height / (float)this.img.width * this.cWidth ) );
-    this.img.loadPixels( );
+		// Load target image
+		this.img = this.loadImage( ProjectBase.dataDir + "DSC_0088-3.jpg" );
+		// this.img.resize( this.cWidth, (int)Math.floor( this.img.height /
+		// (float)this.img.width * this.cWidth ) );
+		this.img.loadPixels( );
 
-    System.out.println( "Loaded target image" );
+		System.out.println( "Loaded target image" );
 
-    // Set up canvas for drawing when done processing
-    this.canvas = this.createGraphics( this.img.width, this.img.height );
+		// Set up canvas for drawing when done processing
+		HungryMagpie.canvas = this.createGraphics( this.img.width, this.img.height );
 
-    System.out.println( "Created a canvas" );
+		System.out.println( "Created a canvas" );
 
-    this.rimg = new Rect(
-        this.img,
-        0, 0,
-        this.img.width, this.img.height,
-        SQ_W_M );
+		this.rimg = new Rect( this.img, 0, 0, this.img.width, this.img.height, HungryMagpie.SQ_W_M );
 
-    // Draw the rect
-    this.canvas.beginDraw( );
+		// Draw the rect
+		HungryMagpie.canvas.beginDraw( );
 
-    this.canvas.background( 0 );
+		HungryMagpie.canvas.background( 0 );
 
-    this.rimg.draw( this.canvas );
+		this.rimg.draw( HungryMagpie.canvas );
 
-    this.canvas.endDraw( );
+		HungryMagpie.canvas.endDraw( );
 
-    System.out.println( "Done filling in the image" );
+		System.out.println( "Done filling in the image" );
 
-    this.save( this.canvas );
+		this.save( HungryMagpie.canvas );
 
-  }
+	}
 
-  @Override
-  public void draw( ) {
+	@Override
+	public void draw( ) {
 
-    this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
+		this.image( HungryMagpie.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
 
-  }
+	}
 
 }

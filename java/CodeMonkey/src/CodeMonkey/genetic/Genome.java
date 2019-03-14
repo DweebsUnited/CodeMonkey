@@ -2,28 +2,29 @@ package CodeMonkey.genetic;
 
 import java.util.ArrayList;
 
-public class Genome<G extends Gene> {
 
-  public ArrayList<G> genome;
+public class Genome< G extends Gene > {
 
-  public float fitness = 0;
+	public ArrayList< G > genome;
 
-  public Genome( int size, GeneFactory<G> factory ) {
+	public float fitness = 0;
 
-    this.genome = new ArrayList<G>( );
+	public Genome( int size, GeneFactory< G > factory ) {
 
-    for( int gdx = 0; gdx < size; ++gdx ) {
+		this.genome = new ArrayList< G >( );
 
-      this.genome.add( factory.make( ) );
+		for( int gdx = 0; gdx < size; ++gdx ) {
 
-    }
+			this.genome.add( factory.make( ) );
 
-  }
+		}
 
-  public Genome( ArrayList<G> genome ) {
+	}
 
-    this.genome = genome;
+	public Genome( ArrayList< G > genome ) {
 
-  }
+		this.genome = genome;
+
+	}
 
 }

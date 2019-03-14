@@ -1,16 +1,16 @@
 package CodeMonkey.spatial.HalfEdge;
 
-public class EdgeData<ED> {
+public class EdgeData< ED > {
 
-  public ED data;
-  public HalfEdge he;
+	public ED data;
+	public HalfEdge he;
 
-  public EdgeData( ) { }
+	public EdgeData( ) {}
 
-  public EdgeData( ED data ) {
+	public EdgeData( ED data ) {
 
-    this.data = data;
+		this.data = data;
 
-  }
+	}
 
 }

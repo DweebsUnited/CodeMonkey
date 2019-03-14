@@ -2,6 +2,6 @@ package CodeMonkey.transform;
 
 public interface AxisTransform {
 
-  float map( float c );
+	float map( float c );
 
 }

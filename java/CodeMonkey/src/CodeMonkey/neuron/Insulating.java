@@ -2,27 +2,36 @@ package CodeMonkey.neuron;
 
 import processing.core.PVector;
 
+
 public class Insulating extends SpringNeuron {
 
-  public Insulating( ) {
-    super( );
-  }
-  public Insulating( PVector sp ) {
-    super( sp );
-  }
+	public Insulating( ) {
 
-  @Override
-  public int c( ) { return 0xFFFFFFFF; }
+		super( );
+	}
 
-  @Override
-  public void receive( float v ){
+	public Insulating( PVector sp ) {
 
-    // Insulators dont care
+		super( sp );
+	}
 
-  }
-  @Override
-  protected float driveLen( ) {
-    return 0;
-  }
+	@Override
+	public int c( ) {
+
+		return 0xFFFFFFFF;
+	}
+
+	@Override
+	public void receive( float v ) {
+
+		// Insulators dont care
+
+	}
+
+	@Override
+	protected float driveLen( ) {
+
+		return 0;
+	}
 
 }

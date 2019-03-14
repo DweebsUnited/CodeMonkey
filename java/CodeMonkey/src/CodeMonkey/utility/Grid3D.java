@@ -2,60 +2,62 @@ package CodeMonkey.utility;
 
 import java.util.ArrayList;
 
-public class Grid3D<T> {
 
-  private ArrayList<ArrayList<ArrayList<T>>> grid;
-  public int width, height, depth;
+public class Grid3D< T > {
 
-  public Grid3D( int width, int height, int depth ) {
+	private ArrayList< ArrayList< ArrayList< T > > > grid;
+	public int width, height, depth;
 
-    this.width = width;
-    this.height = height;
-    this.depth = depth;
+	public Grid3D( int width, int height, int depth ) {
 
-    this.grid = new ArrayList<ArrayList<ArrayList<T>>>( );
+		this.width = width;
+		this.height = height;
+		this.depth = depth;
 
-    for( int hdx = 0; hdx < height; ++hdx ) {
+		this.grid = new ArrayList< ArrayList< ArrayList< T > > >( );
 
-      ArrayList<ArrayList<T>> row = new ArrayList<ArrayList<T>>( );
+		for( int hdx = 0; hdx < height; ++hdx ) {
 
-      this.grid.add( row );
+			ArrayList< ArrayList< T > > row = new ArrayList< ArrayList< T > >( );
 
-      for( int wdx = 0; wdx < width; ++wdx ) {
+			this.grid.add( row );
 
-        ArrayList<T> col = new ArrayList<T>( );
+			for( int wdx = 0; wdx < width; ++wdx ) {
 
-        row.add( col );
+				ArrayList< T > col = new ArrayList< T >( );
 
-        for( int ddx = 0; ddx < depth; ++ddx ) {
+				row.add( col );
 
-          col.add( null );
+				for( int ddx = 0; ddx < depth; ++ddx ) {
 
-        }
+					col.add( null );
 
-      }
+				}
 
-    }
+			}
 
-  }
+		}
 
-  public void set( int x, int y, int z, T val ) {
+	}
 
-    this.grid.get( y ).get( x ).set( z, val );
+	public void set( int x, int y, int z, T val ) {
 
-  }
+		this.grid.get( y ).get( x ).set( z, val );
 
-  public T get( int x, int y, int z ) {
+	}
 
-    try {
-      return this.grid.get( y ).get( x ).get( z );
-    } catch( Exception e ) {
+	public T get( int x, int y, int z ) {
 
-      System.out.println( String.format( "Error getting: %d, %d in size %d, %d", x, y, this.grid.get( 0 ).size( ), this.grid.size( ) ) );
-      return null;
+		try {
+			return this.grid.get( y ).get( x ).get( z );
+		} catch( Exception e ) {
 
-    }
+			System.out.println( String.format( "Error getting: %d, %d in size %d, %d", x, y, this.grid.get( 0 ).size( ),
+					this.grid.size( ) ) );
+			return null;
 
-  }
+		}
+
+	}
 
 }

@@ -7,222 +7,223 @@ import CodeMonkey.physics.InverseSpring;
 import CodeMonkey.physics.PointMassAccum;
 import CodeMonkey.physics.Spring;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PVector;
 
+
 public class EnergeticEarwax extends ProjectBase {
 
-  public static void main( String[ ] args ) {
+	public static void main( String[ ] args ) {
 
-    PApplet.main( "CodeMonkey.project.EnergeticEarwax" );
+		PApplet.main( "CodeMonkey.project.EnergeticEarwax" );
 
-  }
+	}
 
-  private static class Point {
+	private static class Point {
 
-    public int id;
+		public int id;
 
-    public PointMassAccum m;
+		public PointMassAccum m;
 
-    public Point F, B;
+		public Point F, B;
 
-  }
+	}
 
-  private Random rng = new Random( );
+	private Random rng = new Random( );
 
-  private final int sWidth = 720;
-  private final int sHeigh = 640;
-  private final int cWidth = 1920;
-  private final int cHeigh = 1080;
+	private final int sWidth = 720;
+	private final int sHeigh = 640;
+	private final int cWidth = 1920;
+	private final int cHeigh = 1080;
 
-  private final float dt = 1 / 60f;
+	private final float dt = 1 / 60f;
 
-  private final int N_SEED = 128;
-  private final int S_RAD = 128;
+	private final int N_SEED = 128;
+	private final int S_RAD = 128;
 
-  private final float P_MASS = 1;
+	private final float P_MASS = 1;
 
-  private final float K_EDGE = 10;
-  private final float D_EDGE = 3;
-  private final float K_NEIGH = -100;
-  private final float P_NEIGH = 1;
-  private final float R_DIST = 25;
+	private final float K_EDGE = 10;
+	private final float D_EDGE = 3;
+	private final float K_NEIGH = -100;
+	private final float P_NEIGH = 1;
+	private final float R_DIST = 25;
 
-  private final float P_SPLIT = 0.01f;
-  //  private final float D_SPLIT = 7;
-  private final float N_SCALE = 6.5f / this.cWidth;
+	private final float P_SPLIT = 0.01f;
+	// private final float D_SPLIT = 7;
+	private final float N_SCALE = 6.5f / this.cWidth;
 
-  private PGraphics canvas;
+	private PGraphics canvas;
 
-  Point loop;
-  int pdxID = 0;
-  ArrayList<Point> pool;
+	Point loop;
+	int pdxID = 0;
+	ArrayList< Point > pool;
 
-  Spring sE;
-  InverseSpring sN;
+	Spring sE;
+	InverseSpring sN;
 
-  @Override
-  public void settings( ) {
+	@Override
+	public void settings( ) {
 
-    this.size( this.sWidth, this.sHeigh );
+		this.size( this.sWidth, this.sHeigh );
 
-    this.setName( );
+		this.setName( );
 
-  }
+	}
 
-  @Override
-  public void setup( ) {
+	@Override
+	public void setup( ) {
 
-    this.canvas = this.createGraphics( this.cWidth, this.cHeigh );
+		this.canvas = this.createGraphics( this.cWidth, this.cHeigh );
 
-    this.canvas.beginDraw( );
-    this.canvas.background( 0 );
-    this.canvas.endDraw( );
+		this.canvas.beginDraw( );
+		this.canvas.background( 0 );
+		this.canvas.endDraw( );
 
-    this.pool = new ArrayList<Point>( );
+		this.pool = new ArrayList< Point >( );
 
-    Point p = new Point( );
-    this.loop = p;
+		Point p = new Point( );
+		this.loop = p;
 
-    for( int cdx = 0; cdx < this.N_SEED; ++cdx ) {
+		for( int cdx = 0; cdx < this.N_SEED; ++cdx ) {
 
-      p.id = this.pdxID++;
-      p.m = new PointMassAccum(
-          (float)Math.cos( 2f * PI * cdx / this.N_SEED ) * this.S_RAD + this.cWidth / 2,
-          (float)Math.sin( 2f * PI * cdx / this.N_SEED ) * this.S_RAD + this.cHeigh / 2,
-          this.P_MASS );
+			p.id = this.pdxID++;
+			p.m = new PointMassAccum( (float) Math.cos( 2f * PConstants.PI * cdx / this.N_SEED ) * this.S_RAD + this.cWidth / 2,
+					(float) Math.sin( 2f * PConstants.PI * cdx / this.N_SEED ) * this.S_RAD + this.cHeigh / 2, this.P_MASS );
 
-      p.F = new Point( );
-      p.F.B = p;
+			p.F = new Point( );
+			p.F.B = p;
 
-      this.pool.add( p );
+			this.pool.add( p );
 
-      p = p.F;
+			p = p.F;
 
-    }
+		}
 
-    p.B.F = this.loop;
-    this.loop.B = p.B;
+		p.B.F = this.loop;
+		this.loop.B = p.B;
 
-    this.sE = new Spring( this.K_EDGE, this.D_EDGE );
-    this.sN = new InverseSpring( this.K_NEIGH, 0, this.P_NEIGH );
+		this.sE = new Spring( this.K_EDGE, this.D_EDGE );
+		this.sN = new InverseSpring( this.K_NEIGH, 0, this.P_NEIGH );
 
-  }
+	}
 
-  @Override
-  public void draw( ) {
+	@Override
+	public void draw( ) {
 
-    // Randomly split a few edges
-    for( int pdx = 0; pdx < this.pool.size( ); ++pdx ) {
-      Point p = this.pool.get( pdx );
+		// Randomly split a few edges
+		for( int pdx = 0; pdx < this.pool.size( ); ++pdx ) {
+			Point p = this.pool.get( pdx );
 
-      if( this.rng.nextFloat( ) < this.P_SPLIT * Math.pow( this.noise( p.m.p.x * this.N_SCALE, p.m.p.y * this.N_SCALE ), 2 ) ) {
+			if( this.rng.nextFloat( ) < this.P_SPLIT
+					* Math.pow( this.noise( p.m.p.x * this.N_SCALE, p.m.p.y * this.N_SCALE ), 2 ) ) {
 
-        // Check if edge long enough to split
+				// Check if edge long enough to split
 
-        //        if( PVector.dist( p.m.p, p.F.m.p ) < this.D_SPLIT )
-        //          continue;
+				// if( PVector.dist( p.m.p, p.F.m.p ) < this.D_SPLIT )
+				// continue;
 
-        // Split the edge going forwards
-        PVector h = p.m.p.copy( );
-        h.add( p.F.m.p );
-        h.mult( 0.5f );
+				// Split the edge going forwards
+				PVector h = p.m.p.copy( );
+				h.add( p.F.m.p );
+				h.mult( 0.5f );
 
-        Point s = new Point( );
-        s.id = this.pdxID++;
-        s.m = new PointMassAccum( h.x, h.y, this.P_MASS );
+				Point s = new Point( );
+				s.id = this.pdxID++;
+				s.m = new PointMassAccum( h.x, h.y, this.P_MASS );
 
-        s.B = p;
-        s.F = p.F;
-        p.F.B = s;
-        p.F = s;
+				s.B = p;
+				s.F = p.F;
+				p.F.B = s;
+				p.F = s;
 
-        this.pool.add( s );
+				this.pool.add( s );
 
-      }
+			}
 
-    }
+		}
 
-    PVector sFs = new PVector( );
-    PVector sFt = new PVector( );
+		PVector sFs = new PVector( );
+		PVector sFt = new PVector( );
 
-    // First run round: Physics accumulation
-    for( int pdx = 0; pdx < this.pool.size( ); ++pdx ) {
-      Point p = this.pool.get( pdx );
+		// First run round: Physics accumulation
+		for( int pdx = 0; pdx < this.pool.size( ); ++pdx ) {
+			Point p = this.pool.get( pdx );
 
-      this.sE.spring( p.m.p, p.B.m.p, sFs, null );
-      p.m.accum( sFs );
-      this.sE.spring( p.m.p, p.F.m.p, sFs, null );
-      p.m.accum( sFs );
+			this.sE.spring( p.m.p, p.B.m.p, sFs, null );
+			p.m.accum( sFs );
+			this.sE.spring( p.m.p, p.F.m.p, sFs, null );
+			p.m.accum( sFs );
 
-      for( int ppdx = pdx + 1; ppdx < this.pool.size( ); ++ppdx ) {
-        Point t = this.pool.get( ppdx );
+			for( int ppdx = pdx + 1; ppdx < this.pool.size( ); ++ppdx ) {
+				Point t = this.pool.get( ppdx );
 
-        // Repulsion from all others
-        // TODO: Use spatial grid
+				// Repulsion from all others
+				// TODO: Use spatial grid
 
-        if( PVector.dist( p.m.p, t.m.p ) > this.R_DIST )
-          continue;
+				if( PVector.dist( p.m.p, t.m.p ) > this.R_DIST )
+					continue;
 
-        this.sN.spring( p.m.p, t.m.p, sFs, sFt );
-        p.m.accum( sFs );
-        t.m.accum( sFt );
+				this.sN.spring( p.m.p, t.m.p, sFs, sFt );
+				p.m.accum( sFs );
+				t.m.accum( sFt );
 
-      }
-    }
+			}
+		}
 
 
-    // Second: Physics update
-    for( Point p : this.pool ) {
+		// Second: Physics update
+		for( Point p : this.pool ) {
 
-      p.m.verlet( this.dt );
+			p.m.verlet( this.dt );
 
-      // TODO: Update position in spatial grid
+			// TODO: Update position in spatial grid
 
-    }
+		}
 
 
-    // Last run round: Drawing
-    this.canvas.beginDraw( );
-    //    this.canvas.background( 0 );
-    //    this.canvas.noFill( );
-    //    this.canvas.stroke( 255, 5 );
-    this.canvas.noStroke( );
-    this.canvas.fill( 255, 5 );
+		// Last run round: Drawing
+		this.canvas.beginDraw( );
+		// this.canvas.background( 0 );
+		// this.canvas.noFill( );
+		// this.canvas.stroke( 255, 5 );
+		this.canvas.noStroke( );
+		this.canvas.fill( 255, 5 );
 
-    //    this.canvas.beginShape( );
-    //    this.canvas.curveVertex( this.loop.m.p.x, this.loop.m.p.y );
-    Point p = this.loop;
-    while( p.F != this.loop ) {
+		// this.canvas.beginShape( );
+		// this.canvas.curveVertex( this.loop.m.p.x, this.loop.m.p.y );
+		Point p = this.loop;
+		while( p.F != this.loop ) {
 
-      // Hull line, jagged
-      //      this.canvas.line( p.m.p.x, p.m.p.y, p.F.m.p.x, p.F.m.p.y );
+			// Hull line, jagged
+			// this.canvas.line( p.m.p.x, p.m.p.y, p.F.m.p.x, p.F.m.p.y );
 
-      // Points - actually kinda cool
-      this.canvas.ellipse( p.m.p.x, p.m.p.y, 3, 3 );
+			// Points - actually kinda cool
+			this.canvas.ellipse( p.m.p.x, p.m.p.y, 3, 3 );
 
-      // Smooth hull
-      //      this.canvas.curveVertex( p.m.p.x, p.m.p.y );
+			// Smooth hull
+			// this.canvas.curveVertex( p.m.p.x, p.m.p.y );
 
-      p = p.F;
+			p = p.F;
 
-    }
-    //    this.canvas.curveVertex( this.loop.m.p.x, this.loop.m.p.y );
-    //    this.canvas.curveVertex( this.loop.m.p.x, this.loop.m.p.y );
-    //    this.canvas.endShape( );
+		}
+		// this.canvas.curveVertex( this.loop.m.p.x, this.loop.m.p.y );
+		// this.canvas.curveVertex( this.loop.m.p.x, this.loop.m.p.y );
+		// this.canvas.endShape( );
 
-    this.canvas.endDraw( );
+		this.canvas.endDraw( );
 
-    this.image( this.canvas, 0, 0, this.sWidth, this.sHeigh );
+		this.image( this.canvas, 0, 0, this.sWidth, this.sHeigh );
 
-  }
+	}
 
-  @Override
-  public void keyPressed( ) {
+	@Override
+	public void keyPressed( ) {
 
-    if( this.key == 'w' )
-      this.save( this.canvas );
+		if( this.key == 'w' )
+			this.save( this.canvas );
 
-  }
+	}
 
 }

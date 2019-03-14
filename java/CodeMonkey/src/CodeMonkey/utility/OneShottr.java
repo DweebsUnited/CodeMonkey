@@ -2,27 +2,27 @@ package CodeMonkey.utility;
 
 public class OneShottr {
 
-  private boolean shot = true;
+	private boolean shot = true;
 
-  public OneShottr( ) {
+	public OneShottr( ) {
 
-  }
+	}
 
-  public boolean reset( ) {
+	public boolean reset( ) {
 
-    this.shot = true;
+		this.shot = true;
 
-    return this.shot;
+		return this.shot;
 
-  }
+	}
 
-  public boolean step( float f ) {
+	public boolean step( float f ) {
 
-    if( f > 1 && this.shot )
-      this.shot = false;
+		if( f > 1 && this.shot )
+			this.shot = false;
 
-    return this.shot;
+		return this.shot;
 
-  }
+	}
 
 }

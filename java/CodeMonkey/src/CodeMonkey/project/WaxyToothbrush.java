@@ -5,175 +5,181 @@ import java.util.Random;
 
 import CodeMonkey.transform.AxisTransform;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PVector;
 
+
 public class WaxyToothbrush extends ProjectBase { // NN Line thickness
 
-  private final static int cWidth = 1920;
-  private final static int cHeigh = 1080;
-  private final static int sWidth = 960;
-  private final static float D_NEIGH_MAX = max( cWidth, cHeigh ) / 10f;
-  private final static float D_NEIGH_MIN = max( cWidth, cHeigh ) / 25f;
-  private final static float D_NEIGH_RNG = D_NEIGH_MAX - D_NEIGH_MIN;
-  private final static int D_SCALE_K = 3;
-  private final static float S_LAMBDA = 1.0f / 5;
-  private final static int M_CIRCS = 128;
-  private final static int P_DECAY = 4;
-  private final static int P_PULSE = 64;
+	private final static int cWidth = 1920;
+	private final static int cHeigh = 1080;
+	private final static int sWidth = 960;
+	private final static float D_NEIGH_MAX = PApplet.max( WaxyToothbrush.cWidth, WaxyToothbrush.cHeigh ) / 10f;
+	private final static float D_NEIGH_MIN = PApplet.max( WaxyToothbrush.cWidth, WaxyToothbrush.cHeigh ) / 25f;
+	private final static float D_NEIGH_RNG = WaxyToothbrush.D_NEIGH_MAX - WaxyToothbrush.D_NEIGH_MIN;
+	private final static int D_SCALE_K = 3;
+	private final static float S_LAMBDA = 1.0f / 5;
+	private final static int M_CIRCS = 128;
+	private final static int P_DECAY = 4;
+	private final static int P_PULSE = 64;
 
-  private Random rng = new Random( );
+	private Random rng = new Random( );
 
-  private PGraphics canvas;
+	private PGraphics canvas;
 
-  private class Circle {
-    PVector pos;
-    PVector vel;
-    public Circle( PVector pos, PVector vel ) { this.pos = pos.copy( ); this.vel = vel.copy( ); };
-  }
-  private ArrayList<Circle> circs;
+	private class Circle {
 
-  private class DS implements AxisTransform {
-    @Override
-    public float map( float c ) {
-      // ( min, max ) -> ( 0, 1 ) -> ( 1 - x )^k -> ( 0, 255 )
-      c = ( c - D_NEIGH_MIN ) / D_NEIGH_RNG;
-      c = (float)Math.pow( 1 - c, D_SCALE_K );
-      c = c * 255;
-      return c;
-    }
-  }
-  private AxisTransform distStroke = new DS( );
+		PVector pos;
+		PVector vel;
 
-  private int nSpawnCounter = 0;
+		public Circle( PVector pos, PVector vel ) {
 
-  private int pulse = 0;
+			this.pos = pos.copy( );
+			this.vel = vel.copy( );
+		};
+	}
 
-  public static void main( String[ ] args ) {
-    // TODO Auto-generated method stub
+	private ArrayList< Circle > circs;
 
-    PApplet.main( "CodeMonkey.project.WaxyToothbrush" );
+	private class DS implements AxisTransform {
 
-  }
+		@Override
+		public float map( float c ) {
 
-  @Override
-  public void settings( ) {
+			// ( min, max ) -> ( 0, 1 ) -> ( 1 - x )^k -> ( 0, 255 )
+			c = ( c - WaxyToothbrush.D_NEIGH_MIN ) / WaxyToothbrush.D_NEIGH_RNG;
+			c = (float) Math.pow( 1 - c, WaxyToothbrush.D_SCALE_K );
+			c = c * 255;
+			return c;
+		}
+	}
 
-    this.size( sWidth, Math.round( cHeigh * (float)sWidth / cWidth ) );
+	private AxisTransform distStroke = new DS( );
 
-    this.setName( );
+	private int nSpawnCounter = 0;
 
-  }
+	private int pulse = 0;
 
-  @Override
-  public void setup( ) {
+	public static void main( String[ ] args ) {
+		// TODO Auto-generated method stub
 
-    this.canvas = this.createGraphics( cWidth, cHeigh );
+		PApplet.main( "CodeMonkey.project.WaxyToothbrush" );
 
-    this.circs = new ArrayList<Circle>( );
+	}
 
-  }
+	@Override
+	public void settings( ) {
 
-  Circle makeCirc( ) {
+		this.size( WaxyToothbrush.sWidth, Math.round( WaxyToothbrush.cHeigh * (float) WaxyToothbrush.sWidth / WaxyToothbrush.cWidth ) );
 
-    float r = min( cWidth, cHeigh ) * 0.85f * 0.5f;
-    float t = (float)this.rng.nextGaussian( ) * PI; // Amazing... Normal dist is already perfect
+		this.setName( );
 
-    PVector p = new PVector(
-        r * (float) Math.cos( t ) + cWidth / 2,
-        r * (float) Math.sin( t ) + cHeigh / 2
-        );
+	}
 
-    PVector dir = new PVector( cWidth / 2, cHeigh / 2 );
-    dir.sub( p );
-    dir.setMag( 1 );
-    dir.rotate( t );
+	@Override
+	public void setup( ) {
 
-    return new Circle(
-        p,
-        PVector.random2D( ) );
+		this.canvas = this.createGraphics( WaxyToothbrush.cWidth, WaxyToothbrush.cHeigh );
 
-  }
+		this.circs = new ArrayList< Circle >( );
 
-  @Override
-  public void draw( ) {
+	}
 
-    // Poisson spawning
-    if( this.nSpawnCounter <= 0 ) {
+	Circle makeCirc( ) {
 
-      if( this.circs.size( ) < M_CIRCS )
-        this.circs.add( this.makeCirc( ) );
+		float r = PApplet.min( WaxyToothbrush.cWidth, WaxyToothbrush.cHeigh ) * 0.85f * 0.5f;
+		float t = (float) this.rng.nextGaussian( ) * PConstants.PI; // Amazing... Normal dist is already perfect
 
-      this.nSpawnCounter = (int)Math.round( - Math.log( 1.0 - this.rng.nextFloat( ) ) / S_LAMBDA );
+		PVector p = new PVector( r * (float) Math.cos( t ) + WaxyToothbrush.cWidth / 2, r * (float) Math.sin( t ) + WaxyToothbrush.cHeigh / 2 );
 
-    } else
-      --this.nSpawnCounter;
+		PVector dir = new PVector( WaxyToothbrush.cWidth / 2, WaxyToothbrush.cHeigh / 2 );
+		dir.sub( p );
+		dir.setMag( 1 );
+		dir.rotate( t );
 
-    this.canvas.beginDraw( );
-    this.canvas.background( 0 );
+		return new Circle( p, PVector.random2D( ) );
 
-    // n
-    // Update points, reset if off the screen
-    ArrayList<Circle> temp = new ArrayList<Circle>( );
-    for( Circle c : this.circs ) {
+	}
 
-      c.pos.add( c.vel );
+	@Override
+	public void draw( ) {
 
-      if( c.pos.x >= cWidth || c.pos.y < 0 || c.pos.y >= cHeigh || c.pos.y < 0 ) {
-      } else {
+		// Poisson spawning
+		if( this.nSpawnCounter <= 0 ) {
 
-        temp.add( c );
+			if( this.circs.size( ) < WaxyToothbrush.M_CIRCS )
+				this.circs.add( this.makeCirc( ) );
 
-        this.canvas.noStroke( );
-        this.canvas.fill( 255 );
-        this.canvas.ellipse( c.pos.x, c.pos.y, 3, 3 );
+			this.nSpawnCounter = (int) Math.round( -Math.log( 1.0 - this.rng.nextFloat( ) ) / WaxyToothbrush.S_LAMBDA );
 
-      }
+		} else
+			--this.nSpawnCounter;
 
-    }
-    this.circs = temp;
+		this.canvas.beginDraw( );
+		this.canvas.background( 0 );
 
-    // n^2
-    // Find neighbors md < |d| < Md
-    this.canvas.noFill( );
+		// n
+		// Update points, reset if off the screen
+		ArrayList< Circle > temp = new ArrayList< Circle >( );
+		for( Circle c : this.circs ) {
 
-    for( int pdx = 0; pdx < this.circs.size( ); ++pdx ) {
+			c.pos.add( c.vel );
 
-      Circle c = this.circs.get( pdx );
+			if( c.pos.x >= WaxyToothbrush.cWidth || c.pos.y < 0 || c.pos.y >= WaxyToothbrush.cHeigh || c.pos.y < 0 ) {} else {
 
-      for( int ptdx = pdx + 1; ptdx < this.circs.size( ); ++ptdx ) {
+				temp.add( c );
 
-        Circle ct = this.circs.get( ptdx );
+				this.canvas.noStroke( );
+				this.canvas.fill( 255 );
+				this.canvas.ellipse( c.pos.x, c.pos.y, 3, 3 );
 
-        float d = PVector.dist( c.pos, ct.pos );
+			}
 
-        if( d < D_NEIGH_MAX ) {
+		}
+		this.circs = temp;
 
-          this.canvas.stroke( this.distStroke.map( d ) + this.pulse );
+		// n^2
+		// Find neighbors md < |d| < Md
+		this.canvas.noFill( );
 
-          this.canvas.line( c.pos.x, c.pos.y, ct.pos.x, ct.pos.y );
+		for( int pdx = 0; pdx < this.circs.size( ); ++pdx ) {
 
-        }
+			Circle c = this.circs.get( pdx );
 
-      }
+			for( int ptdx = pdx + 1; ptdx < this.circs.size( ); ++ptdx ) {
 
-    }
+				Circle ct = this.circs.get( ptdx );
 
-    this.canvas.endDraw( );
+				float d = PVector.dist( c.pos, ct.pos );
 
-    this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
+				if( d < WaxyToothbrush.D_NEIGH_MAX ) {
 
-    if( this.pulse > 0 )
-      this.pulse -= P_DECAY;
+					this.canvas.stroke( this.distStroke.map( d ) + this.pulse );
 
-  }
+					this.canvas.line( c.pos.x, c.pos.y, ct.pos.x, ct.pos.y );
 
-  @Override
-  public void keyPressed( ) {
+				}
 
-    if( this.key == ' ' )
-      this.pulse += P_PULSE;
+			}
 
-  }
+		}
+
+		this.canvas.endDraw( );
+
+		this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
+
+		if( this.pulse > 0 )
+			this.pulse -= WaxyToothbrush.P_DECAY;
+
+	}
+
+	@Override
+	public void keyPressed( ) {
+
+		if( this.key == ' ' )
+			this.pulse += WaxyToothbrush.P_PULSE;
+
+	}
 
 }

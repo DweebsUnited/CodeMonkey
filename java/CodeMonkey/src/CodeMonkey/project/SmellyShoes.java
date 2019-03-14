@@ -5,132 +5,124 @@ import java.util.function.BiFunction;
 
 import CodeMonkey.lindenmayer.RecursiveRewrite;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PGraphics;
+
 
 public class SmellyShoes extends PApplet {
 
-  private static String CM = "/Users/ozzy/Documents/CodeMonkey/";
-  private static String dataDir = CM + "data/";
+	private static String CM = "/Users/ozzy/Documents/CodeMonkey/";
+	private static String dataDir = SmellyShoes.CM + "data/";
 
-  private PGraphics canvas;
+	private PGraphics canvas;
 
-  private RecursiveRewrite curve;
+	private RecursiveRewrite curve;
 
-  private class State {
+	private class State {
 
-    public PGraphics canvas;
-    public int dx, dy;
-    public int facing;
+		public PGraphics canvas;
+		public int dx, dy;
+		public int facing;
 
-    public float hue;
+		public float hue;
 
-  }
-  private State s;
+	}
 
-  public static void main( String[ ] args ) {
+	private State s;
 
-    PApplet.main( "CodeMonkey.project.SmellyShoes" );
+	public static void main( String[ ] args ) {
 
-  }
+		PApplet.main( "CodeMonkey.project.SmellyShoes" );
 
-  // Recursive Rewrite system:
-  // Hilbert curve
-  //   Alphabet: A, B
-  //   Constants: F, +, - (Turtle: Forward, Right, Left)
-  //   Axiom: A
-  //   Rules:
-  //     A -> - B F + A F A + F B -
-  //     B -> + A F - B F B - F A +
+	}
 
-  @Override
-  public void settings( ) {
+	// Recursive Rewrite system:
+	// Hilbert curve
+	// Alphabet: A, B
+	// Constants: F, +, - (Turtle: Forward, Right, Left)
+	// Axiom: A
+	// Rules:
+	// A -> - B F + A F A + F B -
+	// B -> + A F - B F B - F A +
 
-    this.size( 720, 640 );
+	@Override
+	public void settings( ) {
 
-  }
+		this.size( 720, 640 );
 
-  @Override
-  public void setup( ) {
+	}
 
-    this.canvas = this.createGraphics( 2048, 2048 );
-    this.canvas.beginDraw( );
-    this.canvas.background( 0 );
-    this.canvas.endDraw( );
+	@Override
+	public void setup( ) {
 
-    this.colorMode( HSB, 100, 100, 100 );
+		this.canvas = this.createGraphics( 2048, 2048 );
+		this.canvas.beginDraw( );
+		this.canvas.background( 0 );
+		this.canvas.endDraw( );
 
-    this.s = new State( );
-    this.s.canvas = this.canvas;
-    this.s.dx = this.canvas.width - 1;
-    this.s.dy = 0;
-    this.s.facing = 2; // Facing left
+		this.colorMode( PConstants.HSB, 100, 100, 100 );
 
-    this.curve = new RecursiveRewrite(
-        "AB",
-        "F+-",
-        new String[] {
-            "-BF+AFA+FB-",
-            "+AF-BFB-FA+"
-        }
-        );
+		this.s = new State( );
+		this.s.canvas = this.canvas;
+		this.s.dx = this.canvas.width - 1;
+		this.s.dy = 0;
+		this.s.facing = 2; // Facing left
 
-    ArrayList<BiFunction<State,Character,State>> clist = new ArrayList<BiFunction<State,Character,State>>( );
-    clist.add( ( s, c ) -> { // F
+		this.curve = new RecursiveRewrite( "AB", "F+-", new String[ ] { "-BF+AFA+FB-", "+AF-BFB-FA+" } );
 
-      switch( s.facing ) {
-        case 0:
-          s.dx += 1;
-          break;
-        case 1:
-          s.dy -= 1;
-          break;
-        case 2:
-          s.dx -= 1;
-          break;
-        case 3:
-          s.dy += 1;
-          break;
-      }
+		ArrayList< BiFunction< State, Character, State > > clist = new ArrayList< BiFunction< State, Character, State > >( );
+		clist.add( ( s, c ) -> { // F
 
-      if( s.dx >= 0 && s.dx < s.canvas.width && s.dy >= 0 && s.dy < s.canvas.height )
-        s.canvas.pixels[ s.dx + s.dy * s.canvas.width ] = this.color( s.hue, 100, 100 );
+			switch( s.facing ) {
+				case 0:
+					s.dx += 1;
+					break;
+				case 1:
+					s.dy -= 1;
+					break;
+				case 2:
+					s.dx -= 1;
+					break;
+				case 3:
+					s.dy += 1;
+					break;
+			}
 
-      s.hue += 100f / ( s.canvas.width * s.canvas.height );
+			if( s.dx >= 0 && s.dx < s.canvas.width && s.dy >= 0 && s.dy < s.canvas.height )
+				s.canvas.pixels[ s.dx + s.dy * s.canvas.width ] = this.color( s.hue, 100, 100 );
 
-      return s;
+			s.hue += 100f / ( s.canvas.width * s.canvas.height );
 
-    } );
-    clist.add( ( s, c ) -> { // +
-      s.facing = ( s.facing - 1 + 4 ) % 4;
-      return s;
-    } );
-    clist.add( ( s, c ) -> { // -
-      s.facing = ( s.facing + 1 ) % 4;
-      return s;
-    } );
+			return s;
 
-    this.canvas.beginDraw( );
-    this.canvas.loadPixels( );
+		} );
+		clist.add( ( s, c ) -> { // +
+			s.facing = ( s.facing - 1 + 4 ) % 4;
+			return s;
+		} );
+		clist.add( ( s, c ) -> { // -
+			s.facing = ( s.facing + 1 ) % 4;
+			return s;
+		} );
 
-    this.curve.generate(
-        "A",
-        10,
-        this.s,
-        clist );
+		this.canvas.beginDraw( );
+		this.canvas.loadPixels( );
 
-    this.canvas.updatePixels( );
-    this.canvas.endDraw( );
+		this.curve.generate( "A", 10, this.s, clist );
 
-    this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
-    this.noLoop( );
+		this.canvas.updatePixels( );
+		this.canvas.endDraw( );
 
-    this.canvas.save( dataDir += "SmellyShoes.png" );
+		this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
+		this.noLoop( );
 
-  }
+		this.canvas.save( SmellyShoes.dataDir += "SmellyShoes.png" );
 
-  @Override
-  public void draw( ) {
+	}
 
-  }
+	@Override
+	public void draw( ) {
+
+	}
 
 }

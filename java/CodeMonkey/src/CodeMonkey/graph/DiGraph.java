@@ -2,50 +2,51 @@ package CodeMonkey.graph;
 
 import java.util.ArrayList;
 
-public class DiGraph<T> {
 
-  private static int IDGEN = 0;
+public class DiGraph< T > {
 
-  public ArrayList<Node<T>> nodes;
+	private static int IDGEN = 0;
 
-  public DiGraph( ) {
+	public ArrayList< Node< T > > nodes;
 
-    this.nodes = new ArrayList<Node<T>>( );
+	public DiGraph( ) {
 
-  }
+		this.nodes = new ArrayList< Node< T > >( );
 
-  public int newNode( T val ) {
+	}
 
-    int id = DiGraph.IDGEN++;
+	public int newNode( T val ) {
 
-    this.nodes.add( new Node<T>( id, val ) );
+		int id = DiGraph.IDGEN++;
 
-    return id;
+		this.nodes.add( new Node< T >( id, val ) );
 
-  }
+		return id;
 
-  public Node<T> getNode( int ID ) {
+	}
 
-    // The ID of a node is its index
-    if( ID >= this.nodes.size( ) || ID < 0 )
-      return null;
+	public Node< T > getNode( int ID ) {
 
-    return this.nodes.get( ID );
+		// The ID of a node is its index
+		if( ID >= this.nodes.size( ) || ID < 0 )
+			return null;
 
-  }
+		return this.nodes.get( ID );
 
-  public boolean link( int a, int b ) {
+	}
 
-    Node<T> na = this.getNode( a );
-    Node<T> nb = this.getNode( b );
+	public boolean link( int a, int b ) {
 
-    if( na == null || nb == null )
-      return false;
+		Node< T > na = this.getNode( a );
+		Node< T > nb = this.getNode( b );
 
-    na.link( nb );
+		if( na == null || nb == null )
+			return false;
 
-    return true;
+		na.link( nb );
 
-  }
+		return true;
+
+	}
 
 }

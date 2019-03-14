@@ -2,40 +2,40 @@ package CodeMonkey.utility;
 
 public class Varargs {
 
-  public static float min( float... args ) {
+	public static float min( float... args ) {
 
-    float mv = Float.POSITIVE_INFINITY;
+		float mv = Float.POSITIVE_INFINITY;
 
-    for( float a : args ) {
+		for( float a : args ) {
 
-      if( a < mv ) {
+			if( a < mv ) {
 
-        mv = a;
+				mv = a;
 
-      }
+			}
 
-    }
+		}
 
-    return mv;
+		return mv;
 
-  }
+	}
 
-  public static float max( float... args ) {
+	public static float max( float... args ) {
 
-    float mv = Float.NEGATIVE_INFINITY;
+		float mv = Float.NEGATIVE_INFINITY;
 
-    for( float a : args ) {
+		for( float a : args ) {
 
-      if( a > mv ) {
+			if( a > mv ) {
 
-        mv = a;
+				mv = a;
 
-      }
+			}
 
-    }
+		}
 
-    return mv;
+		return mv;
 
-  }
+	}
 
 }

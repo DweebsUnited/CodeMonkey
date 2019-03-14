@@ -2,22 +2,22 @@ package CodeMonkey.utility;
 
 public class FlipFlopper {
 
-  private boolean fliporflop = false;
+	private boolean fliporflop = false;
 
-  public FlipFlopper( ) {
+	public FlipFlopper( ) {
 
-  }
+	}
 
-  public boolean step( float f ) {
+	public boolean step( float f ) {
 
-    if( f > 1 ) {
+		if( f > 1 ) {
 
-      this.fliporflop = !this.fliporflop;
+			this.fliporflop = !this.fliporflop;
 
-    }
+		}
 
-    return this.fliporflop;
+		return this.fliporflop;
 
-  }
+	}
 
 }

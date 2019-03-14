@@ -1,7 +1,7 @@
 package CodeMonkey.utility;
 
-public interface Factory<T> {
+public interface Factory< T > {
 
-  public T make( );
+	public T make( );
 
 }

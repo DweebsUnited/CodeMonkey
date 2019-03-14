@@ -6,52 +6,53 @@ import java.util.Random;
 import CodeMonkey.genetic.Gene;
 import CodeMonkey.genetic.Genome;
 
-public class StochasticUniversal<G extends Gene> implements ChampionSelector<G> {
 
-  private Random rng = new Random( );
+public class StochasticUniversal< G extends Gene > implements ChampionSelector< G > {
 
-  private int nChamps;
+	private Random rng = new Random( );
 
-  public StochasticUniversal( int nChamps ) {
+	private int nChamps;
 
-    this.nChamps = nChamps;
+	public StochasticUniversal( int nChamps ) {
 
-  }
+		this.nChamps = nChamps;
 
-  @Override
-  public ArrayList<Genome<G>> filter( ArrayList<Genome<G>> population ) {
+	}
 
-    float F = 0;
+	@Override
+	public ArrayList< Genome< G > > filter( ArrayList< Genome< G > > population ) {
 
-    for( Genome<G> genome : population )
-      F += genome.fitness;
+		float F = 0;
 
-    float FN = F / this.nChamps;
+		for( Genome< G > genome : population )
+			F += genome.fitness;
 
-    ArrayList<Genome<G>> champs = new ArrayList<Genome<G>>( );
+		float FN = F / this.nChamps;
 
-    float r = - this.rng.nextFloat( ) * population.get( 0 ).fitness;
-    F = 0;
+		ArrayList< Genome< G > > champs = new ArrayList< Genome< G > >( );
 
-    for( Genome<G> genome : population ) {
+		float r = -this.rng.nextFloat( ) * population.get( 0 ).fitness;
+		F = 0;
 
-      r += genome.fitness;
+		for( Genome< G > genome : population ) {
 
-      if( r > F ) {
+			r += genome.fitness;
 
-        champs.add( genome );
+			if( r > F ) {
 
-        if( champs.size( ) == this.nChamps )
-          break;
+				champs.add( genome );
 
-        F = FN * champs.size( );
+				if( champs.size( ) == this.nChamps )
+					break;
 
-      }
+				F = FN * champs.size( );
 
-    }
+			}
 
-    return champs;
+		}
 
-  }
+		return champs;
+
+	}
 
 }

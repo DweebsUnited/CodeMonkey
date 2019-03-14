@@ -8,108 +8,109 @@ import CodeMonkey.genetic.breed.Breeder;
 import CodeMonkey.genetic.champ.ChampionSelector;
 import CodeMonkey.genetic.mutate.Mutator;
 
-public class Population<G extends Gene> {
 
-  private class GenomeComparator implements Comparator<Genome<G>> {
+public class Population< G extends Gene > {
 
-    @Override
-    public int compare( Genome<G> arg0, Genome<G> arg1 ) {
+	private class GenomeComparator implements Comparator< Genome< G > > {
 
-      if( arg0.fitness >= arg1.fitness )
-        return -1;
-      else
-        return 1;
+		@Override
+		public int compare( Genome< G > arg0, Genome< G > arg1 ) {
 
-    }
+			if( arg0.fitness >= arg1.fitness )
+				return -1;
+			else
+				return 1;
 
-  }
-  private GenomeComparator gComp = new GenomeComparator( );
+		}
 
-  private ArrayList<Genome<G>> population;
-  private int size;
+	}
 
-  private Genome<G> ch = null;
-  private int nGenCh = 0;
+	private GenomeComparator gComp = new GenomeComparator( );
 
-  public Population( int size, int genomeSize, GeneFactory<G> factory ) {
+	private ArrayList< Genome< G > > population;
+	private int size;
 
-    this.size = size;
+	private Genome< G > ch = null;
+	private int nGenCh = 0;
 
-    this.population = new ArrayList<Genome<G>>( );
+	public Population( int size, int genomeSize, GeneFactory< G > factory ) {
 
-    for( int gdx = 0; gdx < size; ++gdx ) {
+		this.size = size;
 
-      this.population.add( new Genome<G>( genomeSize, factory ) );
+		this.population = new ArrayList< Genome< G > >( );
 
-    }
+		for( int gdx = 0; gdx < size; ++gdx ) {
 
-  }
+			this.population.add( new Genome< G >( genomeSize, factory ) );
 
-  public ArrayList<G> get( int mdx ) {
+		}
 
-    return this.population.get( mdx ).genome;
+	}
 
-  }
+	public ArrayList< G > get( int mdx ) {
 
-  public float bestFitness( ) {
+		return this.population.get( mdx ).genome;
 
-    return this.population.get( 0 ).fitness;
+	}
 
-  }
+	public float bestFitness( ) {
 
-  public int nGen( ) {
+		return this.population.get( 0 ).fitness;
 
-    return this.nGenCh;
+	}
 
-  }
+	public int nGen( ) {
 
-  public void eval( Evaluator<G> e ) {
+		return this.nGenCh;
 
-    for( Genome<G> genome : this.population )
-      genome.fitness = e.eval( genome.genome );
+	}
 
-    this.population.sort( this.gComp );
+	public void eval( Evaluator< G > e ) {
 
-  }
+		for( Genome< G > genome : this.population )
+			genome.fitness = e.eval( genome.genome );
 
-  public void rebreed( ChampionSelector<G> selection, Breeder<G> breeder, Mutator<G> mutator ) {
+		this.population.sort( this.gComp );
 
-    Random rng = new Random( );
+	}
 
-    ArrayList<Genome<G>> champs = selection.filter( this.population );
-    int nChamps = champs.size( );
+	public void rebreed( ChampionSelector< G > selection, Breeder< G > breeder, Mutator< G > mutator ) {
 
-    this.population = champs;
+		Random rng = new Random( );
 
-    Genome<G> tch = this.population.get( 0 );
-    if( this.ch == null )
-      this.ch = tch;
-    else {
+		ArrayList< Genome< G > > champs = selection.filter( this.population );
+		int nChamps = champs.size( );
 
-      if( tch == this.ch )
-        this.nGenCh += 1;
-      else {
+		this.population = champs;
 
-        this.ch = tch;
-        this.nGenCh = 0;
+		Genome< G > tch = this.population.get( 0 );
+		if( this.ch == null )
+			this.ch = tch;
+		else {
 
-      }
+			if( tch == this.ch )
+				this.nGenCh += 1;
+			else {
 
-    }
+				this.ch = tch;
+				this.nGenCh = 0;
 
-    while( this.population.size( ) < this.size ) {
+			}
 
-      Genome<G> offspring = new Genome<G>(
-          breeder.breed(
-              this.population.get( rng.nextInt( nChamps ) ).genome,
-              this.population.get( rng.nextInt( nChamps ) ).genome ) );
+		}
 
-      mutator.mutate( offspring.genome, this.nGenCh );
+		while( this.population.size( ) < this.size ) {
 
-      this.population.add( offspring );
+			Genome< G > offspring = new Genome< G >(
+					breeder.breed( this.population.get( rng.nextInt( nChamps ) ).genome,
+							this.population.get( rng.nextInt( nChamps ) ).genome ) );
 
-    }
+			mutator.mutate( offspring.genome, this.nGenCh );
 
-  }
+			this.population.add( offspring );
+
+		}
+
+	}
 
 }

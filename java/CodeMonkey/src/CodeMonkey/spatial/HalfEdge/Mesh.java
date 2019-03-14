@@ -4,144 +4,149 @@ import java.util.ArrayList;
 
 import CodeMonkey.utility.TripleT;
 
-public class Mesh<VD, ED, PD> {
 
-  public ArrayList<VertexData<VD>> vds;
-  public ArrayList<EdgeData<ED>> eds;
-  public ArrayList<PolygonData<PD>> pds;
+public class Mesh< VD, ED, PD > {
 
-  private boolean initd = false;
+	public ArrayList< VertexData< VD > > vds;
+	public ArrayList< EdgeData< ED > > eds;
+	public ArrayList< PolygonData< PD > > pds;
 
-  public Mesh( ) {
+	private boolean initd = false;
 
-    this.vds = new ArrayList<VertexData<VD>>( );
-    this.eds = new ArrayList<EdgeData<ED>>( );
-    this.pds = new ArrayList<PolygonData<PD>>( );
+	public Mesh( ) {
 
-  }
+		this.vds = new ArrayList< VertexData< VD > >( );
+		this.eds = new ArrayList< EdgeData< ED > >( );
+		this.pds = new ArrayList< PolygonData< PD > >( );
 
-  private VertexData<VD> newV( ) {
+	}
 
-    VertexData<VD> v = new VertexData<VD>( );
-    this.vds.add( v );
-    return v;
+	private VertexData< VD > newV( ) {
 
-  }
-  public VertexData<VD> newV( VD data ) {
+		VertexData< VD > v = new VertexData< VD >( );
+		this.vds.add( v );
+		return v;
 
-    VertexData<VD> v = new VertexData<VD>( data );
-    this.vds.add( v );
-    return v;
+	}
 
-  }
-  public EdgeData<ED> newE( VertexData<VD> vsx, VertexData<VD> vtx ) {
+	public VertexData< VD > newV( VD data ) {
 
-    EdgeData<ED> e = new EdgeData<ED>( );
-    this.eds.add( e );
+		VertexData< VD > v = new VertexData< VD >( data );
+		this.vds.add( v );
+		return v;
 
-    HalfEdge<VD, ED, PD> f = new HalfEdge<VD, ED, PD>( );
-    HalfEdge<VD, ED, PD> b = new HalfEdge<VD, ED, PD>( );
+	}
 
-    e.he = f;
+	public EdgeData< ED > newE( VertexData< VD > vsx, VertexData< VD > vtx ) {
 
-    if( !vsx.isolated( ) )
-      vsx.he = f;
-    if( !vtx.isolated( ) )
-      vtx.he = b;
+		EdgeData< ED > e = new EdgeData< ED >( );
+		this.eds.add( e );
 
-    f.next = b;
-    f.prev = b;
-    f.pair = b;
-    f.vertexData = vsx;
-    f.edgeData = e;
+		HalfEdge< VD, ED, PD > f = new HalfEdge< VD, ED, PD >( );
+		HalfEdge< VD, ED, PD > b = new HalfEdge< VD, ED, PD >( );
 
-    b.next = f;
-    b.prev = f;
-    b.pair = f;
-    b.vertexData = vtx;
-    b.edgeData = e;
+		e.he = f;
 
-    return e;
+		if( !vsx.isolated( ) )
+			vsx.he = f;
+		if( !vtx.isolated( ) )
+			vtx.he = b;
 
-  }
-  public PolygonData<PD> newP( ) {
+		f.next = b;
+		f.prev = b;
+		f.pair = b;
+		f.vertexData = vsx;
+		f.edgeData = e;
 
-    PolygonData<PD> p = new PolygonData<PD>( );
-    this.pds.add( p );
-    return p;
+		b.next = f;
+		b.prev = f;
+		b.pair = f;
+		b.vertexData = vtx;
+		b.edgeData = e;
 
-  }
+		return e;
 
-  public EdgeData<ED> init( VD vxa, VD vxb ) {
+	}
 
-    VertexData<VD> vsx = this.newV( vxa );
-    VertexData<VD> vtx = this.newV( vxb );
+	public PolygonData< PD > newP( ) {
 
-    this.initd = true;
-    return this.newE( vsx, vtx );
+		PolygonData< PD > p = new PolygonData< PD >( );
+		this.pds.add( p );
+		return p;
 
-  }
+	}
 
-  public TripleT<EdgeData<ED>, EdgeData<ED>, PolygonData<PD>> growEdge( EdgeData<ED> e, VD v ) {
+	public EdgeData< ED > init( VD vxa, VD vxb ) {
 
-    if( !this.initd )
-      throw new RuntimeException( "Must init mesh first" );
+		VertexData< VD > vsx = this.newV( vxa );
+		VertexData< VD > vtx = this.newV( vxb );
 
-    return this.growEdge( e, this.newV( v ) );
+		this.initd = true;
+		return this.newE( vsx, vtx );
 
-  }
+	}
 
-  public TripleT<EdgeData<ED>, EdgeData<ED>, PolygonData<PD>> growEdge( EdgeData<ED> e, VertexData<VD> v ) {
+	public TripleT< EdgeData< ED >, EdgeData< ED >, PolygonData< PD > > growEdge( EdgeData< ED > e, VD v ) {
 
-    if( !this.initd )
-      throw new RuntimeException( "Must init mesh first" );
+		if( !this.initd )
+			throw new RuntimeException( "Must init mesh first" );
 
-    EdgeData<ED> ea, eb;
+		return this.growEdge( e, this.newV( v ) );
 
-    // Find free edge
-    HalfEdge<VD, ED, PD> he = e.he;
-    if( he.free( ) ) {
+	}
 
-      // F requires these edges
-      ea = this.newE( e.he.pair.vertexData, v );
-      eb = this.newE( v, e.he.vertexData );
+	public TripleT< EdgeData< ED >, EdgeData< ED >, PolygonData< PD > > growEdge( EdgeData< ED > e,
+			VertexData< VD > v ) {
 
-    } else {
+		if( !this.initd )
+			throw new RuntimeException( "Must init mesh first" );
 
-      he = he.pair;
-      if( !he.free( ) )
-        throw new RuntimeException( "Can't grow non-free edge" );
+		EdgeData< ED > ea, eb;
 
-      // B requires these
-      ea = this.newE( e.he.vertexData, v );
-      eb = this.newE( v, e.he.pair.vertexData );
+		// Find free edge
+		HalfEdge< VD, ED, PD > he = e.he;
+		if( he.free( ) ) {
 
-    }
+			// F requires these edges
+			ea = this.newE( e.he.pair.vertexData, v );
+			eb = this.newE( v, e.he.vertexData );
 
-    // Link he together
-    ea.he.next = eb.he;
-    eb.he.prev = ea.he;
+		} else {
 
-    ea.he.pair.prev = eb.he.pair;
-    eb.he.pair.next = ea.he.pair;
+			he = he.pair;
+			if( !he.free( ) )
+				throw new RuntimeException( "Can't grow non-free edge" );
 
-    he.next = ea.he;
-    ea.he.prev = he;
+			// B requires these
+			ea = this.newE( e.he.vertexData, v );
+			eb = this.newE( v, e.he.pair.vertexData );
 
-    he.prev = eb.he;
-    eb.he.next = he;
+		}
 
-    // Now the polygon
-    PolygonData<PD> p = this.newP( );
+		// Link he together
+		ea.he.next = eb.he;
+		eb.he.prev = ea.he;
 
-    he.polygonData = p;
-    ea.he.polygonData = p;
-    eb.he.polygonData = p;
+		ea.he.pair.prev = eb.he.pair;
+		eb.he.pair.next = ea.he.pair;
 
-    p.he = he;
+		he.next = ea.he;
+		ea.he.prev = he;
 
-    return new TripleT<EdgeData<ED>, EdgeData<ED>, PolygonData<PD>>( ea, eb, p );
+		he.prev = eb.he;
+		eb.he.next = he;
 
-  }
+		// Now the polygon
+		PolygonData< PD > p = this.newP( );
+
+		he.polygonData = p;
+		ea.he.polygonData = p;
+		eb.he.polygonData = p;
+
+		p.he = he;
+
+		return new TripleT< EdgeData< ED >, EdgeData< ED >, PolygonData< PD > >( ea, eb, p );
+
+	}
 
 }

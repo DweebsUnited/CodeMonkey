@@ -12,611 +12,619 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Stack;
 
+
 public class Trie {
 
-  public static final String alphabet = "abcdefghijklmnopqrstuvwxyz-\'";
-  public static final HashSet<Character> alphabetChars = new HashSet<Character>( );
-  static {
+	public static final String alphabet = "abcdefghijklmnopqrstuvwxyz-\'";
+	public static final HashSet< Character > alphabetChars = new HashSet< Character >( );
+	static {
 
-    for( char c : alphabet.toCharArray( ) )
-      alphabetChars.add( c );
+		for( char c : Trie.alphabet.toCharArray( ) )
+			Trie.alphabetChars.add( c );
 
-  }
+	}
 
-  public static boolean accept( String s ) {
+	public static boolean accept( String s ) {
 
-    boolean works = true;
+		boolean works = true;
 
-    for( char c : s.toCharArray( ) ) {
-      if( !accept( c ) ) {
-        works = false;
-        break;
-      }
-    }
+		for( char c : s.toCharArray( ) ) {
+			if( !Trie.accept( c ) ) {
+				works = false;
+				break;
+			}
+		}
 
-    return works;
+		return works;
 
-  }
+	}
 
-  public static boolean accept( char c ) {
+	public static boolean accept( char c ) {
 
-    return alphabetChars.contains( c );
+		return Trie.alphabetChars.contains( c );
 
-  }
+	}
 
 
-  private String getStringRep( ArrayList<Character> list ) {
-    StringBuilder builder = new StringBuilder( list.size( ) );
-    for( Character ch: list )
-      builder.append( ch );
-    return builder.toString( );
-  }
+	private String getStringRep( ArrayList< Character > list ) {
 
+		StringBuilder builder = new StringBuilder( list.size( ) );
+		for( Character ch : list )
+			builder.append( ch );
+		return builder.toString( );
+	}
 
-  private class Node {
-    // Character this node represents
-    public char c = ' ';
-    // Whether this is the last character in an entry
-    public boolean eos = false;
 
-    // Next child of parent
-    public Node next = null;
-    // First child of us
-    public Node child = null;
+	private class Node {
 
-    // STATISTIIIIIIIICS!!!
-    long usedCount = 0;
-    long eosCount = 0;
+		// Character this node represents
+		public char c = ' ';
+		// Whether this is the last character in an entry
+		public boolean eos = false;
 
-    @Override
-    public String toString( ) {
+		// Next child of parent
+		public Node next = null;
+		// First child of us
+		public Node child = null;
 
-      return String.format( "%c:%d:%d:%c:%c\n", this.c, this.usedCount, this.eosCount, this.child == null ? ' ' : 'C', this.next == null ? ' ' : 'N' );
+		// STATISTIIIIIIIICS!!!
+		long usedCount = 0;
+		long eosCount = 0;
 
-    }
+		@Override
+		public String toString( ) {
 
-  }
+			return String.format( "%c:%d:%d:%c:%c\n", this.c, this.usedCount, this.eosCount,
+					this.child == null ? ' ' : 'C', this.next == null ? ' ' : 'N' );
 
-  private class QueryComparator implements Comparator<PairT<Long,String>> {
+		}
 
-    @Override
-    public int compare( PairT<Long,String> a, PairT<Long,String> b ) {
+	}
 
-      return (int) ( b.a - a.a );
+	private class QueryComparator implements Comparator< PairT< Long, String > > {
 
-    }
+		@Override
+		public int compare( PairT< Long, String > a, PairT< Long, String > b ) {
 
-  }
+			return (int) ( b.a - a.a );
 
-  private class NodeIterator implements Iterator<PairT<Integer,Node>> {
+		}
 
-    private Stack<Node> stack;
-    private Node curr;
+	}
 
-    public NodeIterator( Node root ) {
+	private class NodeIterator implements Iterator< PairT< Integer, Node > > {
 
-      if( root.child == null )
-        throw new RuntimeException( "Can't build an iterator without children!" );
+		private Stack< Node > stack;
+		private Node curr;
 
-      this.stack = new Stack<Node>( );
-      this.curr = root.child;
+		public NodeIterator( Node root ) {
 
-    }
+			if( root.child == null )
+				throw new RuntimeException( "Can't build an iterator without children!" );
 
-    @Override
-    public boolean hasNext( ) {
+			this.stack = new Stack< Node >( );
+			this.curr = root.child;
 
-      // If we still have a node, we are not done yet
-      return this.curr != null;
+		}
 
-    }
+		@Override
+		public boolean hasNext( ) {
 
-    @Override
-    public PairT<Integer, Node> next( ) {
+			// If we still have a node, we are not done yet
+			return this.curr != null;
 
-      int d = this.stack.size( );
-      Node ret = this.curr;
+		}
 
-      // If node has kids, push to stack, move down
-      if( this.curr.child != null ) {
+		@Override
+		public PairT< Integer, Node > next( ) {
 
-        this.stack.push( this.curr );
-        this.curr = this.curr.child;
+			int d = this.stack.size( );
+			Node ret = this.curr;
 
-        // If not, move to next
-      } else if( this.curr.next != null ) {
+			// If node has kids, push to stack, move down
+			if( this.curr.child != null ) {
 
-        this.curr = this.curr.next;
+				this.stack.push( this.curr );
+				this.curr = this.curr.child;
 
-        // If neither, pop until next, move to
-      } else if( !this.stack.empty( ) ) {
+				// If not, move to next
+			} else if( this.curr.next != null ) {
 
-        do {
+				this.curr = this.curr.next;
 
-          this.curr = this.stack.pop( );
+				// If neither, pop until next, move to
+			} else if( !this.stack.empty( ) ) {
 
-        } while( !this.stack.empty( ) && this.curr.next == null );
+				do {
 
-        // In base case: no next, set to null ==> ===
-        this.curr = this.curr.next;
+					this.curr = this.stack.pop( );
 
-      }
+				} while( !this.stack.empty( ) && this.curr.next == null );
 
-      return new PairT<Integer, Node>( d, ret );
+				// In base case: no next, set to null ==> ===
+				this.curr = this.curr.next;
 
-    }
+			}
 
-  }
+			return new PairT< Integer, Node >( d, ret );
 
+		}
 
-  private Node root;
-  private int longest = 0;
+	}
 
 
-  public Trie( ) {
+	private Node root;
+	private int longest = 0;
 
-    this.root = new Node( );
 
-  }
+	public Trie( ) {
 
+		this.root = new Node( );
 
-  public long size( ) {
-    return this.root.usedCount;
-  }
+	}
 
-  public int longest( ) {
-    return this.longest;
-  }
 
+	public long size( ) {
 
-  public void insert( String s ) {
+		return this.root.usedCount;
+	}
 
-    if( !accept( s ) )
-      throw new RuntimeException( "Invalid characters in: " + s );
+	public int longest( ) {
 
-    if( s.length( ) > this.longest ) {
-      this.longest = s.length( );
-      //      System.out.println( String.format( "New longest: %s:%d", s, s.length( ) ) );
-    }
+		return this.longest;
+	}
 
-    Node trie = this.root;
-    Node child;
 
-    // Until end of string
-    for( int cdx = 0; cdx < s.length( ); ++cdx ) {
+	public void insert( String s ) {
 
-      char c = s.charAt( cdx );
+		if( !Trie.accept( s ) )
+			throw new RuntimeException( "Invalid characters in: " + s );
 
-      child = trie.child;
+		if( s.length( ) > this.longest ) {
+			this.longest = s.length( );
+			// System.out.println( String.format( "New longest: %s:%d", s, s.length( ) ) );
+		}
 
-      // No children -> Insert new child
-      if( child == null ) {
+		Node trie = this.root;
+		Node child;
 
-        //        System.out.println( String.format( "New %c", c ) );
+		// Until end of string
+		for( int cdx = 0; cdx < s.length( ); ++cdx ) {
 
-        // Set up new child
-        Node newChild = new Node( );
-        newChild.c = c;
+			char c = s.charAt( cdx );
 
-        // Link in to parent
-        trie.child = newChild;
+			child = trie.child;
 
-        // Prepare for next level
-        child = newChild;
+			// No children -> Insert new child
+			if( child == null ) {
 
-      } else {
+				// System.out.println( String.format( "New %c", c ) );
 
-        // newChild is beginning of list
-        if( child.c == c ) {
-          // NOP, but need to avoid the else
+				// Set up new child
+				Node newChild = new Node( );
+				newChild.c = c;
 
-          //          System.out.println( String.format( "Match %c", c ) );
+				// Link in to parent
+				trie.child = newChild;
 
-          // newChild goes at beginning of list
-        } else if( child.c > c ) {
+				// Prepare for next level
+				child = newChild;
 
-          //          System.out.println( String.format( "Head %c", c ) );
+			} else {
 
-          // Set up new child
-          Node newChild = new Node( );
-          newChild.c = c;
+				// newChild is beginning of list
+				if( child.c == c ) {
+					// NOP, but need to avoid the else
 
-          // Link in to parent
-          newChild.next = trie.child;
-          trie.child = newChild;
+					// System.out.println( String.format( "Match %c", c ) );
 
-          // Prepare for next level
-          child = newChild;
+					// newChild goes at beginning of list
+				} else if( child.c > c ) {
 
-        } else {
+					// System.out.println( String.format( "Head %c", c ) );
 
-          // Move ahead as far as we can
-          while( child.next != null && child.next.c <= c )
-            child = child.next;
+					// Set up new child
+					Node newChild = new Node( );
+					newChild.c = c;
 
-          // Current child match, move on
-          if( child.c == c ) {
+					// Link in to parent
+					newChild.next = trie.child;
+					trie.child = newChild;
 
-            //            System.out.println( String.format( "Match %c", c ) );
+					// Prepare for next level
+					child = newChild;
 
-            // Insert after child
-          } else {
+				} else {
 
-            //            System.out.println( String.format( "Middln %c", c ) );
+					// Move ahead as far as we can
+					while( child.next != null && child.next.c <= c )
+						child = child.next;
 
-            // Set up new child
-            Node newChild = new Node( );
-            newChild.c = c;
+					// Current child match, move on
+					if( child.c == c ) {
 
-            // Link in after current kid
-            newChild.next = child.next;
-            child.next = newChild;
+						// System.out.println( String.format( "Match %c", c ) );
 
-            // Prepare for next level
-            child = newChild;
+						// Insert after child
+					} else {
 
-          }
+						// System.out.println( String.format( "Middln %c", c ) );
 
-        }
+						// Set up new child
+						Node newChild = new Node( );
+						newChild.c = c;
 
-      }
+						// Link in after current kid
+						newChild.next = child.next;
+						child.next = newChild;
 
-      // Move down a level
-      trie.usedCount += 1;
-      trie = child;
+						// Prepare for next level
+						child = newChild;
 
-    }
+					}
 
-    // Mark end of string
-    trie.usedCount += 1;
-    trie.eosCount += 1;
-    trie.eos = true;
+				}
 
-  }
+			}
 
-  public ArrayList<PairT<Long,String>> query( String q ) {
+			// Move down a level
+			trie.usedCount += 1;
+			trie = child;
 
-    // Kick off the recursion
-    ArrayList<Character> temp = new ArrayList<Character>( );
-    ArrayList<PairT<Long,String>> qres = new ArrayList<PairT<Long,String>>( );
+		}
 
-    // Run the query
-    this.rquery( q, this.root, 0, temp, qres );
+		// Mark end of string
+		trie.usedCount += 1;
+		trie.eosCount += 1;
+		trie.eos = true;
 
-    // Sort by frequency (count)
-    Collections.sort( qres, new QueryComparator( ) );
+	}
 
-    // Return
-    return qres;
+	public ArrayList< PairT< Long, String > > query( String q ) {
 
-  }
+		// Kick off the recursion
+		ArrayList< Character > temp = new ArrayList< Character >( );
+		ArrayList< PairT< Long, String > > qres = new ArrayList< PairT< Long, String > >( );
 
+		// Run the query
+		this.rquery( q, this.root, 0, temp, qres );
 
-  public void print( ) {
+		// Sort by frequency (count)
+		Collections.sort( qres, new QueryComparator( ) );
 
-    this.rprint( this.root, new ArrayList<Character>( ) );
+		// Return
+		return qres;
 
-  }
+	}
 
-  public void save( String fname ) throws IOException {
 
-    BufferedWriter writer = new BufferedWriter( new FileWriter( fname ) );
-    NodeIterator iter = new NodeIterator( this.root );
+	public void print( ) {
 
-    while( iter.hasNext( ) ) {
+		this.rprint( this.root, new ArrayList< Character >( ) );
 
-      Node n = iter.next( ).b;
+	}
 
-      writer.write( n.toString( ) );
+	public void save( String fname ) throws IOException {
 
-    }
+		BufferedWriter writer = new BufferedWriter( new FileWriter( fname ) );
+		NodeIterator iter = new NodeIterator( this.root );
 
-    writer.close( );
+		while( iter.hasNext( ) ) {
 
-  }
+			Node n = iter.next( ).b;
 
-  public void load( String fname ) throws IOException {
+			writer.write( n.toString( ) );
 
-    if( this.root.child != null )
-      throw new RuntimeException( "TODO: Merge not yet implemented" );
+		}
 
-    this.root = new Node( );
-    Stack<TripleT<Node,Boolean,Boolean>> stack = new Stack<TripleT<Node,Boolean,Boolean>>( );
-    Node curr = this.root;
-    boolean hasChild = true;
-    boolean hasNext = false;
+		writer.close( );
 
-    BufferedReader reader = new BufferedReader( new FileReader( fname ) );
-    String line = reader.readLine( );
-    int ldx = 0;
+	}
 
-    while( line != null ) {
+	public void load( String fname ) throws IOException {
 
-      ldx += 1;
+		if( this.root.child != null )
+			throw new RuntimeException( "TODO: Merge not yet implemented" );
 
-      if( line.length( ) == 0 ) {
-        line = reader.readLine( );
-        continue;
-      }
+		this.root = new Node( );
+		Stack< TripleT< Node, Boolean, Boolean > > stack = new Stack< TripleT< Node, Boolean, Boolean > >( );
+		Node curr = this.root;
+		boolean hasChild = true;
+		boolean hasNext = false;
 
-      if( curr == null ) {
-        reader.close( );
-        throw new RuntimeException( "Malformed file, tree finished before EOF: " + ldx );
-      }
+		BufferedReader reader = new BufferedReader( new FileReader( fname ) );
+		String line = reader.readLine( );
+		int ldx = 0;
 
-      String[] seg = line.split( ":" );
+		while( line != null ) {
 
-      if( seg.length != 5 ) {
-        reader.close( );
-        throw new RuntimeException( "Malformed line: " + ldx );
-      }
+			ldx += 1;
 
-      Node newChild = new Node( );
-      newChild.c = seg[ 0 ].charAt( 0 );
-      newChild.usedCount = Integer.parseInt( seg[ 1 ] );
-      newChild.eosCount = Integer.parseInt( seg[ 2 ] );
-      newChild.eos = newChild.eosCount > 0;
+			if( line.length( ) == 0 ) {
+				line = reader.readLine( );
+				continue;
+			}
 
-      boolean cHasChild = seg[ 3 ].equals( "C" );
-      boolean cHasNext = seg[ 4 ].equals( "N" );
+			if( curr == null ) {
+				reader.close( );
+				throw new RuntimeException( "Malformed file, tree finished before EOF: " + ldx );
+			}
 
-      // For stats, add eosCount to root used
-      this.root.usedCount += newChild.eosCount;
+			String[ ] seg = line.split( ":" );
 
-      // If node has kids, push to stack, link in below
-      if( hasChild ) {
+			if( seg.length != 5 ) {
+				reader.close( );
+				throw new RuntimeException( "Malformed line: " + ldx );
+			}
 
-        stack.push( new TripleT<Node,Boolean,Boolean>( curr, new Boolean( hasChild ), new Boolean( hasNext ) ) );
+			Node newChild = new Node( );
+			newChild.c = seg[ 0 ].charAt( 0 );
+			newChild.usedCount = Integer.parseInt( seg[ 1 ] );
+			newChild.eosCount = Integer.parseInt( seg[ 2 ] );
+			newChild.eos = newChild.eosCount > 0;
 
-        // For stats, increment longest as needed
-        if( stack.size( ) > this.longest )
-          this.longest = stack.size( );
+			boolean cHasChild = seg[ 3 ].equals( "C" );
+			boolean cHasNext = seg[ 4 ].equals( "N" );
 
-        // Link in, move to
-        curr.child = newChild;
-        curr = newChild;
+			// For stats, add eosCount to root used
+			this.root.usedCount += newChild.eosCount;
 
-        hasChild = cHasChild;
-        hasNext = cHasNext;
+			// If node has kids, push to stack, link in below
+			if( hasChild ) {
 
-        // If node has next, link next to, slide over to it
-      } else if( hasNext ) {
+				stack.push( new TripleT< Node, Boolean, Boolean >( curr, new Boolean( hasChild ),
+						new Boolean( hasNext ) ) );
 
-        curr.next = newChild;
-        curr = newChild;
+				// For stats, increment longest as needed
+				if( stack.size( ) > this.longest )
+					this.longest = stack.size( );
 
-        hasChild = cHasChild;
-        hasNext = cHasNext;
+				// Link in, move to
+				curr.child = newChild;
+				curr = newChild;
 
-        // If neither, pop until next, move to
-      } else if( !stack.empty( ) ) {
+				hasChild = cHasChild;
+				hasNext = cHasNext;
 
-        do {
+				// If node has next, link next to, slide over to it
+			} else if( hasNext ) {
 
-          TripleT<Node,Boolean,Boolean> state = stack.pop( );
+				curr.next = newChild;
+				curr = newChild;
 
-          curr = state.a;
-          hasChild = state.b;
-          hasNext = state.c;
+				hasChild = cHasChild;
+				hasNext = cHasNext;
 
-        } while( !stack.empty( ) && hasNext == false );
+				// If neither, pop until next, move to
+			} else if( !stack.empty( ) ) {
 
-        // Link as next
-        if( !hasNext ) {
-          reader.close( );
-          throw new RuntimeException( "Malformed file, ran out of stack before EOF: " + ldx );
-        }
+				do {
 
-        curr.next = newChild;
-        curr = newChild;
+					TripleT< Node, Boolean, Boolean > state = stack.pop( );
 
-        hasChild = cHasChild;
-        hasNext = cHasNext;
+					curr = state.a;
+					hasChild = state.b;
+					hasNext = state.c;
 
-      }
+				} while( !stack.empty( ) && hasNext == false );
 
-      line = reader.readLine( );
+				// Link as next
+				if( !hasNext ) {
+					reader.close( );
+					throw new RuntimeException( "Malformed file, ran out of stack before EOF: " + ldx );
+				}
 
-    }
+				curr.next = newChild;
+				curr = newChild;
 
-    // Consume rest of stack w/o next for error checking
-    do {
+				hasChild = cHasChild;
+				hasNext = cHasNext;
 
-      TripleT<Node,Boolean,Boolean> state = stack.pop( );
-      hasNext = state.c;
+			}
 
-    } while( !stack.empty( ) && hasNext == false );
+			line = reader.readLine( );
 
-    // Final error check
-    if( stack.size( ) != 0 ) {
-      reader.close( );
-      throw new RuntimeException( "Malformed file, stack not empty when done parsing file" );
-    }
+		}
 
-    reader.close( );
+		// Consume rest of stack w/o next for error checking
+		do {
 
-  }
+			TripleT< Node, Boolean, Boolean > state = stack.pop( );
+			hasNext = state.c;
 
+		} while( !stack.empty( ) && hasNext == false );
 
-  public ArrayList<Pair<Long>> countStats( ) {
+		// Final error check
+		if( stack.size( ) != 0 ) {
+			reader.close( );
+			throw new RuntimeException( "Malformed file, stack not empty when done parsing file" );
+		}
 
-    ArrayList<Pair<Long>> ret = new ArrayList<Pair<Long>>( );
+		reader.close( );
 
-    for( char cdx = 0; cdx < alphabet.length( ); ++cdx ) {
+	}
 
-      ret.add( new Pair<Long>( new Long( 0 ), new Long( 0 ) ) );
 
-    }
+	public ArrayList< Pair< Long > > countStats( ) {
 
+		ArrayList< Pair< Long > > ret = new ArrayList< Pair< Long > >( );
 
-    NodeIterator iter = new NodeIterator( this.root );
+		for( char cdx = 0; cdx < Trie.alphabet.length( ); ++cdx ) {
 
-    while( iter.hasNext( ) ) {
+			ret.add( new Pair< Long >( new Long( 0 ), new Long( 0 ) ) );
 
-      PairT<Integer,Node> n = iter.next( );
+		}
 
-      //      System.out.println( "Visiting " + n.b.c + " @ " + n.a.toString( ) );
 
-      int cdx = alphabet.indexOf( n.b.c );
-      if( cdx < 0 )
-        throw new RuntimeException( "Encountered unknown character while iterating: " + n.b.c );
+		NodeIterator iter = new NodeIterator( this.root );
 
-      Pair<Long> s = ret.get( cdx );
+		while( iter.hasNext( ) ) {
 
-      s.a += n.b.usedCount;
-      s.b += n.b.eosCount;
+			PairT< Integer, Node > n = iter.next( );
 
-    }
+			// System.out.println( "Visiting " + n.b.c + " @ " + n.a.toString( ) );
 
-    return ret;
+			int cdx = Trie.alphabet.indexOf( n.b.c );
+			if( cdx < 0 )
+				throw new RuntimeException( "Encountered unknown character while iterating: " + n.b.c );
 
-  }
+			Pair< Long > s = ret.get( cdx );
 
-  public ArrayList<ArrayList<Pair<Long>>> posStats( ) {
+			s.a += n.b.usedCount;
+			s.b += n.b.eosCount;
 
-    ArrayList<ArrayList<Pair<Long>>> ret = new ArrayList<ArrayList<Pair<Long>>>( );
+		}
 
-    for( char cdx = 0; cdx < alphabet.length( ); ++cdx ) {
+		return ret;
 
-      ArrayList<Pair<Long>> pList = new ArrayList<Pair<Long>>( );
+	}
 
-      for( int pdx = 0; pdx < this.longest; ++pdx ) {
+	public ArrayList< ArrayList< Pair< Long > > > posStats( ) {
 
-        Pair<Long> p = new Pair<Long>( new Long( 0 ), new Long( 0 ) );
+		ArrayList< ArrayList< Pair< Long > > > ret = new ArrayList< ArrayList< Pair< Long > > >( );
 
-        pList.add( p );
+		for( char cdx = 0; cdx < Trie.alphabet.length( ); ++cdx ) {
 
-      }
+			ArrayList< Pair< Long > > pList = new ArrayList< Pair< Long > >( );
 
-      ret.add( pList );
+			for( int pdx = 0; pdx < this.longest; ++pdx ) {
 
-    }
+				Pair< Long > p = new Pair< Long >( new Long( 0 ), new Long( 0 ) );
 
+				pList.add( p );
 
-    NodeIterator iter = new NodeIterator( this.root );
+			}
 
-    while( iter.hasNext( ) ) {
+			ret.add( pList );
 
-      PairT<Integer,Node> n = iter.next( );
+		}
 
-      int cdx = alphabet.indexOf( n.b.c );
-      if( cdx < 0 )
-        throw new RuntimeException( "Encountered unknown character while iterating: " + n.b.c );
 
-      ArrayList<Pair<Long>> ls = ret.get( cdx );
-      Pair<Long> s = ls.get( n.a );
-      s.a += n.b.usedCount;
-      s.b += n.b.eosCount;
+		NodeIterator iter = new NodeIterator( this.root );
 
-    }
+		while( iter.hasNext( ) ) {
 
-    return ret;
+			PairT< Integer, Node > n = iter.next( );
 
-  }
+			int cdx = Trie.alphabet.indexOf( n.b.c );
+			if( cdx < 0 )
+				throw new RuntimeException( "Encountered unknown character while iterating: " + n.b.c );
 
+			ArrayList< Pair< Long > > ls = ret.get( cdx );
+			Pair< Long > s = ls.get( n.a );
+			s.a += n.b.usedCount;
+			s.b += n.b.eosCount;
 
-  private void rprint( Node trie, ArrayList<Character> progress ) {
+		}
 
-    if( trie.eos )
-      System.out.println( String.format( ":%s", this.getStringRep( progress ) ) );
+		return ret;
 
-    // Recursive print all children
-    Node child = trie.child;
+	}
 
-    while( child != null ) {
 
-      progress.add( child.c );
-      this.rprint( child, progress );
-      progress.remove( progress.size( ) - 1 );
+	private void rprint( Node trie, ArrayList< Character > progress ) {
 
-      child = child.next;
+		if( trie.eos )
+			System.out.println( String.format( ":%s", this.getStringRep( progress ) ) );
 
-    }
+		// Recursive print all children
+		Node child = trie.child;
 
-  }
+		while( child != null ) {
 
-  private void rquery( String q, Node trie, int cdx, ArrayList<Character> progress, ArrayList<PairT<Long,String>> res ) {
+			progress.add( child.c );
+			this.rprint( child, progress );
+			progress.remove( progress.size( ) - 1 );
 
-    // End of recursion: Past end of query
-    if( cdx >= q.length( ) ) {
+			child = child.next;
 
-      // But only output if end of string marker
-      if( trie.eos )
-        res.add( new PairT<Long,String>( trie.eosCount, this.getStringRep( progress ) ) );
+		}
 
-      return;
+	}
 
-    }
+	private void rquery( String q, Node trie, int cdx, ArrayList< Character > progress,
+			ArrayList< PairT< Long, String > > res ) {
 
-    char c = q.charAt( cdx );
+		// End of recursion: Past end of query
+		if( cdx >= q.length( ) ) {
 
-    // Check this first, then it falls through to single character lookup later
-    if( Character.isDigit( c ) ) {
+			// But only output if end of string marker
+			if( trie.eos )
+				res.add( new PairT< Long, String >( trie.eosCount, this.getStringRep( progress ) ) );
 
-      //      System.out.print( String.format( "%d: Digit %c", cdx, c ) );
+			return;
 
-      // Get the lookback character
-      c = progress.get( c - 0x30 );
+		}
 
-      //      System.out.println( String.format( "%c", c ) );
+		char c = q.charAt( cdx );
 
-    }
+		// Check this first, then it falls through to single character lookup later
+		if( Character.isDigit( c ) ) {
 
-    // If c is space, wildcard
-    if( c == ' ' ) {
+			// System.out.print( String.format( "%d: Digit %c", cdx, c ) );
 
-      //      System.out.println( String.format( "%d: Wildcard", cdx ) );
+			// Get the lookback character
+			c = progress.get( c - 0x30 );
 
-      Node child = trie.child;
+			// System.out.println( String.format( "%c", c ) );
 
-      // Make sure there is a child list, otherwise no match
-      if( child == null )
-        return;
+		}
 
-      do {
+		// If c is space, wildcard
+		if( c == ' ' ) {
 
-        //        System.out.println( String.format( "%d: Try: %c", cdx, child.c ) );
+			// System.out.println( String.format( "%d: Wildcard", cdx ) );
 
-        progress.add( child.c );
-        this.rquery( q, child, cdx + 1, progress, res );
-        progress.remove( progress.size( ) - 1 );
+			Node child = trie.child;
 
-        child = child.next;
+			// Make sure there is a child list, otherwise no match
+			if( child == null )
+				return;
 
-      } while( child != null );
+			do {
 
-      // If c is char, look for specific
-    } else if( accept( c ) ) {
+				// System.out.println( String.format( "%d: Try: %c", cdx, child.c ) );
 
-      //      System.out.println( String.format( "%d: Target: %c", cdx, c ) );
+				progress.add( child.c );
+				this.rquery( q, child, cdx + 1, progress, res );
+				progress.remove( progress.size( ) - 1 );
 
-      Node child = trie.child;
+				child = child.next;
 
-      // Make sure there is a child list, otherwise no match
-      if( child == null )
-        return;
+			} while( child != null );
 
-      // Go till we can't, or we arrive
-      while( child.next != null && child.c < c )
-        child = child.next;
+			// If c is char, look for specific
+		} else if( Trie.accept( c ) ) {
 
-      // Match!
-      if( child.c == c ) {
+			// System.out.println( String.format( "%d: Target: %c", cdx, c ) );
 
-        //        System.out.println( String.format( "%d: Match", cdx ) );
+			Node child = trie.child;
 
-        progress.add( c );
-        this.rquery( q, child, cdx + 1, progress, res );
-        progress.remove( progress.size( ) - 1 );
+			// Make sure there is a child list, otherwise no match
+			if( child == null )
+				return;
 
-      }
-      // Else no match
+			// Go till we can't, or we arrive
+			while( child.next != null && child.c < c )
+				child = child.next;
 
-      // Anything else unacceptable
-    } else {
-      throw new RuntimeException( "Invalid character in query" );
-    }
+			// Match!
+			if( child.c == c ) {
 
-  }
+				// System.out.println( String.format( "%d: Match", cdx ) );
+
+				progress.add( c );
+				this.rquery( q, child, cdx + 1, progress, res );
+				progress.remove( progress.size( ) - 1 );
+
+			}
+			// Else no match
+
+			// Anything else unacceptable
+		} else {
+			throw new RuntimeException( "Invalid character in query" );
+		}
+
+	}
 
 }
