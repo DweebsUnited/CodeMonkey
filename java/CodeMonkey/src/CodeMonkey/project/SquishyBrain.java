@@ -17,8 +17,6 @@ import processing.data.JSONObject;
 
 public class SquishyBrain extends ProjectBase {
 
-  private static final float DELY_SQ_LEN_CUTOFF = 500 * 500;
-
   public static void main( String[] args ) {
 
     PApplet.main( "CodeMonkey.project.SquishyBrain" );
@@ -27,8 +25,10 @@ public class SquishyBrain extends ProjectBase {
 
   private Random rng = new Random( );
 
-  final int sWidth = 720;
-  final int sHeigh = 640;
+  private final int sWidth = 720;
+  private final int sHeigh = 640;
+
+  private final float DELY_SQ_LEN_CUTOFF = max( this.sWidth, this.sHeigh ) / 2;
 
   ArrayList<SpringNeuron> ns = new ArrayList<SpringNeuron>( );
 
@@ -176,7 +176,7 @@ public class SquishyBrain extends ProjectBase {
       dAccum += na.p.dist( nb.p );
       eCount += 1;
 
-      if( na.p.dist( nb.p ) < DELY_SQ_LEN_CUTOFF ) {
+      if( na.p.dist( nb.p ) < this.DELY_SQ_LEN_CUTOFF ) {
 
         na.link( nb );
         nb.link( na );

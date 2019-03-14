@@ -19,5 +19,20 @@
 	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-amd64.jar"/>
 	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="ProcessingLib/jogl-all.jar"/>
+	<classpathentry kind="lib" path="HEMesh/arpack-combo.jar"/>
+	<classpathentry kind="lib" path="HEMesh/csparsej.jar"/>
+	<classpathentry kind="lib" path="HEMesh/eclipse-collections-9.0.0.jar"/>
+	<classpathentry kind="lib" path="HEMesh/eclipse-collections-api-9.0.0.jar"/>
+	<classpathentry kind="lib" path="HEMesh/exp4j-0.4.7.jar"/>
+	<classpathentry kind="lib" path="HEMesh/hemesh-data-3_0_0.jar"/>
+	<classpathentry kind="lib" path="HEMesh/hemesh-external-4_0_0.jar"/>
+	<classpathentry kind="lib" path="HEMesh/hemesh.jar"/>
+	<classpathentry kind="lib" path="HEMesh/jplasma.jar"/>
+	<classpathentry kind="lib" path="HEMesh/jtransforms.jar"/>
+	<classpathentry kind="lib" path="HEMesh/jts-1.14.jar"/>
+	<classpathentry kind="lib" path="HEMesh/junit.jar"/>
+	<classpathentry kind="lib" path="HEMesh/netlib-java.jar"/>
+	<classpathentry kind="lib" path="HEMesh/optimization.jar"/>
+	<classpathentry kind="lib" path="HEMesh/parallelcolt-0.9.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

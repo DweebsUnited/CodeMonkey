@@ -4,7 +4,7 @@ from mixes import makeMixes
 
 g = Genetic( )
 
-g.runGens( 15 )
+g.runGens( )
 
 palette = g.champ( )
 

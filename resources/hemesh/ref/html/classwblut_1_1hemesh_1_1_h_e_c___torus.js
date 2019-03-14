@@ -1,0 +1,28 @@
+var classwblut_1_1hemesh_1_1_h_e_c___torus =
+[
+    [ "HEC_Torus", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a7df6ed797e0494142a8a08042b08456d", null ],
+    [ "HEC_Torus", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#abbc19f9afe857e28b3f8e6fe04b48693", null ],
+    [ "HEC_Torus", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a35de9df432fdc8497f554e85472327ba", null ],
+    [ "createBase", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a248fdf60959eba28f7277344dbe9a10b", null ],
+    [ "setRadius", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a06ba041b9aa0bcf37721e881568153fc", null ],
+    [ "setRadius", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a557f533529168cd680cdc9e5775e0bfc", null ],
+    [ "setTorusFacets", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a74737312ae5722aecdfea1765f2f35d7", null ],
+    [ "setTorusPhase", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#afb3e8b8689a05b028facabf8b34879c7", null ],
+    [ "setTorusRadius", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a05b510216ff7f376715b7ff7eb99d64d", null ],
+    [ "setTorusRadius", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a93f36cbf24b41aaed07256bf97a558dd", null ],
+    [ "setTubeFacets", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a17050b7a53ab76bb132852a83cd61885", null ],
+    [ "setTubePhase", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#ac954440bd802eb1642ea2d9f7a3b7506", null ],
+    [ "setTubePhase", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a7f0ab490ba61bd2af4245c8f5d55d462", null ],
+    [ "setTubeRadius", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a87ed54bfc63fda6d4d981493a447fb66", null ],
+    [ "setTubeRadius", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#aae622e2dee82f7d9360227c1e7ae1787", null ],
+    [ "setTubeRadius", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a8b872baf710028db410360c754e72007", null ],
+    [ "setTubeRadius", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#aa7287eae3289b7928aa6deb09a202567", null ],
+    [ "setTwist", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#ac09c6f7d5117b50e54ee453c61ba1570", null ],
+    [ "Rix", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a116eff78e412a9f1d8956680a9dede32", null ],
+    [ "Ro", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#ab2bb6114a8e874f77e58aac1b688023a", null ],
+    [ "torusfacets", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a96ea4689fffd86cc90360e168e8468c6", null ],
+    [ "torusphase", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#acf268ca1bbe07a743d2eccd70eb7ccc5", null ],
+    [ "tubefacets", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a545dff1d461d760c7138af2c22b26bcb", null ],
+    [ "tubephase", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#afb5cfd5bdcee5a533872200a762759d0", null ],
+    [ "twist", "classwblut_1_1hemesh_1_1_h_e_c___torus.html#a050700ef61d6c7250512cfceee6bc565", null ]
+];

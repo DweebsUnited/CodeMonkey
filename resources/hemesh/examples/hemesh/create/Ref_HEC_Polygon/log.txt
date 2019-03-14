@@ -1,0 +1,44 @@
+2017-10-26 21:54:28.640 ┌ HEC_Polygon: Creating base mesh.
+2017-10-26 21:54:28.642 |   ┌ HEC_FromPolygons: Creating base mesh.
+2017-10-26 21:54:28.651 |   |   ┌ HE_Mesh (key: 2): Pairing halfedges.
+2017-10-26 21:54:28.725 |   |   |   | HE_Mesh (key: 2): Classifying unpaired halfedges. (0 of 6)
+2017-10-26 21:54:28.733 |   |   |   | HE_Mesh (key: 2): Classifying unpaired halfedges. (1 of 6)
+2017-10-26 21:54:28.733 |   |   |   | HE_Mesh (key: 2): Classifying unpaired halfedges. (2 of 6)
+2017-10-26 21:54:28.733 |   |   |   | HE_Mesh (key: 2): Classifying unpaired halfedges. (3 of 6)
+2017-10-26 21:54:28.733 |   |   |   | HE_Mesh (key: 2): Classifying unpaired halfedges. (4 of 6)
+2017-10-26 21:54:28.733 |   |   |   | HE_Mesh (key: 2): Classifying unpaired halfedges. (5 of 6)
+2017-10-26 21:54:28.733 |   |   |   | HE_Mesh (key: 2): Classifying unpaired halfedges. (6 of 6)
+2017-10-26 21:54:28.733 |   |   |   | HE_Mesh (key: 2): Pairing unpaired halfedges per vertex. (0 of 6)
+2017-10-26 21:54:28.734 |   |   |   | HE_Mesh (key: 2): Pairing unpaired halfedges per vertex. (1 of 6)
+2017-10-26 21:54:28.734 |   |   |   | HE_Mesh (key: 2): Pairing unpaired halfedges per vertex. (2 of 6)
+2017-10-26 21:54:28.734 |   |   |   | HE_Mesh (key: 2): Pairing unpaired halfedges per vertex. (3 of 6)
+2017-10-26 21:54:28.734 |   |   |   | HE_Mesh (key: 2): Pairing unpaired halfedges per vertex. (4 of 6)
+2017-10-26 21:54:28.734 |   |   |   | HE_Mesh (key: 2): Pairing unpaired halfedges per vertex. (5 of 6)
+2017-10-26 21:54:28.734 |   |   |   | HE_Mesh (key: 2): Pairing unpaired halfedges per vertex. (6 of 6)
+2017-10-26 21:54:28.734 |   |   └ HE_Mesh (key: 2): Processed unpaired halfedges.
+2017-10-26 21:54:28.778 |   |   ┌ HET_MeshOp: Cleaning unused elements.
+2017-10-26 21:54:28.778 |   |   |   | HET_MeshOp: Processing faces. (0 of 1)
+2017-10-26 21:54:28.780 |   |   |   | HET_MeshOp: Processing halfedges. (0 of 6)
+2017-10-26 21:54:28.780 |   |   └ HET_MeshOp: Done cleaning unused elements.
+2017-10-26 21:54:28.781 |   |   ┌ HE_Mesh (key: 2): Capping unpaired halfedges.
+2017-10-26 21:54:28.781 |   |   |   | HE_Mesh (key: 2): Capping unpaired halfedges. (0 of 6)
+2017-10-26 21:54:28.784 |   |   |   | HE_Mesh (key: 2): Capping unpaired halfedges. (1 of 6)
+2017-10-26 21:54:28.784 |   |   |   | HE_Mesh (key: 2): Capping unpaired halfedges. (2 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Capping unpaired halfedges. (3 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Capping unpaired halfedges. (4 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Capping unpaired halfedges. (5 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Capping unpaired halfedges. (6 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Cycling new halfedges. (0 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Cycling new halfedges. (1 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Cycling new halfedges. (2 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Cycling new halfedges. (3 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Cycling new halfedges. (4 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Cycling new halfedges. (5 of 6)
+2017-10-26 21:54:28.785 |   |   |   | HE_Mesh (key: 2): Cycling new halfedges. (6 of 6)
+2017-10-26 21:54:28.785 |   |   └ HE_Mesh (key: 2): Processed unpaired halfedges.
+2017-10-26 21:54:28.785 |   └ HEC_FromPolygons: Base mesh created.
+2017-10-26 21:54:28.785 |   ┌ HEC_FromPolygons: Transforming base mesh.
+2017-10-26 21:54:28.786 |   └ HEC_FromPolygons: Base mesh transformed.
+2017-10-26 21:54:28.788 └ HEC_Polygon: Base mesh created.
+2017-10-26 21:54:28.788 ┌ HEC_Polygon: Transforming base mesh.
+2017-10-26 21:54:28.788 └ HEC_Polygon: Base mesh transformed.

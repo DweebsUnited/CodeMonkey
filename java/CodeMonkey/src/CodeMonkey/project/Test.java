@@ -1,5 +1,6 @@
 package CodeMonkey.project;
 
+import CodeMonkey.spatial.PoissonSampler;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -11,60 +12,58 @@ public class Test extends PApplet {
 
   }
 
+  int pdx = 0;
+
+  PoissonSampler ps;
+
+  float cellSize;
+
   @Override
   public void settings( ) {
 
-    this.size( 720, 640 );
+    this.size( 106, 106 );
 
   }
 
   @Override
   public void setup( ) {
 
+    this.cellSize = 10 / (float) Math.sqrt( 2 );
+
     this.background( 0 );
+
+    this.stroke( 255, 0, 0 );
+    this.noFill( );
+
+    for( int cdx = 0; this.cellSize * cdx < this.pixelWidth; ++cdx ) {
+
+      this.line( 0, cdx * this.cellSize, this.pixelWidth, cdx * this.cellSize );
+      this.line( cdx * this.cellSize, 0, cdx * this.cellSize, this.pixelWidth );
+
+    }
 
     this.noStroke( );
     this.fill( 255 );
 
-    this.loadPixels( );
+    this.ps = new PoissonSampler( this.pixelWidth, this.pixelWidth, 10 );
 
-    float hW = this.pixelWidth / 2.0f;
-    float hH = this.pixelHeight / 2.0f;
+    System.out.println( String.format( "%d -> %f", this.pixelWidth, this.ps.width ) );
 
-    PVector axis = new PVector( 1, 0 ).rotate( PI / 4 );
-
-    for( int xdx = 0; xdx < this.pixelWidth; ++xdx ) {
-
-      for( int ydx = 0; ydx < this.pixelHeight; ++ydx ) {
-
-        PVector pos = new PVector( ( xdx - hW ) / hW, ( ydx - hH ) / hH );
-
-        float cMag = ( pos.dot( axis ) + 1 ) / 2;
-        this.pixels[ xdx + ydx * this.pixelWidth ] = this.color( cMag * 255 );
-
-      }
-
-    }
-
-    this.updatePixels( );
-
-    this.noLoop( );
+    this.frameRate( 10 );
 
   }
 
   @Override
   public void draw( ) {
 
+    PVector p = this.ps.sample.get( this.pdx ++ );
 
+    this.ellipse( p.x, p.y, 5, 5 );
 
   }
 
   @Override
   public void keyPressed( ) {
-
-    if( this.key == ' ' ) {
-      this.save( "/Users/ozzy/Desktop/Test.png" );
-    }
 
   }
 

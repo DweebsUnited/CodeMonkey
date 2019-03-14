@@ -6,22 +6,26 @@ def powerset( fromSet ):
 
 def makeMixes( palette ):
     with open( "cols.txt", "w" ) as out:
-        for pList in powerset( palette ):
-            if len( pList ) == 0:
-                continue
+        with open( "colset.txt", "w" ) as sout:
+            for pList in powerset( palette ):
+                if len( pList ) == 0:
+                    continue
 
-            red   = 0
-            blue  = 0
-            green = 0
+                red   = 0
+                blue  = 0
+                green = 0
 
-            for g in pList:
-                red   += g[ 0 ]
-                blue  += g[ 1 ]
-                green += g[ 2 ]
+                for g in pList:
+                    sout.write( "( {}, {}, {} )\n".format( *g ) )
+                    red   += g[ 0 ]
+                    blue  += g[ 1 ]
+                    green += g[ 2 ]
 
-            red   /= len( pList )
-            blue  /= len( pList )
-            green /= len( pList )
+                red   /= len( pList )
+                blue  /= len( pList )
+                green /= len( pList )
 
-            print ( red, green, blue )
-            out.write( "color( {}, {}, {} ), ".format( red, green, blue ) )
+                print ( red, green, blue )
+                sout.write( "  ( {}, {}, {} )\n".format( red, green, blue ) )
+                out.write( "color( {}, {}, {} ),".format( red, green, blue ) )
+

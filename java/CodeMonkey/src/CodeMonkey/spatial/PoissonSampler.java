@@ -9,7 +9,7 @@ import processing.core.PVector;
 
 public class PoissonSampler {
 
-  private static Random rng = new Random( );
+  private static Random rng = new Random( 3 );
 
   private Grid2D<PVector> grid;
 
@@ -18,6 +18,9 @@ public class PoissonSampler {
 
   public float width;
   public float height;
+
+  public float owidth;
+  public float oheight;
 
   private float mDist;
   private float cellSize;
@@ -33,6 +36,9 @@ public class PoissonSampler {
 
     this.width = this.grid.width * this.cellSize;
     this.height = this.grid.height * this.cellSize;
+
+    this.owidth = width;
+    this.oheight = height;
 
     this.queue = new RandomQueue<PVector>( );
     this.sample = new ArrayList<PVector>( );
@@ -63,7 +69,7 @@ public class PoissonSampler {
       // Get a point from the queue
 
       PVector p = this.queue.peek( );
-      boolean toRemove = true;
+      //      boolean toRemove = true;
 
       // As many tries as we have
 
@@ -90,14 +96,14 @@ public class PoissonSampler {
 
           this.grid.set( this.toGridX( point ), this.toGridY( point ), point );
 
-          toRemove = false;
+          //          toRemove = false;
 
         }
 
       }
 
-      if( toRemove )
-        this.queue.remove( p );
+      //      if( toRemove )
+      this.queue.remove( p );
 
       return true;
 
@@ -121,20 +127,33 @@ public class PoissonSampler {
 
   private boolean inGrid( PVector p ) {
 
+    if( p.x >= this.owidth || p.y >= this.oheight )
+      return false;
+
     int gX = this.toGridX( p );
     int gY = this.toGridY( p );
 
-    return gX > 0 && gX < this.grid.width && gY > 0 && gY < this.grid.height;
+    return gX >= 0 && gX < this.grid.width && gY >= 0 && gY < this.grid.height;
 
   }
 
   private boolean inGrid( int x, int y ) {
 
-    return x > 0 && x < this.grid.width && y > 0 && y < this.grid.height;
+    if( x >= this.owidth || y >= this.oheight )
+      return false;
+
+    return x >= 0 && x < this.grid.width && y >= 0 && y < this.grid.height;
 
   }
 
   private boolean inNeighbourhood( PVector p, float mDist ) {
+
+    for( PVector n : this.sample ) {
+
+      if( n.dist( p ) < mDist )
+        System.out.println( "Should say no" );
+
+    }
 
     int gX = this.toGridX( p );
     int gY = this.toGridY( p );
@@ -150,6 +169,29 @@ public class PoissonSampler {
 
         if( n != null && p.dist( n ) < mDist )
           return true;
+
+      }
+
+    }
+
+    for( PVector s : this.sample ) {
+
+      if( s.dist( p ) < mDist )
+        System.out.println( "Broken!" );
+
+      for( int dx = -2; dx < 3; ++dx ) {
+
+        for( int dy = -2; dy < 3; ++dy ) {
+
+          if( !this.inGrid( gX + dx, gY + dy ) )
+            continue;
+
+          PVector n = this.grid.get( gX + dx, gY + dy );
+
+          if( n != null && p.dist( n ) < mDist )
+            return true;
+
+        }
 
       }
 

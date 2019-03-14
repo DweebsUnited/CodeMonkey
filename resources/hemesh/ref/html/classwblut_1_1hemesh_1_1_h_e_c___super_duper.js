@@ -1,0 +1,26 @@
+var classwblut_1_1hemesh_1_1_h_e_c___super_duper =
+[
+    [ "HEC_SuperDuper", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a635a734314a2094fe11d678e16419c1f", null ],
+    [ "createBase", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#aa4340cd74a858d26e470524d90b3be51", null ],
+    [ "eval", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#acdc72c45dfcba2c14eaf0fb1950518df", null ],
+    [ "getPoints", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a6d1933286a73fd0ff40f686b39d62e74", null ],
+    [ "getUVW", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a31e19b2a80cbbfc46b604ac5bfbf2669", null ],
+    [ "lerp", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#aff3f450b11cf4a254026368a4b08e509", null ],
+    [ "setDonutParameters", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a47df23454471284771b1da9f64d4de7c", null ],
+    [ "setGeneralParameters", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a2d7d4412a148d9028856a57e3777ac66", null ],
+    [ "setRadius", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a0dddb5b092be475336bb49cbeed851de", null ],
+    [ "setShellParameters", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a8840e3f93e899923b41812e438bc13e0", null ],
+    [ "setSuperShapeParameters", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#ad598d9188919331b2e0e6827f5f1b370", null ],
+    [ "setU", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a107f47c1eaf2a086272ac075352d554b", null ],
+    [ "setUWrap", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a314c639681353ce8c791f3c2a3a7ac94", null ],
+    [ "setV", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a343f8d9f2c913039311827cea29eb29d", null ],
+    [ "setVWrap", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a991d6318df18b9df4aba2b01759a0a6b", null ],
+    [ "superduperformula", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a5dffdac081a92687611e4fe0020c2bd4", null ],
+    [ "superformula", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#ad835e5eca2b170aa9bcf2f9cb38d3e7b", null ],
+    [ "param", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#aa507dc550e651f4ca4a1c250f7a1fa74", null ],
+    [ "radius", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a90153da01ec877af0aeb2d8bf9c31f18", null ],
+    [ "U", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#abf89501324bfec60aa277daaa685a23d", null ],
+    [ "uWrap", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a9bdf40dde8acc3c0a7ca1f05b6c937d6", null ],
+    [ "V", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a6d1ad38053a92fa24fdb2516a07f7892", null ],
+    [ "vWrap", "classwblut_1_1hemesh_1_1_h_e_c___super_duper.html#a08caaf127b619d606de515e1b50e7d4c", null ]
+];

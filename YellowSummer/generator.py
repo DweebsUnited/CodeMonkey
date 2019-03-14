@@ -10,19 +10,19 @@ def powerset( fromSet ):
 # TODO: MUTATIONS
 
 # Genome length
-G_LEN = 10
+G_LEN = 5
 
 # Population size
-P_LEN = 10
+P_LEN = 64
 
 # How many champs to keep
-C_KEEP = 5
+C_KEEP = 8
 
 # Chance for a mutation to occur
-C_MUTA = 0.05
+C_MUTA = 0.03
 
 # How many generations
-N_GEN = 15
+N_GEN = 512
 
 # Simple storage and crossover for a 3-color gene
 class Gene:
@@ -47,11 +47,34 @@ class Gene:
             self.green /= len( gList )
 
     def cross( A, B ):
-        return Gene(
-            ( A.red   if random.uniform( 0.0, 1.0 ) > 0.5 else B.red   ) if random.uniform( 0.0, 1.0 ) < C_MUTA else random.randint( 0, 255 ),
-            ( A.blue  if random.uniform( 0.0, 1.0 ) > 0.5 else B.blue  ) if random.uniform( 0.0, 1.0 ) < C_MUTA else random.randint( 0, 255 ),
-            ( A.green if random.uniform( 0.0, 1.0 ) > 0.5 else B.green ) if random.uniform( 0.0, 1.0 ) < C_MUTA else random.randint( 0, 255 )
-        )
+        nR = A.red   if random.uniform( 0.0, 1.0 ) > 0.5 else B.red 
+        nB = A.blue  if random.uniform( 0.0, 1.0 ) > 0.5 else B.blue 
+        nG = A.green if random.uniform( 0.0, 1.0 ) > 0.5 else B.green 
+
+        # nR = nR if random.uniform( 0.0, 1.0 ) < C_MUTA else int( nR + random.gauss( 0, 2 ) )
+        # nB = nR if random.uniform( 0.0, 1.0 ) < C_MUTA else int( nB + random.gauss( 0, 2 ) )
+        # nG = nR if random.uniform( 0.0, 1.0 ) < C_MUTA else int( nG + random.gauss( 0, 2 ) )
+
+        # if( nR > 255 ):
+        #     nR = 255
+        # elif( nR < 0 ):
+        #     nR = 0
+
+        # if( nG > 255 ):
+        #     nG = 255
+        # elif( nG < 0 ):
+        #     nG = 0
+
+        # if( nB > 255 ):
+        #     nB = 255
+        # elif( nB < 0 ):
+        #     nB = 0
+
+        nR = nR if random.uniform( 0.0, 1.0 ) < C_MUTA else random.randint( 0, 255 )
+        nB = nR if random.uniform( 0.0, 1.0 ) < C_MUTA else random.randint( 0, 255 )
+        nG = nR if random.uniform( 0.0, 1.0 ) < C_MUTA else random.randint( 0, 255 )
+    
+        return Gene( nR, nB, nG )
 
     def diff( A, B ):
         return abs( A.red - B.red ) + abs( A.blue - B.blue ) + abs( A.green - B.green )
@@ -105,27 +128,10 @@ class Genetic:
 
                     genome.fitness += Gene.diff( gA, gB )
 
-    # Stochastic universal selection
     def champSelect( self ):
         self.sortPop( )
 
-        sumFit = reduce( lambda f, g: f + g.fitness, self.genomes, 0 )
-        keepNum = C_KEEP
-        distPointers = int( float( sumFit ) / keepNum )
-        fitStart = random.randint( 0, distPointers )
-        Pointers = [ fitStart + i * distPointers for i in range( keepNum ) ]
-
-        champs = [ ]
-
-        partFit = 0
-        partIdx = 0
-        for p in Pointers:
-            while partFit < p:
-                partFit += self.genomes[ partIdx ].fitness
-                partIdx += 1
-
-            # -1 chooses the genome that passed the pointer
-            champs.append( self.genomes[ partIdx - 1 ] )
+        champs = self.genomes[ : C_KEEP ]
 
         return champs
 
@@ -136,8 +142,8 @@ class Genetic:
         while len( self.genomes ) < P_LEN:
             self.genomes.append( Genome.cross( self.genomes[ random.randint( 0, C_KEEP - 1 ) ], self.genomes[ random.randint( 0, C_KEEP - 1 ) ] ) )
 
-    def runGens( self, nGens ):
-        for gen in range( nGens ):
+    def runGens( self ):
+        for gen in range( N_GEN ):
             self.eval( )
             self.rebreed( )
 
