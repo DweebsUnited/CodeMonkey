@@ -8,11 +8,24 @@ import wblut.hemesh.HEM_Smooth;
 import wblut.hemesh.HEM_Spherify;
 import wblut.hemesh.HES_PlanarMidEdge;
 import wblut.hemesh.HES_Subdividor;
+import wblut.hemesh.HE_EdgeIterator;
+import wblut.hemesh.HE_Halfedge;
 import wblut.hemesh.HE_Mesh;
 import wblut.hemesh.HE_Selection;
 import wblut.processing.WB_Render;
 
 
+/**
+ * Not-so-simple planet generator based on tectonic plates
+ *
+ * Pretty much a rip off of a very old blog post I found, but I will take it in
+ * a different direction. Also first usage of the fantastic HE_Mesh library from
+ * W:Blut.
+ *
+ * @see https://github.com/wblut/HE_Mesh
+ * @see https://experilous.com/1/blog/post/procedural-planet-generation#irregularityEverywhere
+ * @author DweebsUnited
+ */
 public class MovingPlates extends ProjectBase {
 
 	public static void main( String[ ] args ) {
@@ -21,11 +34,28 @@ public class MovingPlates extends ProjectBase {
 
 	}
 
+	// Number of subdivision rounds to run
 	private final int nSub = 3;
-	private final double eProb = 0.05;
+	// Probability to pick an edge
+	private final double eProb = 0.1;
+	// Number of edges to flip before relaxing
+	private final int nFlip = 16;
 
 	private HE_Mesh mesh, dual;
 	private WB_Render render;
+
+
+	/**
+	 * Flip an edge in a triangle mesh
+	 *
+	 * @param e Either halfedge of the edge to flip
+	 */
+	public void flipEdge( HE_Halfedge e ) {
+
+		// Step one: gather relevant objects
+		e._setPair( e );
+
+	}
 
 	@Override
 	public void settings( ) {
@@ -41,42 +71,63 @@ public class MovingPlates extends ProjectBase {
 		this.render = new WB_Render( this );
 
 
-		// Begin!
+		// Begin generation!
 
 		// Make an icosahedron
+		System.out.println( "Setting up to create Icosahedron" );
 		HEC_Icosahedron creator = new HEC_Icosahedron( );
 		creator.setRadius( 200 );
 
 		// Then a mesh
+		System.out.println( "Making a mesh" );
 		this.mesh = new HE_Mesh( creator );
 
-		// Subdivide a bunch
+		// Subdivide a bunch, re-sphering
+		System.out.println( "Setting up to subdivide" );
 		HES_Subdividor subdividor = new HES_PlanarMidEdge( );
-		for( int sdx = 0; sdx < this.nSub; ++sdx )
-			this.mesh = subdividor.apply( this.mesh );
-
-		// Do some edge flippy shit
-		HE_Selection toFlip = this.mesh.selectRandomEdges( this.eProb );
-		System.out.println( String.format( "#Edge: %d", toFlip.getNumberOfEdges( ) ) );
-		// TODO: rotateEdge
-		// TODO:
-
-		// Smooth it out
-		HEM_Smooth smoothMod = new HEM_Smooth( );
-		this.mesh.modify( smoothMod );
-
-		// Then re-sphere
 		HEM_Spherify spherMod = new HEM_Spherify( );
 		spherMod.setRadius( 200 );
 		spherMod.setCenter( 0, 0, 0 );
-		this.mesh.modify( spherMod );
+		System.out.print( "Subdividing" );
+		for( int sdx = 0; sdx < this.nSub; ++sdx ) {
 
-		// Make the dual
+			System.out.print( "." );
+
+			this.mesh = subdividor.apply( this.mesh );
+			this.mesh.modify( spherMod );
+
+		}
+		System.out.println( );
+
+		// Do some edge flippy shit
+		System.out.println( "Setting up to perturb mesh" );
+		HE_Selection toFlip = this.mesh.selectRandomEdges( this.eProb );
+		HEM_Smooth smoothMod = new HEM_Smooth( );
+
+		System.out.println(
+				String.format( "Will flip %d / %d edges", toFlip.getNumberOfEdges( ), this.mesh.getNumberOfEdges( ) ) );
+
+		int nFlipped = 0;
+		HE_EdgeIterator iter = toFlip.eItr( );
+
+		while( iter.hasNext( ) ) {
+
+			HE_Halfedge e = iter.next( );
+
+			// TODO: rotateEdge if valid
+
+			// Batch flip then smooth
+			if( nFlipped % nFlip == 0 )
+				this.mesh.modify( smoothMod );
+
+		}
+
+		// Make the dual - Pent/Hexa/Hepta - mesh
 		HEC_Dual dualCre = new HEC_Dual( this.mesh );
 		dualCre.setFixNonPlanarFaces( false );
 		this.dual = new HE_Mesh( dualCre );
 
-		// Now resphere the mesh a little bigger for effect
+		// Now resphere the original mesh a little bigger for effect
 		spherMod.setRadius( 215 );
 		this.mesh.modify( spherMod );
 

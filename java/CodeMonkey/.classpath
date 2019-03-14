@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="HEMesh"/>
+	<classpathentry kind="lib" path="HEMeshLib/arpack-combo.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/csparsej.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/eclipse-collections-9.0.0.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/eclipse-collections-api-9.0.0.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/exp4j-0.4.7.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/hemesh-data-3_0_0.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/hemesh-external-4_0_0.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/jplasma.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/jtransforms.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/jts-1.14.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/junit.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/netlib-java.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/optimization.jar"/>
+	<classpathentry kind="lib" path="HEMeshLib/parallelcolt-0.9.4.jar"/>
 	<classpathentry kind="lib" path="ProcessingLib/core.jar"/>
 	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-aarch64.jar"/>
 	<classpathentry kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-amd64.jar"/>
@@ -19,20 +38,5 @@
 	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-amd64.jar"/>
 	<classpathentry kind="lib" path="ProcessingLib/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="ProcessingLib/jogl-all.jar"/>
-	<classpathentry kind="lib" path="HEMesh/arpack-combo.jar"/>
-	<classpathentry kind="lib" path="HEMesh/csparsej.jar"/>
-	<classpathentry kind="lib" path="HEMesh/eclipse-collections-9.0.0.jar"/>
-	<classpathentry kind="lib" path="HEMesh/eclipse-collections-api-9.0.0.jar"/>
-	<classpathentry kind="lib" path="HEMesh/exp4j-0.4.7.jar"/>
-	<classpathentry kind="lib" path="HEMesh/hemesh-data-3_0_0.jar"/>
-	<classpathentry kind="lib" path="HEMesh/hemesh-external-4_0_0.jar"/>
-	<classpathentry kind="lib" path="HEMesh/hemesh.jar"/>
-	<classpathentry kind="lib" path="HEMesh/jplasma.jar"/>
-	<classpathentry kind="lib" path="HEMesh/jtransforms.jar"/>
-	<classpathentry kind="lib" path="HEMesh/jts-1.14.jar"/>
-	<classpathentry kind="lib" path="HEMesh/junit.jar"/>
-	<classpathentry kind="lib" path="HEMesh/netlib-java.jar"/>
-	<classpathentry kind="lib" path="HEMesh/optimization.jar"/>
-	<classpathentry kind="lib" path="HEMesh/parallelcolt-0.9.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
