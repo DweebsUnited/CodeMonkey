@@ -13,6 +13,7 @@ import wblut.hemesh.HE_Face;
 import wblut.hemesh.HE_Halfedge;
 import wblut.hemesh.HE_Mesh;
 import wblut.hemesh.HE_Selection;
+import wblut.hemesh.HE_Vertex;
 import wblut.processing.WB_Render;
 
 
@@ -38,7 +39,7 @@ public class MovingPlates extends ProjectBase {
 	// Number of subdivision rounds to run
 	private final int nSub = 3;
 	// Probability to pick an edge
-	private final double eProb = 0.1;
+	private final double eProb = 0.01;
 	// Number of edges to flip before relaxing
 	private final int nFlip = 4;
 
@@ -56,37 +57,50 @@ public class MovingPlates extends ProjectBase {
 		// Step one: gather relevant objects
 		HE_Halfedge e0 = e;
 		HE_Halfedge e1 = e0.getPair( );
+
 		HE_Halfedge e2 = e0.getNextInFace( );
 		HE_Halfedge e3 = e2.getNextInFace( );
+
 		HE_Halfedge e4 = e1.getNextInFace( );
 		HE_Halfedge e5 = e4.getNextInFace( );
 
 		HE_Face f0 = e0.getFace( );
 		HE_Face f1 = e1.getFace( );
 
-		e0.setNext( e3 );
-		e0.setPrev( e4 );
+		HE_Vertex v0 = e0.getStartVertex( );
+		HE_Vertex v1 = e1.getStartVertex( );
+		HE_Vertex v2 = e5.getStartVertex( );
+		HE_Vertex v3 = e3.getStartVertex( );
 
-		e1.setNext( e5 );
-		e1.setPrev( e2 );
+		e0.setNext( e5 );
+		e0.setPrev( e2 );
 
-		e2.setNext( e1 );
+		e1.setNext( e3 );
+		e1.setPrev( e4 );
+
+		e2.setNext( e0 );
 		e2.setPrev( e5 );
 
 		e3.setNext( e4 );
-		e3.setPrev( e0 );
+		e3.setPrev( e1 );
 
-		e4.setNext( e0 );
+		e4.setNext( e1 );
 		e4.setPrev( e3 );
 
 		e5.setNext( e2 );
-		e5.setPrev( e1 );
+		e5.setPrev( e0 );
 
-		e4.setFace( f0 );
-		e2.setFace( f1 );
+		e3.setFace( f1 );
+		e5.setFace( f0 );
 
 		f0.setHalfedge( e0 );
 		f1.setHalfedge( e1 );
+
+		e0.setVertex( v3 );
+		e1.setVertex( v2 );
+
+		v3.setHalfedge( e1 );
+		v2.setHalfedge( e0 );
 
 	}
 
@@ -148,7 +162,20 @@ public class MovingPlates extends ProjectBase {
 			HE_Halfedge e = iter.next( );
 
 			// TODO: check if valid before flipping
-			this.flipEdge( e );
+			HE_Halfedge e0 = e;
+			HE_Halfedge e1 = e0.getPair( );
+			HE_Vertex v0 = e0.getStartVertex( );
+			HE_Vertex v1 = e1.getStartVertex( );
+			HE_Vertex v2 = e1.getNextInFace( ).getEndVertex( );
+			HE_Vertex v3 = e0.getNextInFace( ).getEndVertex( );
+
+			// Need to verify after flip: 5 <= # neighbor faces at each <= 7
+			// v0--, v1--, v2++, v3++
+			if( 	v0.getVertexDegree( ) >= 5 &&
+					v1.getVertexDegree( ) >= 5 &&
+					v2.getVertexDegree( ) <= 7 &&
+					v3.getVertexDegree( ) <= 7 )
+				this.flipEdge( e );
 
 			// Batch flip then smooth
 			if( nFlipped % nFlip == 0 )
@@ -185,8 +212,6 @@ public class MovingPlates extends ProjectBase {
 		this.render.drawEdges( this.dual );
 
 		this.noStroke( );
-		// this.fill( 255, 127 );
-		// this.render.drawFaces( this.mesh );
 		this.fill( 0, 255, 0, 255 );
 		this.render.drawFaces( this.dual );
 

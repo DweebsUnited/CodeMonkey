@@ -199,6 +199,10 @@ public class HE_Vertex extends HE_MeshElement implements WB_MutableCoord {
 		_halfedge = halfedge;
 	}
 
+	public void setHalfedge(final HE_Halfedge halfedge) {
+		this._setHalfedge( halfedge );
+	}
+
 	/**
 	 * Set position to v.
 	 *
