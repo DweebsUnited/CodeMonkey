@@ -7,7 +7,7 @@ import processing.core.PGraphics;
 public class ProjectBase extends PApplet {
 
 	protected static String CM = "/Users/ozzy/Documents/CodeMonkey/";
-	private static String CMW = "C:\\Users\\ElysiumTech\\Documents\\Personal\\CodeMonkey\\";
+	private static String CMW = "C:\\Users\\eosburn\\Documents\\Personal\\CodeMonkey\\java\\CodeMonkey\\";
 	protected static String dataDir = ProjectBase.CM + "data/";
 	private String name = "DICKSYOUFORGOTTOsetName";
 
