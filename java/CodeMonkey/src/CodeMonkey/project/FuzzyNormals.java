@@ -1,12 +1,11 @@
 package CodeMonkey.project;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import CodeMonkey.spatial.Octree;
-import CodeMonkey.spatial.Ray;
 import CodeMonkey.spatial.RayCamera;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PVector;
 
 
@@ -20,17 +19,17 @@ public class FuzzyNormals extends ProjectBase {
 
 	Random rng = new Random( );
 
-	final int sWidth = 1080;
-	final int sHeigh = Math.round( this.sWidth * 9f / 16f );
+	private final int sWidth = 1080;
+	private final int sHeigh = Math.round( this.sWidth * 9f / 16f );
 
-	private RayCamera cam = new RayCamera( new PVector( -5, -5, 5 ), new PVector( 0.5f, 0.5f, 0.5f ),
-			new PVector( 0.707f, -0.707f, 0 ), 1f, this.sWidth, this.sHeigh );
-
-	private ArrayList< Ray > rays;
+	private RayCamera cam;
 
 	private Octree oct = new Octree( );
 
-	float buf[];
+	private float buf[];
+
+	private float cAng = 0;
+	private PVector cPos, cTgt, cRgt;
 
 	@Override
 	public void settings( ) {
@@ -42,13 +41,6 @@ public class FuzzyNormals extends ProjectBase {
 	}
 
 	public void setupOct( Octree oct, int l ) {
-
-//		oct.filled = false;
-//		oct.split( );
-//		oct.children.get( 0 ).filled = true;
-//		oct.children.get( 1 ).filled = true;
-//		oct.children.get( 2 ).filled = true;
-//		oct.children.get( 3 ).filled = true;
 
 		// Max recurse depth
 		if( l >= 4 ) {
@@ -77,7 +69,24 @@ public class FuzzyNormals extends ProjectBase {
 		// Gotta split some kiddos
 		this.setupOct( this.oct, 0 );
 
-		this.rays = this.cam.getPixelRays( );
+		this.cPos = new PVector( 10, 0, 0 );
+		this.cPos.rotate( this.cAng );
+		this.cTgt = new PVector( 0.5f, 0.5f, 0.5f );
+		this.cRgt = this.cPos.copy( );
+		this.cRgt.setMag( 1 );
+		this.cRgt.rotate( PConstants.PI / 2 );
+		this.cPos.z = 5;
+
+		this.cam = new RayCamera( this.cPos, this.cTgt, this.cRgt, 1f, this.sWidth, this.sHeigh );
+
+	}
+
+	@Override
+	public void draw( ) {
+
+		this.background( 0 );
+
+		this.cam.reset( );
 
 		this.loadPixels( );
 
@@ -86,7 +95,7 @@ public class FuzzyNormals extends ProjectBase {
 		for( int py = 0; py < this.sHeigh; ++py ) {
 			for( int px = 0; px < this.sWidth; ++px ) {
 
-				float d = this.oct.intersect( this.rays.get( py * this.sWidth + px ) );
+				float d = this.oct.intersect( this.cam.next( ) );
 
 				this.buf[ py * this.sWidth + px ] = d;
 
@@ -115,15 +124,46 @@ public class FuzzyNormals extends ProjectBase {
 
 		this.updatePixels( );
 
-		this.save( );
+	}
 
-		this.noLoop( );
+	@Override
+	public void keyPressed( ) {
+
+		boolean doMove = false;
+
+		if( this.key == 'a' ) {
+
+			this.cAng += PConstants.PI / 8;
+
+			doMove = true;
+
+		} else if( this.key == 's' ) {
+
+			this.cAng -= PConstants.PI / 8;
+
+			doMove = true;
+		}
+
+		if( doMove ) {
+
+			this.cPos = new PVector( 10, 0, 0 );
+			this.cPos.rotate( this.cAng );
+			this.cTgt = new PVector( 0.5f, 0.5f, 0.5f );
+			this.cRgt = this.cPos.copy( );
+			this.cRgt.setMag( 1 );
+			this.cRgt.rotate( PConstants.PI / 2 );
+			this.cPos.z = 5;
+
+			this.cam.move( this.cPos, this.cTgt, this.cRgt );
+
+		}
 
 	}
 
 	@Override
-	public void draw( ) {
+	public void mouseClicked( ) {
 
+		// Send single ray in, highlighting all boxes checked
 
 	}
 

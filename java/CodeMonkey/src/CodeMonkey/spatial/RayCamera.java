@@ -1,23 +1,42 @@
 package CodeMonkey.spatial;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 
 import processing.core.PVector;
 
 
-public class RayCamera {
+public class RayCamera implements Iterator< Ray > {
 
 	// Pixel density
 	public int sWidth, sHeigh;
+	public float ratio;
 	// Ray origin
 	public PVector so, sx, sy;
 	// Frame definition
 	public PVector fo, fx, fy;
 
+	// Ray Iterator
+	int py, px;
+	PVector rsy, rty, rs, rt;
+
 	public RayCamera( PVector o, PVector tgt, PVector screenRight, float ratio, int sWidth, int sHeigh ) {
 
 		this.sWidth = sWidth;
 		this.sHeigh = sHeigh;
+		this.ratio = ratio;
+
+		this.so = new PVector( );
+		this.sx = new PVector( );
+		this.sy = new PVector( );
+		this.fo = new PVector( );
+		this.fx = new PVector( );
+		this.fy = new PVector( );
+
+		this.move( o, tgt, screenRight );
+
+	}
+
+	public void move( PVector o, PVector tgt, PVector screenRight ) {
 
 		// Make normal dir
 		PVector dir = tgt.copy( );
@@ -25,65 +44,88 @@ public class RayCamera {
 		dir.normalize( );
 
 		// Frame axis
-		this.fo = o.copy( );
+		this.fo.set( o );
 
-		this.fx = screenRight.copy( );
+		this.fx.set( screenRight );
 		this.fo.sub( this.fx );
 		this.fx.mult( 2 );
 
-		this.fy = this.fx.cross( dir );
-		this.fy.setMag( this.fx.mag( ) * sHeigh / sWidth );
+		this.fx.cross( dir, this.fy );
+		this.fy.setMag( this.fx.mag( ) * this.sHeigh / this.sWidth );
 		this.fo.sub( this.fy );
 		this.fy.mult( 2 );
 
 		// Screen axis, must move o
-		this.so = o.copy( );
+		this.so.set( o );
 		this.so.sub( dir );
 
-		this.sx = screenRight.copy( );
-		this.sx.mult( ratio );
+		this.sx.set( screenRight );
+		this.sx.mult( this.ratio );
 		this.so.sub( this.sx );
 		this.sx.mult( 2 );
 
-		this.sy = this.sx.cross( dir );
-		this.sy.setMag( this.sx.mag( ) * sHeigh / sWidth );
-		this.sy.mult( ratio );
+		this.sx.cross( dir, this.sy );
+		this.sy.setMag( this.sx.mag( ) * this.sHeigh / this.sWidth );
+		this.sy.mult( this.ratio );
 		this.so.sub( this.sy );
 		this.sy.mult( 2 );
 
+		this.reset( );
+
 	}
 
-	public ArrayList< Ray > getPixelRays( ) {
 
-		ArrayList< Ray > rays = new ArrayList< Ray >( );
+	// Ray Iterator
+	public void reset( ) {
 
-		for( int py = 0; py < this.sHeigh; ++py ) {
+		this.py = -1;
+		this.px = this.sWidth;
 
-			PVector rsy = this.sy.copy( );
-			rsy.mult( ( py + 0.5f ) / this.sHeigh );
-			rsy.add( this.so );
+	}
 
-			PVector rty = this.fy.copy( );
-			rty.mult( ( py + 0.5f ) / this.sHeigh );
-			rty.add( this.fo );
+	@Override
+	public boolean hasNext( ) {
 
-			for( int px = 0; px < this.sWidth; ++px ) {
+		// Last one is x,y = sWidth-1,sHeigh-1
+		return this.py < this.sHeigh - 1 && this.px < this.sWidth - 1;
 
-				PVector rs = this.sx.copy( );
-				rs.mult( ( px + 0.5f ) / this.sWidth );
-				rs.add( rsy );
+	}
 
-				PVector rt = this.fx.copy( );
-				rt.mult( ( px + 0.5f ) / this.sWidth );
-				rt.add( rty );
+	@Override
+	public Ray next( ) {
 
-				rays.add( Ray.fromTwoPoints( rs, rt ) );
+		this.px += 1;
+		if( this.px >= this.sWidth ) {
 
-			}
+			this.px = 0;
+			this.py += 1;
+
+			// If no more
+			if( this.py >= this.sHeigh )
+				throw new RuntimeException( "No more pixels! Reset and try again" );
+
+			// Y moved, recompute
+			this.rsy = this.sy.copy( );
+			this.rsy.mult( ( this.py + 0.5f ) / this.sHeigh );
+			this.rsy.add( this.so );
+
+			this.rty = this.fy.copy( );
+			this.rty.mult( ( this.py + 0.5f ) / this.sHeigh );
+			this.rty.add( this.fo );
 
 		}
 
-		return rays;
+		// X moved, compute
+		this.rs = this.sx.copy( );
+		this.rs.mult( ( this.px + 0.5f ) / this.sWidth );
+		this.rs.add( this.rsy );
+
+		this.rt = this.fx.copy( );
+		this.rt.mult( ( this.px + 0.5f ) / this.sWidth );
+		this.rt.add( this.rty );
+
+		return Ray.fromTwoPoints( this.rs, this.rt );
+
 
 	}
 
