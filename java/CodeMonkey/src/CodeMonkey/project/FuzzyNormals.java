@@ -6,6 +6,7 @@ import CodeMonkey.spatial.Octree;
 import CodeMonkey.spatial.RayCamera;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PVector;
 
 
@@ -17,9 +18,11 @@ public class FuzzyNormals extends ProjectBase {
 
 	}
 
+	private PGraphics canvas;
+
 	Random rng = new Random( );
 
-	private final int sWidth = 1080;
+	private final int sWidth = 960;
 	private final int sHeigh = Math.round( this.sWidth * 9f / 16f );
 
 	private RayCamera cam;
@@ -43,7 +46,7 @@ public class FuzzyNormals extends ProjectBase {
 	public void setupOct( Octree oct, int l ) {
 
 		// Max recurse depth
-		if( l >= 4 ) {
+		if( l >= 1 ) {
 			if( this.rng.nextFloat( ) > 0.5 )
 				oct.filled = true;
 			return;
@@ -63,6 +66,8 @@ public class FuzzyNormals extends ProjectBase {
 
 	@Override
 	public void setup( ) {
+
+		this.canvas = this.createGraphics( this.sWidth, this.sHeigh );
 
 		this.buf = new float[ this.sWidth * this.sHeigh ];
 
@@ -88,8 +93,6 @@ public class FuzzyNormals extends ProjectBase {
 
 		this.cam.reset( );
 
-		this.loadPixels( );
-
 		float m = Float.POSITIVE_INFINITY;
 		float M = 0;
 		for( int py = 0; py < this.sHeigh; ++py ) {
@@ -111,18 +114,26 @@ public class FuzzyNormals extends ProjectBase {
 			}
 		}
 
+		this.canvas.beginDraw( );
+		this.canvas.loadPixels( );
+
 		M -= m;
 		for( int py = 0; py < this.sHeigh; ++py ) {
 			for( int px = 0; px < this.sWidth; ++px ) {
 
-				int c = Math.round( ( ( 1 - ( this.buf[ py * this.sWidth + px ] - m ) / M ) * 0.8f + 0.1f ) * 255 );
+				float c = ( ( 1 - ( this.buf[ py * this.sWidth + px ] - m ) / M ) * 0.8f + 0.1f ) * 255;
 
-				this.pixels[ ( this.sHeigh - py - 1 ) * this.sWidth + px ] = this.color( c );
+				this.canvas.pixels[ ( this.sHeigh - py - 1 ) * this.sWidth + px ] = this.color( c );
 
 			}
 		}
 
-		this.updatePixels( );
+		this.canvas.updatePixels( );
+		this.canvas.endDraw( );
+
+		this.image( this.canvas, 0, 0, this.pixelWidth, this.pixelHeight );
+
+		System.out.println( this.frameRate );
 
 	}
 
@@ -142,7 +153,15 @@ public class FuzzyNormals extends ProjectBase {
 			this.cAng -= PConstants.PI / 8;
 
 			doMove = true;
-		}
+
+		} else if( this.key == 'w' ) {
+			Octree.RECURSE_DEPTH += 1;
+			System.out.println( Octree.RECURSE_DEPTH );
+		} else if( this.key == 'r' ) {
+			Octree.RECURSE_DEPTH -= 1;
+			System.out.println( Octree.RECURSE_DEPTH );
+		} else if( this.key == ' ' )
+			this.save( );
 
 		if( doMove ) {
 
@@ -162,8 +181,6 @@ public class FuzzyNormals extends ProjectBase {
 
 	@Override
 	public void mouseClicked( ) {
-
-		// Send single ray in, highlighting all boxes checked
 
 	}
 
