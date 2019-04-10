@@ -7,6 +7,7 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="HEMesh"/>
+	<classpathentry kind="src" path="github"/>
 	<classpathentry exported="true" kind="lib" path="HEMeshLib/arpack-combo.jar"/>
 	<classpathentry exported="true" kind="lib" path="HEMeshLib/csparsej.jar"/>
 	<classpathentry exported="true" kind="lib" path="HEMeshLib/eclipse-collections-9.0.0.jar"/>
