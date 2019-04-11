@@ -15,14 +15,6 @@
  */
 package jinahya.bit.io;
 
-import static com.github.jinahya.bit.io.BitIoConstraints.requireValidSizeByte;
-import static com.github.jinahya.bit.io.BitIoConstraints.requireValidSizeChar;
-import static com.github.jinahya.bit.io.BitIoConstraints.requireValidSizeInt;
-import static com.github.jinahya.bit.io.BitIoConstraints.requireValidSizeLong;
-import static com.github.jinahya.bit.io.BitIoConstraints.requireValidSizeShort;
-import static com.github.jinahya.bit.io.BitIoConstraints.requireValidSizeUnsigned16;
-import static com.github.jinahya.bit.io.BitIoConstraints.requireValidSizeUnsigned8;
-
 import java.io.IOException;
 
 
@@ -56,7 +48,7 @@ public abstract class AbstractBitInput implements BitInput {
 	 */
 	protected int unsigned8( final int size ) throws IOException {
 
-		requireValidSizeUnsigned8( size );
+		BitIoConstraints.requireValidSizeUnsigned8( size );
 		if( this.available == 0 ) {
 			this.octet = this.read( );
 			this.count++;
@@ -81,7 +73,7 @@ public abstract class AbstractBitInput implements BitInput {
 	 */
 	protected int unsigned16( final int size ) throws IOException {
 
-		requireValidSizeUnsigned16( size );
+		BitIoConstraints.requireValidSizeUnsigned16( size );
 		int value = 0x00;
 		final int quotient = size / Byte.SIZE;
 		final int remainder = size % Byte.SIZE;
@@ -107,21 +99,21 @@ public abstract class AbstractBitInput implements BitInput {
 	@Override
 	public byte readByte( final boolean unsigned, final int size ) throws IOException {
 
-		requireValidSizeByte( unsigned, size );
+		BitIoConstraints.requireValidSizeByte( unsigned, size );
 		return (byte) this.readInt( unsigned, size );
 	}
 
 	@Override
 	public short readShort( final boolean unsigned, final int size ) throws IOException {
 
-		requireValidSizeShort( unsigned, size );
+		BitIoConstraints.requireValidSizeShort( unsigned, size );
 		return (short) this.readInt( unsigned, size );
 	}
 
 	@Override
 	public int readInt( final boolean unsigned, final int size ) throws IOException {
 
-		requireValidSizeInt( unsigned, size );
+		BitIoConstraints.requireValidSizeInt( unsigned, size );
 		if( !unsigned ) {
 			int value = 0 - this.readInt( true, 1 );
 			final int usize = size - 1;
@@ -148,7 +140,7 @@ public abstract class AbstractBitInput implements BitInput {
 	@Override
 	public long readLong( final boolean unsigned, final int size ) throws IOException {
 
-		requireValidSizeLong( unsigned, size );
+		BitIoConstraints.requireValidSizeLong( unsigned, size );
 		if( !unsigned ) {
 			long value = 0L - this.readLong( true, 1 );
 			final int usize = size - 1;
@@ -176,7 +168,7 @@ public abstract class AbstractBitInput implements BitInput {
 	@Override
 	public char readChar( final int size ) throws IOException {
 
-		requireValidSizeChar( size );
+		BitIoConstraints.requireValidSizeChar( size );
 		return (char) this.readInt( true, size );
 	}
 

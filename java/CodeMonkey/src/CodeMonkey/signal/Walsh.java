@@ -8,7 +8,7 @@ public class Walsh {
 	// W(n) W(n)
 	// W(n) -W(n)
 
-	public static float[ ][ ] getWalsh( int pow2 ) {
+	public static float[ ][ ] getWalshCodes( int pow2 ) {
 
 		// TODO: Do it right...
 
