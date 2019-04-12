@@ -26,6 +26,8 @@ public class TwistedThreads extends ProjectBase {
 
 		this.size( this.sWidth, this.sHeigh );
 
+		this.setName( );
+
 	}
 
 	@Override
