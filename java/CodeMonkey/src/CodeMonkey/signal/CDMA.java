@@ -29,6 +29,10 @@ public class CDMA {
 
 		if( channels.size( ) != codebits )
 			throw new RuntimeException( "Incorrect number of input channels (Use null if not in use)" );
+		for( int codedx = 0; codedx < codebits; ++codedx )
+			if( codes[ codedx ].length != codebits )
+				throw new RuntimeException( String.format( "Code %d is not the proper size" ) );
+
 
 		// Carry on my
 		boolean waywardSon;
