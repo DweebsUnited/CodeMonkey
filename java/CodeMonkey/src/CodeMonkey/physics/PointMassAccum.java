@@ -12,16 +12,22 @@ public class PointMassAccum {
 
 	public PointMassAccum( PVector p, float m ) {
 
-		this( p.x, p.y, m );
+		this( p.x, p.y, p.z, m );
 
 	}
 
 	public PointMassAccum( float x, float y, float m ) {
 
-		this.m = new PointMass( x, y, m );
+		this( x, y, 0, m );
+
+	}
+
+	public PointMassAccum( float x, float y, float z, float m ) {
+
+		this.m = new PointMass( x, y, z, m );
 
 		this.F = new PVector( 0, 0, 0 );
-		this.p = new PVector( x, y );
+		this.p = this.m.c.copy( );
 
 	}
 
@@ -43,6 +49,7 @@ public class PointMassAccum {
 
 		this.m.c.set( p );
 		this.m.co.set( p );
+		this.p.set( p );
 
 	}
 

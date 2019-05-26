@@ -12,9 +12,15 @@ public class PointMass {
 
 	public PointMass( float x, float y, float m ) {
 
+		this( x, y, 0, m );
+
+	}
+
+	public PointMass( float x, float y, float z, float m ) {
+
 		this.m = m;
 
-		this.c = new PVector( x, y );
+		this.c = new PVector( x, y, z );
 
 		this.co = new PVector( );
 		this.co.set( this.c );
@@ -39,7 +45,7 @@ public class PointMass {
 		// To velocity
 		p.sub( this.co );
 		// Dampen by %
-		p.mult( 0.97f );
+		p.mult( 0.99f );
 		// Back to position
 		p.add( this.co );
 

@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
-import org.eclipse.collections.impl.list.mutable.FastList;
 import wblut.external.ProGAL.CTetrahedron;
 import wblut.external.ProGAL.CVertex;
 import wblut.external.ProGAL.DelaunayComplex;

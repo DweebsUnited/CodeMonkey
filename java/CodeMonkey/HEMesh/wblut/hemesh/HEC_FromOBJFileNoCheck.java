@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import org.eclipse.collections.impl.list.mutable.FastList;
+
 import wblut.geom.WB_Point;
 
 /**

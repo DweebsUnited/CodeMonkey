@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="HEMesh"/>
 	<classpathentry kind="src" path="github"/>
@@ -22,22 +18,22 @@
 	<classpathentry exported="true" kind="lib" path="HEMeshLib/netlib-java.jar"/>
 	<classpathentry exported="true" kind="lib" path="HEMeshLib/optimization.jar"/>
 	<classpathentry exported="true" kind="lib" path="HEMeshLib/parallelcolt-0.9.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/core.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-aarch64.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-amd64.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-armv6hf.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-i586.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-macosx-universal.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-windows-amd64.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-windows-i586.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-linux-aarch64.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/core.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeMonkey/ProcessingLib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeMonkey/ProcessingLib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeMonkey/ProcessingLib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-linux-amd64.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-linux-armv6hf.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-linux-i586.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-macosx-universal.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-windows-amd64.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all-natives-windows-i586.jar"/>
-	<classpathentry exported="true" kind="lib" path="ProcessingLib/jogl-all.jar"/>
+	<classpathentry exported="true" kind="lib" path="ProcessingLib/gluegen-rt-natives-linux-amd64.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

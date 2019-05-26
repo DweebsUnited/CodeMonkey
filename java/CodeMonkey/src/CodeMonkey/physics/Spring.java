@@ -69,4 +69,26 @@ public class Spring {
 
 	}
 
+	public static PVector spring( float k, PVector a, PVector b ) {
+
+		PVector fa = b.copy( );
+
+		fa.sub( a );
+		fa.setMag( fa.mag( ) * k );
+
+		return fa;
+
+	}
+
+	public static PVector spring( float k, float x, PVector a, PVector b ) {
+
+		PVector fa = b.copy( );
+
+		fa.sub( a );
+		fa.setMag( ( fa.mag( ) - x ) * k );
+
+		return fa;
+
+	}
+
 }

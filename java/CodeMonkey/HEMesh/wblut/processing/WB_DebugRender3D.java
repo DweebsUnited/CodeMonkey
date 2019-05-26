@@ -21,8 +21,8 @@ import wblut.geom.WB_GeometryFactory;
 import wblut.geom.WB_Point;
 import wblut.hemesh.HE_Face;
 import wblut.hemesh.HE_Halfedge;
-import wblut.hemesh.HE_Mesh;
 import wblut.hemesh.HE_HalfedgeStructure;
+import wblut.hemesh.HE_Mesh;
 import wblut.hemesh.HE_Vertex;
 
 /**

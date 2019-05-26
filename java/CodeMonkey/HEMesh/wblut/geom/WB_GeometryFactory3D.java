@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 
 import com.vividsolutions.jts.algorithm.ConvexHull;
@@ -30,7 +31,6 @@ import com.vividsolutions.jts.operation.buffer.BufferOp;
 import com.vividsolutions.jts.operation.buffer.BufferParameters;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 
-import org.eclipse.collections.impl.list.mutable.FastList;
 import wblut.data.WB_JohnsonPolyhedraData01;
 import wblut.data.WB_JohnsonPolyhedraData02;
 import wblut.data.WB_JohnsonPolyhedraData03;

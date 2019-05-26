@@ -12,6 +12,8 @@ package wblut.hemesh;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.collections.impl.list.mutable.FastList;
+
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -19,7 +21,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 
-import org.eclipse.collections.impl.list.mutable.FastList;
 import wblut.core.WB_ProgressReporter.WB_ProgressCounter;
 import wblut.core.WB_ProgressReporter.WB_ProgressTracker;
 import wblut.geom.WB_Coord;

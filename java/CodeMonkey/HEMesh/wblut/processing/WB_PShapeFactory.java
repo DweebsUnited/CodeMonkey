@@ -24,8 +24,8 @@ import wblut.geom.WB_Vector;
 import wblut.hemesh.HEC_IsoSkin;
 import wblut.hemesh.HE_Face;
 import wblut.hemesh.HE_Halfedge;
-import wblut.hemesh.HE_Mesh;
 import wblut.hemesh.HE_HalfedgeStructure;
+import wblut.hemesh.HE_Mesh;
 import wblut.hemesh.HE_Selection;
 import wblut.hemesh.HE_Vertex;
 

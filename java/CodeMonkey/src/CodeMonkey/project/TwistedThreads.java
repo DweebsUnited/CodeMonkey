@@ -53,8 +53,8 @@ public class TwistedThreads extends ProjectBase {
 		// So, osize: ( wpx * hpx * bytes/px * bits/byte ) * obit/ibit / bit/byte =
 		// wpx * hpx * 3 * 8 * 10 / 8 = wpx * hpx * 3 * 10
 		int obytes = this.sn.width * this.sn.height * 30;
-		int ow = ;
-		this.obuf = this.createGraphics( );
+		//int ow = ;
+		//this.obuf = this.createGraphics( );
 
 		// Get 8 streams, encode then decode
 

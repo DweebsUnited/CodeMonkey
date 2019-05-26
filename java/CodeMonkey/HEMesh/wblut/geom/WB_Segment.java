@@ -12,6 +12,7 @@ package wblut.geom;
 import java.util.List;
 
 import org.eclipse.collections.impl.list.mutable.FastList;
+
 import wblut.math.WB_Math;
 
 /**
