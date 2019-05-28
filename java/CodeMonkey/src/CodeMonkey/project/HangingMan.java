@@ -1,7 +1,7 @@
 package CodeMonkey.project;
 
 import CodeMonkey.physics.PointMassAccum;
-import CodeMonkey.physics.Spring;
+import CodeMonkey.physics.XRRope;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -21,6 +21,10 @@ public class HangingMan extends ProjectBase {
 
 	private PGraphics canvas;
 
+	// Physics tick rate
+	private final float PHY_TICK = 1f / 1000; // ss / tick
+
+
 	// Kran dimensions, all in meters
 	private float kWidth = 20;
 	private float hkWidth = this.kWidth / 2;
@@ -29,8 +33,8 @@ public class HangingMan extends ProjectBase {
 	private float kHeigh = 20;
 	private float hkHeigh = this.kHeigh / 2;
 
-	private float camDist = (float) Math
-			.sqrt( this.hkWidth * this.hkWidth + this.hkHeigh * this.hkHeigh + this.hkLengt * this.hkLengt ) * 1.5f;
+	private float camDist = (float) Math.sqrt(
+			this.hkWidth * this.hkWidth + this.hkHeigh * this.hkHeigh + this.hkLengt * this.hkLengt ) * 1.5f;
 	private float camRota = 0;
 	private float camFOV = 70;
 
@@ -39,30 +43,36 @@ public class HangingMan extends ProjectBase {
 
 	private final float AXIS_LEN = 5;
 
+
 	// Finally Kran parts
-	private PVector Dp = new PVector( this.hkWidth, this.hkLengt, this.kHeigh );
+	// Drive head
+	private PVector Dp;
 
 	private final float DRIVE_SIZE = 2;
 
-	// Kran drive control
+	// Kran Drive Control
 	private PVector D = new PVector( 0, 0, 0 );
 
-	private final float SPEED_X = 0.05f;
-	private final float SPEED_Y = 0.05f;
+	private final float SPEED_X = 0.0254f * this.PHY_TICK; // m / s
+	private final float SPEED_Y = 0.0254f * this.PHY_TICK; // m / s
 
 	// Light parts
-	private float Lm = 5; // kg?
+	private float Lm = 0.5f; // kg
 
-	private PointMassAccum L = new PointMassAccum( this.hkWidth, this.hkLengt, this.hkHeigh, this.Lm );
+	private PointMassAccum L;
+
+	// Now the Rope
+	private final float ROPE_K = 10000;
+	private final int ROPE_SEG = 32;
+	private final float ROPE_MASS = 0.25f; // kg / m
 
 	private float RL = this.hkHeigh;
 
-	private final float LIGHT_SIZE = 0.5f;
-	private final float ROPE_K = 1000;
-	private final float SPEED_Z = 0.025f;
+	private XRRope R;
 
-	// Gravity
-	private final float G = -9.8f;
+	private final float LIGHT_SIZE = 0.5f;
+	private final float SPEED_Z = 0.0254f * this.PHY_TICK;
+
 
 	@Override
 	public void settings( ) {
@@ -82,37 +92,50 @@ public class HangingMan extends ProjectBase {
 		this.canvas.perspective( this.camFOV, 16f / 9, 0.01f, 1000f );
 		this.canvas.endDraw( );
 
+		this.Dp = new PVector( this.hkWidth, this.hkLengt, this.kHeigh );
+		this.L = new PointMassAccum( this.hkWidth, this.hkLengt + this.RL, this.kHeigh, this.Lm );
+		this.R = new XRRope( this.Dp, this.L, this.RL, this.ROPE_K, this.ROPE_SEG, this.ROPE_MASS );
+
+
 	}
 
 	@Override
 	public void draw( ) {
 
-		// State update
-		// X
-		// Stop if it would take us out of bounds
-		if( this.Dp.x + this.D.x > this.kWidth || this.Dp.x + this.D.x < 0 )
-			this.D.x = 0;
-		else
-			this.Dp.x += this.D.x;
+		int phyStep = (int) Math.floor( 1f / this.PHY_TICK / this.frameRate );
+		for( int sdx = 0; sdx < phyStep; ++sdx ) {
 
-		// Y
-		// Stop if it would take us out of bounds
-		if( this.Dp.y + this.D.y > this.kLengt || this.Dp.y + this.D.y < 0 )
-			this.D.y = 0;
-		else
-			this.Dp.y += this.D.y;
+			// State update
+			// X
+			// Stop if it would take us out of bounds
+			if( this.Dp.x + this.D.x > this.kWidth || this.Dp.x + this.D.x < 0 )
+				this.D.x = 0;
+			else
+				this.Dp.x += this.D.x;
 
-		// Z
-		// Stop if it would take us out of bounds
-		if( this.RL + this.D.z > this.kHeigh || this.RL + this.D.z < 0 )
-			this.D.z = 0;
-		else
-			this.RL += this.D.z;
+			// Y
+			// Stop if it would take us out of bounds
+			if( this.Dp.y + this.D.y > this.kLengt || this.Dp.y + this.D.y < 0 )
+				this.D.y = 0;
+			else
+				this.Dp.y += this.D.y;
 
-		// Now physics
-		this.L.accum( new PVector( 0, 0, this.G * this.Lm ) );
-		this.L.accum( Spring.spring( this.ROPE_K, this.RL, this.L.p, this.Dp ) );
-		this.L.verlet( 1f / 30 );
+			// Z
+			// Stop if it would take us out of bounds
+			if( this.RL + this.D.z > this.kHeigh || this.RL + this.D.z < 0.1f )
+				this.D.z = 0;
+			else
+				this.RL += this.D.z;
+
+			// Now physics
+			// Update Rope, this also accums to the Light
+			this.R.accum( this.Dp, this.L, this.RL );
+
+			// Verlet
+			this.R.verlet( this.PHY_TICK, true );
+			this.L.verlet( this.PHY_TICK, true );
+
+		}
 
 
 		// Now some drawing
@@ -153,10 +176,8 @@ public class HangingMan extends ProjectBase {
 		this.canvas.box( this.LIGHT_SIZE, this.LIGHT_SIZE, this.LIGHT_SIZE );
 		this.canvas.popMatrix( );
 
-		// Draw Light springs - BUT HOW?!
-		this.canvas.noFill( );
-		this.canvas.stroke( 3, 71, 72 );
-		this.canvas.line( this.L.p.x, this.L.p.y, this.L.p.z, this.Dp.x, this.Dp.y, this.Dp.z );
+		// Draw Rope
+		this.R.draw( this.canvas );
 
 		// Draw origin axis
 		this.canvas.noFill( );
@@ -188,12 +209,12 @@ public class HangingMan extends ProjectBase {
 			// Rotate camera-left
 			this.camRota = ( this.camRota + this.CAMERA_ROT ) % ( 2 * PConstants.PI );
 
-		} else if( this.key == 'p' ) {
+		} else if( this.key == 'g' ) {
 
-			// Camera in
+			// Camera out
 			this.camDist -= this.CAMERA_DIT;
 
-		} else if( this.key == 'g' ) {
+		} else if( this.key == 'p' ) {
 
 			// Camera in
 			this.camDist += this.CAMERA_DIT;

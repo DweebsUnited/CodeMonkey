@@ -5,6 +5,8 @@ import processing.core.PVector;
 
 public class PointMass {
 
+	private final static float G = -9.8f;
+
 	private float m;
 
 	public PVector c;
@@ -21,17 +23,29 @@ public class PointMass {
 		this.m = m;
 
 		this.c = new PVector( x, y, z );
-
-		this.co = new PVector( );
-		this.co.set( this.c );
+		this.co = new PVector( x, y, z );
 
 	}
 
+	// TODO: Gravity flag
 	public void verlet( PVector F, float dt ) {
+
+		this.verlet( F, dt, false );
+
+	}
+
+	public void verlet( PVector F, float dt, boolean GRAVITY ) {
 
 		// X+1 = 2 X - X-1 + A dt dt
 
 		F = F.copy( );
+
+		// Add gravity if need be
+		if( GRAVITY ) {
+
+			F.add( new PVector( 0, 0, PointMass.G * this.m ) );
+
+		}
 
 		PVector p = new PVector( );
 		p.set( this.c );
@@ -45,12 +59,31 @@ public class PointMass {
 		// To velocity
 		p.sub( this.co );
 		// Dampen by %
-		p.mult( 0.99f );
+		p.mult( 0.9999f );
 		// Back to position
 		p.add( this.co );
 
 		this.co.set( this.c );
 		this.c.set( p );
+
+	}
+
+	public void set( PVector p ) {
+
+		this.set( p, p );
+
+	}
+
+	public void set( PVector pp, PVector p ) {
+
+		this.c.set( p );
+		this.co.set( pp );
+
+	}
+
+	public void setM( float m ) {
+
+		this.m = m;
 
 	}
 

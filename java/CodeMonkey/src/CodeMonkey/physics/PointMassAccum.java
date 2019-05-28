@@ -39,7 +39,13 @@ public class PointMassAccum {
 
 	public void verlet( float dt ) {
 
-		this.m.verlet( this.F, dt );
+		this.verlet( dt, false );
+
+	}
+
+	public void verlet( float dt, boolean GRAVITY ) {
+
+		this.m.verlet( this.F, dt, GRAVITY );
 		this.F.set( 0, 0, 0 );
 		this.p.set( this.m.c );
 
@@ -47,9 +53,21 @@ public class PointMassAccum {
 
 	public void set( PVector p ) {
 
-		this.m.c.set( p );
-		this.m.co.set( p );
+		this.m.set( p );
 		this.p.set( p );
+
+	}
+
+	public void set( PVector pp, PVector p ) {
+
+		this.m.set( pp, p );
+		this.p.set( p );
+
+	}
+
+	public void setM( float m ) {
+
+		this.m.setM( m );
 
 	}
 
