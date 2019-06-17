@@ -1,0 +1,2 @@
+cabal new-run
+pause

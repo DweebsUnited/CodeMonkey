@@ -1,0 +1,214 @@
+succ
+	Successor, for num == inc
+
+min
+max
+
+div
+	a / b
+
+Func application has highest operator precedence
+Functions can't start with capital
+Function definition can't change
+
+=
+	Function definition
+
+if is an expression
+	if pred then a else b
+
+Lists are monotype
+Lists are singly linked
+List comparison is element-wise
+	++ == concat
+		Can be slow with long first list
+	: == prepend == cons
+		Instant?
+	!! == get
+	head : tail <--> last : init
+	length
+	null == isEmpty
+	reverse
+	take x == head( x )
+	drop == leftovers of take
+	maximum, minimum, sum, product
+	elem x l == l.contains( x )
+
+List comprehensions!
+	Range
+		[a..b] == range( a, b + 1 )
+		[a,a+s..b] == range( a, b + 1, s )
+		[b,b-s..a] == range( b, a - 1, -s )
+	Comprehension
+		[ f( x ) | x <- l1, y <- l2, ..., pred1( x ), pred2( x ), ..., let a1 = v, ... ]
+		Let omit in, apply to function and any following predicates
+
+Infinite lists are a thing, so `take` carefully
+	cycle l == l ++ l ++ l ++ l ...
+	repeat x == [ x, x, x, x, x, x, ... ]
+
+Tuples like lists but not...
+Size and component types are part of type
+
+zip [a] [b] == [(a,b)]
+
+Type definition
+	:: Type == of Type
+
+	Int == Bounded int, machine word size?
+	Integer == Big int
+	Float == doh
+	Double == doy
+	Bool
+	Char
+	String == [Char]
+	Ordering == GT | LT | EQ
+
+Typeclass
+	Interfaces but better
+
+	Eq => ==, /=
+	Ord => Eq, >, <, >=, <=
+	Show => a -> String
+	Read => String -> a
+	Enum => Sequentially ordered types
+	Bounded => Has limits
+		(minBound a) => a
+		(maxBound a) => a
+	Num => Any number, regardless of type
+	Integral => Int, Integer
+	Floating => Float, Double
+
+	fromIntegral :: (Integral a, Num b) => a -> b
+
+Func syntax
+	Pattern matching
+		lucky :: (Integral a) => a -> String
+		lucky 7 = "LUCKY NUMBER SEVEN!"
+		lucky x = "Sorry, you're out of luck, pal!"
+
+		addVectors :: (Num a) => (a, a) -> (a, a) -> (a, a)
+		addVectors (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
+
+		head' :: [a] -> a
+		head' [] = error "Can't call head on an empty list, dummy!"
+		head' (x:_) = x
+
+	As patterns
+		capital :: String -> String
+		capital "" = "Empty string, whoops!"
+		capital all@(x:xs) = "The first letter of " ++ all ++ " is " ++ [x]
+
+	Guard : If else on arguments
+		bmiTell :: (RealFloat a) => a -> String
+		bmiTell bmi
+			| bmi <= 18.5 = "You're underweight, you emo, you!"
+			| bmi <= 25.0 = "You're supposedly normal. Pffft, I bet you're ugly!"
+			| bmi <= 30.0 = "You're fat! Lose some weight, fatty!"
+			| otherwise   = "You're a whale, congratulations!"
+			where bmi = weight / height ^ 2
+
+	Where bindings work on single patterns, and can bind values patterns or functions
+		initials :: String -> String -> String
+		initials firstname lastname = [f] ++ ". " ++ [l] ++ "."
+			where (f:_) = firstname
+				  (l:_) = lastname
+
+		calcBmis :: (RealFloat a) => [(a, a)] -> [a]
+		calcBmis xs = [bmi w h | (w, h) <- xs]
+			where bmi weight height = weight / height ^ 2
+
+	Let bindings : Expressions binding value
+		( let a = v; ... in e( a ... ) )
+
+		Can pattern match
+			(let (a,b,c) = (1,2,3) in a+b+c) * 100
+
+	Case expression : syntactic sugar for some anonymous where matching
+		describeList :: [a] -> String
+		describeList xs = "The list is " ++ case xs of [] -> "empty."
+													   [x] -> "a singleton list."
+													   xs -> "a longer list."
+
+		SAME AS
+
+		describeList :: [a] -> String
+		describeList xs = "The list is " ++ what xs
+			where what [] = "empty."
+				  what [x] = "a singleton list."
+				  what xs = "a longer list."
+
+Recursion yo
+
+Currying: Partially applied functions
+	Explains a lot about the syntax
+
+	multThree :: (Num a) => a -> a -> a -> a
+	multThree x y z = x * y * z
+	multThree 2 :: (Num a) => a -> a -> a
+	multThree 2 3 :: (Num a) => a -> a
+
+	applyTwice :: (a -> a) -> a -> a
+	applyTwice f x = f (f x)
+
+	flip' :: (a -> b -> c) -> (b -> a -> c)
+	flip' f = g
+		where g x y = f y x
+
+Essentials
+	map :: (a -> b) -> [a] -> [b]
+
+	filter :: (a -> Bool) -> [a] -> [a]
+
+	takeWhile :: (a -> Bool) -> [a] -> [a]
+
+	seq :: a -> b -> b
+		Advanced system func, first reduces thunk a, then returns b
+		Can be used to avoid some thunk chaining esp in folds
+
+Lambdas: Anonymous expressions
+	( \b1 b2 -> e( b1, b2 ) )
+
+	Due to currying:
+		flip' :: (a -> b -> c) -> b -> a -> c
+		flip' f = \x y -> f y x
+
+Folds!
+	foldl map reduces from the left
+	foldl :: ( b -> a -> b ) -> b -> [a] -> b
+	foldl f a [] = a
+	foldl f a h:rem = let z = f a h
+	                  in seq z $ foldl f z rem
+
+	foldr does the same from the right
+
+	foldl1 / foldr1 take first element as accum seed
+
+	scanl / scanr is like a fold, but returns all intermediate values in a list
+		foldl = last scanl
+		foldr = head scanr
+
+Higher order function usage
+	Function application: $
+		($) :: ( a -> b ) -> a -> b
+		f $ x = f x
+
+		Has lowest operator precedence
+		Can be used to construct arguments to function
+		Think open paren, with close paren on far right
+
+		Or these bananas:
+		map ($ 3) [(4+), (10*), (^2), sqrt]
+		[7.0,30.0,9.0,1.7320508075688772]
+
+	Function composition: .
+		(.) :: ( b -> c ) -> ( a -> b ) -> a -> c
+		f . g = \x -> f ( g x )
+
+		\x -> negate ( abs x ) == negate . abs
+		\xs -> negate ( sum ( tail xs ) ) == negate . sum . tail
+
+		Right associative, so sometimes need to partially apply funcs so each only takes one
+		replicate 100 ( product ( map ( * 3 ) ( zipWith max [ 1, 2, 3, 4, 5 ] [ 4, 5, 6, 7, 8 ] ) ) )
+		SAME AS
+		replicate 100 . product . map ( * 3 ) . zipWith max [ 1, 2, 3, 4, 5 ] $ [ 4, 5, 6, 7, 8 ]
