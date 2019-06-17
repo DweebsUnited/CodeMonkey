@@ -34,5 +34,5 @@ cube w = [
 
     Vertex3 w (-w) (-w),
     Vertex3 (-w) (-w) (-w),
-    Vertex3 (-w) w (-w),
+    Vertex3 (-w) w (-w)
     ]
