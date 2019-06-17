@@ -93,7 +93,7 @@ public class HangingMan extends ProjectBase {
 		this.canvas.endDraw( );
 
 		this.Dp = new PVector( this.hkWidth, this.hkLengt, this.kHeigh );
-		this.L = new PointMassAccum( this.hkWidth, this.hkLengt + this.RL, this.kHeigh, this.Lm );
+		this.L = new PointMassAccum( this.hkWidth, this.hkLengt, this.hkHeigh, this.Lm );
 		this.R = new XRRope( this.Dp, this.L, this.RL, this.ROPE_K, this.ROPE_SEG, this.ROPE_MASS );
 
 

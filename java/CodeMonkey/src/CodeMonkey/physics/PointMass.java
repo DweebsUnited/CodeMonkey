@@ -58,8 +58,11 @@ public class PointMass {
 
 		// To velocity
 		p.sub( this.co );
+
 		// Dampen by %
 		p.mult( 0.9999f );
+		// Damping by 1/x
+
 		// Back to position
 		p.add( this.co );
 
