@@ -25,17 +25,25 @@ main = do
   GLFW.setWindowCloseCallback win ( Just winClosed )
 
   -- Render loop!
-  onDisplay win
+  renderLoop win
 
   -- Cleanup window in case loop ends without shutdown (crash mostly)
   GLFW.destroyWindow win
   GLFW.terminate
 
-onDisplay :: Window -> IO ()
-onDisplay win = forever $ do
+renderLoop :: Window -> IO ()
+renderLoop win = do
+
   -- Run the display function
-  display
+  display win
+
   -- Swap buffers
   GLFW.swapBuffers win
   -- Poll events
   GLFW.pollEvents
+
+  -- Check if we should close
+  winByeBye <- GLFW.windowShouldClose win
+
+  -- Close if triggered
+  unless winByeBye $ renderLoop win

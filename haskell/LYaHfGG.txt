@@ -15,16 +15,22 @@ Function definition can't change
 	Function definition
 
 if is an expression
-	if pred then a else b
+	( if pred then a else b )
 
-Lists are monotype
-Lists are singly linked
-List comparison is element-wise
-	++ == concat
+Lists
+	Monotype
+	Singly linked, so operations on right walk entire list
+	List comparison is element-wise
+
+	(++) :: [a] -> [a] -> [a]
+		Add B to end of A
 		Can be slow with long first list
-	: == prepend == cons
+	(:) :: a -> [a] -> [a]
+	cons :: a -> [a] -> [a]
+		Prepend to list
 		Instant?
-	!! == get
+	(!!) :: [a] -> Int -> a
+		Get at index
 	head : tail <--> last : init
 	length
 	null == isEmpty
@@ -34,23 +40,21 @@ List comparison is element-wise
 	maximum, minimum, sum, product
 	elem x l == l.contains( x )
 
-List comprehensions!
-	Range
-		[a..b] == range( a, b + 1 )
-		[a,a+s..b] == range( a, b + 1, s )
-		[b,b-s..a] == range( b, a - 1, -s )
-	Comprehension
-		[ f( x ) | x <- l1, y <- l2, ..., pred1( x ), pred2( x ), ..., let a1 = v, ... ]
-		Let omit in, apply to function and any following predicates
+	List comprehensions!
+		Range
+			[a..b] == range( a, b + 1 )
+			[a,a+s..b] == range( a, b + 1, s )
+			[b,b-s..a] == range( b, a - 1, -s )
+		Comprehension
+			[ f( x ) | x <- l1, y <- l2, ..., pred1( x ), pred2( x ), ..., let a1 = v, ... ]
+			Let omit in, apply to function and any following predicates
 
-Infinite lists are a thing, so `take` carefully
-	cycle l == l ++ l ++ l ++ l ...
-	repeat x == [ x, x, x, x, x, x, ... ]
+	Infinite lists are a thing, so `take` carefully
+		cycle l == l ++ l ++ l ++ l ...
+		repeat x == [ x, x, x, x, x, x, ... ]
 
-Tuples like lists but not...
-Size and component types are part of type
-
-zip [a] [b] == [(a,b)]
+Tuples like lists but more detailed...
+	Size and component types are part of type
 
 Type definition
 	:: Type == of Type
@@ -80,6 +84,7 @@ Typeclass
 	Floating => Float, Double
 
 	fromIntegral :: (Integral a, Num b) => a -> b
+	compare :: a -> a -> Ordering
 
 Func syntax
 	Pattern matching
@@ -163,7 +168,8 @@ Essentials
 	takeWhile :: (a -> Bool) -> [a] -> [a]
 
 	seq :: a -> b -> b
-		Advanced system func, first reduces thunk a, then returns b
+		Not so essential, but can be really useful sometimes
+		Advanced system func, first resolves thunk a, then returns b
 		Can be used to avoid some thunk chaining esp in folds
 
 Lambdas: Anonymous expressions
@@ -178,7 +184,7 @@ Folds!
 	foldl :: ( b -> a -> b ) -> b -> [a] -> b
 	foldl f a [] = a
 	foldl f a h:rem = let z = f a h
-	                  in seq z $ foldl f z rem
+					  in foldl f z rem
 
 	foldr does the same from the right
 
@@ -187,6 +193,13 @@ Folds!
 	scanl / scanr is like a fold, but returns all intermediate values in a list
 		foldl = last scanl
 		foldr = head scanr
+
+	foldl' / foldr'
+		Stricter versions that resolve thunks as they go, rather than stack overflowing
+	foldl' :: ( b -> a -> b ) -> b -> [a] -> b
+	foldl' f a [] = a
+	foldl' f a h:rem = let z = f a h
+					   in seq z $ foldl f z rem
 
 Higher order function usage
 	Function application: $
@@ -212,3 +225,641 @@ Higher order function usage
 		replicate 100 ( product ( map ( * 3 ) ( zipWith max [ 1, 2, 3, 4, 5 ] [ 4, 5, 6, 7, 8 ] ) ) )
 		SAME AS
 		replicate 100 . product . map ( * 3 ) . zipWith max [ 1, 2, 3, 4, 5 ] $ [ 4, 5, 6, 7, 8 ]
+
+	Data.Function.on :: (b -> b -> c) -> (a -> b) -> a -> a -> c
+		on f g = \x y -> f ( g x ) ( g y )
+
+		Can be used for:
+			on (==) (> 0) => \x y -> (==) ( x > 0 ) ( y > 0 )
+
+Modules: Libraries of sorts
+	import Data.List
+		Puts exported elements in global namespace
+	import qualified Data.List as L
+		Imports, but requires full name redirection
+
+	import Data.List ( nub )
+	import Data.List hiding ( nub )
+
+Data.List
+	intersperse :: a -> [a] -> [a]
+		Adds new element between each element in list
+	intercalate :: [a] -> [[a]] -> [a]
+		Adds new list between each list, flattens
+
+	transpose :: [[a]] -> [[a]]
+		What you expect, 2d mat transpose
+
+	concat :: [[a]] -> [a]
+		List flatten
+	concatMap :: ( a -> [b] ) -> [a] -> [b]
+	concatMap = concat . map
+
+	and :: [Bool] -> Bool
+		True if all are true
+	or :: [Bool] -> Bool
+		What you expect given and
+
+	any :: ( a -> Bool ) -> [a] -> Bool
+	any = or . map
+	all :: ( a -> Bool ) -> [a] -> Bool
+	all = and . map
+
+	iterate :: ( a -> a ) -> a -> [a]
+	iterate f o = [o] ++ ( iterate f $ f o )
+
+	splitAt :: Int -> [a] -> ([a], [a])
+		Split at index, return parts in tuple
+
+	takeWhile :: ( a -> Bool ) -> [a] -> [a]
+		Keep head elements for which predicate is true
+	dropWhile :: ( a -> Bool ) -> [a] -> [a]
+		Opposite of takeWhile, drop head elements for which predicate is true
+	span :: ( a -> Bool ) -> [a] -> ([a], [a])
+		Like takeWhile, but also returns tail that would have been dropped
+	break :: ( a -> Bool ) -> [a] -> ([a], [a])
+		Breaks list before first element for which predicate is true
+
+	sort :: Ord a => [a] -> [a]
+		Most likely quicksort?
+
+	group :: Ord a => [a] -> [[a]]
+		Groups sequential equal elements into sublists
+		Sorting first can give count of each unique elem
+
+	inits / tails
+		Like init / tail but they return list of recursive intermediates
+
+		let w = "w00t" in zip (inits w) (tails w)
+		[("","w00t"),("w","00t"),("w0","0t"),("w00","t"),("w00t","")]
+
+	isInfixOf / isPrefixOf / isSuffixOf
+		Returns True if sublist / prefix / suffix is present in target list
+
+	elem / notElem
+		Pretty obvious, see above too
+
+	partition :: ( a -> Bool ) -> ([a], [a])
+		Returns filter, and what would have been removed
+
+	find :: ( a -> Bool ) -> [a] -> Maybe a
+		Find first element matching predicate
+	findIndex :: ( a -> Bool ) -> [a] -> Maybe Int
+		Like find, but give index instead of matching elem
+	findIndices :: ( a -> Bool ) -> [a] -> [Int]
+		Like singular, but return list of indices of all matches
+	elemIndex :: a -> [a] -> Maybe Int
+		Find index of first equal element in list
+	elemIndices :: a -> [a] -> [Int]
+		Same as singular, but returns list of matches
+
+	zip :: [a] -> [b] -> [(a, b)]
+		Zip together two lists, stopping at shortest
+	zipWith :: ( a -> b -> c ) -> [a] -> [b] -> [c]
+		Zip + map, all in one
+		Variants up to zip7 / zipWith7
+
+	lines :: String -> [String]
+		Split on newline
+	unlines :: [String] -> String
+		Join with newline
+	words :: String -> [String]
+		Split on space
+	unwords :: [String] -> String
+		Join with space
+
+	nub :: Eq a => [a] -> [a]
+		Filter, keep only unique
+		Preserves order
+	setNub :: Ord a => [a] -> [a]
+		Nub by putting in set and back
+		Faster for large lists, but requires Ord not Eq
+		Does not preserve order
+
+	delete :: a -> [a] -> [a]
+		Delete first occurrence of a
+
+	(\\) :: [a] -> [a] -> [a]
+		List difference, delete(see above) each element in B from A
+	union :: [a] -> [a] -> [a]
+		Adds elements from B not in A to A
+	intersect :: [a] -> [a] -> [a]
+		Returns elements found in both lists, incl duplicates
+
+	insert :: Ord a => a -> [a] -> [a]
+		Insertion sort step, add a before first element greater
+
+	genericLength / genericTake / genericDrop / genericSplitAt / genericIndex / genericReplicate
+		Where base takes Int, these use Num
+		To not break legacy use, but when float capability is needed without using fromIntegral
+
+	nubBy / deleteBy / unionBy / intersectBy / groupBy
+		Where base uses (==), these take equality function
+		group = groupBy (==)
+
+Data.Char
+	isControl / isSpace / isLower / isUpper / isAlpha / isAlphaNum / isPrint / isDigit / isOctDigit / isHexDigit
+	isLetter / isMark (Unicode combo letters) / isNumber / isPunctuation / isSymbol / isSeparator (Unicode) / isAscii
+	isLatin1 / isAsciiUpper / isAsciiLower
+
+	generalCategory is like Ord for Chars
+		31 categories, can be used for some equality checks
+
+	toUpper / toLower / toTitle
+
+	digitToInt / intToDigit
+		Hex range
+
+	ord / chr
+		Char <-> Int
+
+Data.Map
+	Dictionary: Orderless Key-Value pairs
+
+	fromList :: [(k, a)] -> Map k a
+		Drops duplicate keys
+	singleton k a = fromList [(k, a)]
+	fromListWith
+		Takes function to combine values of duplicate keys
+
+	empty = fromList []
+	null
+		Checks if empty
+	size
+		Gives size
+
+	insert :: k -> a -> Map k a -> Map k a
+	insertWith : insert -> fromListWith : fromList
+
+	member :: k -> Map k a -> Bool
+	lookup :: k -> Map k a -> Maybe a
+
+	map / filter
+		Like list, work on values, don't touch keys
+
+Data.Set
+	Like a math set, collection of unique values
+	Implemented with Ord trees, so faster than lists for some ops
+
+	fromList / singleton
+
+	empty / null / size
+
+	member
+
+	insert / delete
+
+	intersection / difference / union
+
+	isSubsetOf / isProperSubsetOf
+
+	map / filter
+
+	fromList then toList faster than nub for large lists
+
+Module syntax
+	module Name ( export1, export2, ... ) where
+	...
+
+Types / Typeclasses
+	data Name a = Constructor1 Field1 Field2 a ... | Constructor2 a ... | ...
+
+	Examples:
+		data Bool = True | False
+		data Point = Point Float Float
+		data Maybe a = Nothing | Just a
+
+	Then can pattern match against values, but have to use Type in type signature:
+		data Shape = Circle Float Float Float | Rectangle Float Float Float Float
+		surface :: Shape -> Float
+		surface (Circle _ _ r) = pi * r ^ 2
+		surface (Rectangle x1 y1 x2 y2) = (abs $ x2 - x1) * (abs $ y2 - y1)
+
+	To add a typeclass:
+		data Name = Constructor1 Field1 Field2 ... | Constructor2 ... | ... deriving ( Class1, Class2, ... )
+
+	To export a type from a module:
+		module Name ( Type, ... ) where
+			Only export type, no constructors
+		module Name ( Type(..), ... ) where
+			Export all constructors ( wildcard )
+		module Name ( Type( Constructor1, Constructor2, ... ), ... ) where
+			Export specific constructors
+
+	Can also add Typeclasses to data definitions, but very bad form to do so
+		Forces all functions to have to add them too, very annoying
+
+	Some derived Typeclasses can be added automatically
+		Show, Eq, Read, even Ord, Bounded, Enum
+
+Record syntax
+	Gives names to each field of a type:
+
+	data Person = Person { firstName :: String, lastName :: String, age :: Int }
+
+	Syntactic sugar really, automatically generates functions to get each field
+
+	Also adds alternate constructor format, doesn't require order:
+		Person "Mike" "Wazowski" 5 == Person { firstName="Mike", lastName="Wazowski", age=5 }
+
+	Also adds different automatic Show format, listing field names
+
+Type synonym
+	type String = [Char]
+	type Phonebook = Map Name [String]
+	type AssocList k v = [(k, v)]
+
+	Partial application and currying even in the Type system 0.o
+		type IntMap v = Map Int v
+		type IntMap = Map Int
+
+Type wrapping
+	newtype ZipList a = ZipList { getZipList :: [a] }
+
+	Hint to compiler it is just a wrapper
+	Single constructor, single field
+
+Recursive types
+	data List a = Empty | Cons a ( List a )
+	data Tree a = EmptyTree | Node a ( Tree a ) ( Tree a )
+
+Full binary search tree as a type
+	Since no Pointers, can build a tree with values and laziness will take care of making it more efficient
+
+Typeclass definition
+	class Eq a where
+		(==) :: a -> a -> Bool
+		(/=) :: a -> a -> Bool
+		x == y = not (x /= y)
+		x /= y = not (x == y)
+
+	instance Eq TrafficLight where
+		Red == Red = True
+		Green == Green = True
+		...
+		_ == _ = False
+
+	Because `==` defined in terms of `/=`, only one needs be defined
+
+	Instances must be concrete types, not partially applied
+	Can also set typeclass constraint on the parametric type vars
+
+	Example of both:
+	instance ( Eq m ) => Eq ( Maybe m ) where
+		Just x == Just y = x == y
+		Nothing == Nothing = True
+		_ == _ = False
+
+Functor Typeclass
+	This is where shit starts getting real
+	Metatypes yo
+
+	class Functor f where
+		fmap :: ( a -> b ) -> f a -> f b
+
+	List and Maybe are instances
+
+	instance Functor [] where
+		fmap = map
+
+	Notice f ( thus [] ) is not a concrete type, infer it takes 1 param to define
+
+	Functor can be thought of as a box - holds a parametric type inside
+
+Kinds
+	Type of types...
+
+	Int :: *
+	Maybe :: * -> *
+	Maybe Int :: *
+	Either :: * -> * -> *
+
+	class Functor f where
+		fmap :: (a -> b) -> f a -> f b
+
+	class Functor f ( * -> * )
+
+	In function def, each parameter must have kind *
+		fmap :: ( * -> * ) -> * -> *
+		THUS
+		( a -> b ) :: ( * -> * )
+		a :: *
+		f a :: *
+		THUS
+		f :: * -> *
+
+	Thus friends of Functor have to be kind ( * -> * )
+
+	Example:
+		class Tofu t where
+			tofu :: j a -> t a j
+
+		Axiom
+			j a :: *
+		Assume
+			a :: *
+		Thus
+			j :: * -> *
+		Axiom
+			t a j :: *
+		Thus
+			t :: * -> ( * -> * ) -> *
+
+		How construct instance?
+
+		data Frank a b = Frank { frankField :: b a }
+
+		Axiom
+			Fields must be *
+		Thus
+			frankField :: *
+		Axiom
+			Frank a b :: *
+		Assume
+			a :: *
+		Thus
+			b :: * -> *
+		Thus
+			Frank :: * -> ( * -> * ) -> *
+
+		A singleton creator!
+		instance Tofu Frank where
+			tofu :: j a -> Frank a j
+			tofu = Frank
+
+			tofu 5 = Frank 5
+			tofu 5 Maybe = Frank 5 Maybe == Frank { frankField = Maybe 5 }
+
+	Another!
+		data Barry t k p = Barry p ( t k )
+
+		Barry :: ( * -> * ) -> * -> * -> *
+
+		Make it a Functor
+
+		instance Functor ( Barry a b ) where
+			fmap :: ( a -> b ) -> f a -> f b
+			fmap f ( Barry a ( k v ) ) = Barry ( f a ) ( k v )
+			fmap f ( Barry a b ) = Barry ( f a ) b
+
+		fmap :: ( a -> b ) -> Barry t k a -> Barry t k b
+
+	None of this is really necessary, but explains a lot about what the type system does in the background
+
+Basic IO
+	Sideeffects yo
+	Most code has none, even returning new objects rather than modify in place
+
+	putStrLn :: String -> IO ()
+		putStr / putChar
+	getLine :: IO String
+		getChar
+
+	print :: Show a => a -> IO ()
+	print = putStrLn . show
+
+	When will IO actions be run?
+	Main object will be run on program execution
+
+	Do syntax, glueing multiple IO actions into one:
+		main = do
+			putStrLn "AA"
+			putStrLn "AA"
+			name <- getLine
+			putStrLn "BB" ++ name
+
+	<- binding:
+		Allows taking value out of IO action, giving it a name
+		Also removes the IO "taint" from the object, making a concrete type
+
+	IO actions will only be performed if they stem from main
+
+	let:
+		In a do block, you can use let like in list comprehension
+		To bind an expression to a name
+		let name = value
+		...
+
+	return
+		return :: a -> IO a
+		Lifts pure value to IO, allows creation of an IO action without actually doing anything
+
+		name <- return "Welp"
+		name :: String
+
+		IO blocks return the result of last expression
+		Using return you can return something different
+
+	"Control flow"
+		Control.Monad.when :: Bool -> IO () -> IO ()
+			Returns given action if True, else return ()
+
+		sequence :: [ IO a ] -> IO [ a ]
+			Returns IO action that will do each action in order, return results in a list
+
+		mapM :: ( a -> IO () ) -> [a] -> IO ()
+			Map then sequence, returning result
+		mapM_
+			Like mapM, but throws away result, returning ()
+
+		Control.Monad.forever :: IO () -> IO ()
+			Repeats given action forever
+
+		forM :: [a] -> ( a -> IO () ) -> IO ()
+			mapM but with params reversed
+
+	Files
+		getContents
+			Reads until the stream ends - lazily
+
+		interact :: ( String -> String ) -> IO ()
+			Helper: Read line, transform, print result
+
+		openFile :: FilePath -> IOMode -> IO Handle
+		hGetContents :: Handle -> IO String
+			hGetLine / hPutStr / hPutStrLn / hGetChar
+		hClose :: Handle -> IO ()
+		hFlush :: Handle -> IO ()
+		withFile :: FilePath -> IOMode -> ( Handle -> IO a ) -> IO a
+			Helper to do open, get contents, work with them, and close
+
+		readFile :: FilePath -> IO String
+		writeFile :: FilePath -> String -> IO ()
+			appendFile
+
+		openTempFile
+			Gives you a temp file so you dont accidentally overwrite anything till you are ready
+
+	Arguments
+		getArgs :: IO [String]
+		getProgName :: IO String
+
+Random
+	Some Monadical weirdness
+
+	mkStdGen :: Int -> StdGen
+	random :: RandomGen g, Random a => g -> ( a, g )
+
+	Note, making a new generator each time means you will get same sequence each time
+
+	randoms
+		Returns infinite list given a generator
+
+	randomR / randomRs
+		Clamps random to a range
+
+	System.Random offers a global generator:
+		getStdGen :: IO StdGen
+			Asking multiple times gets the same state however, bind and use only once
+
+		newStdGen :: IO StdGen
+			Splits the global generator in two, updates both
+
+Exceptions
+	System.IO.Error.catch :: IO a -> ( IOError -> IO a ) -> IO a
+		Like try-catch, takes a function to handle the error
+
+	Guard syntax can be used to check error reason in handler
+
+Functors and Monoids
+	IO is a functor
+		instance Functor IO where
+			fmap :: ( a -> b ) -> IO a -> IO b
+			fmap f action = do
+				result <- action
+				return ( f result )
+
+	Functions are functors when partially applied...
+		But its just function composition ;)
+
+		(->) a b :: *
+		(->) :: * -> * -> *
+		(->) a :: * -> *
+			Bingo
+
+		instance Functor ( (->) r ) where
+			fmap f g = ( \x -> f ( g x ) )
+			fmap = (.)
+
+	Think of this: All functions take one argument
+		They can return a function taking another, but thinking of them this way makes currying clearer
+
+		a -> b -> c
+		a -> ( b -> c )
+
+		fmap :: ( a -> b ) -> ( f a -> f b )
+			This is considered lifting
+			You lift a function to work on Functors
+
+	Functor laws
+		Mapping id over a Functor is same as original Functor
+			fmap id = id
+
+		"Distributive over composition"
+			fmap ( f . g ) = fmap f . fmap g
+			fmap ( f . g ) F = fmap f ( fmap g F )
+
+Applicative functors
+	class ( Functor f ) => Applicative f where
+		pure :: a -> f a
+		(<*>) :: f ( a -> b ) -> ( f a -> f b )
+
+	(<$>) :: Functor f => ( a -> b ) -> ( f a -> f b )
+		f <$> x = fmap f x
+		f <$> x = pure f <*> x
+
+
+	Mapping a function over a Functor is valid
+		fmap (++) ( Just "hey" ) :: Maybe ( [Char] -> [Char] )
+		fmap compare "A LIST OF CHARS" :: [Char -> Ordering]
+
+	Then we can map functions taking those functions over that
+		fmap ( \f -> f 9 ) ( fmap (*) [ 1, 2, 3, 4 ] ) = [ 9, 18, 27, 36 ]
+
+	But what about straight mapping Functors over Functors?
+
+	We can use pure to lift functions, and (<*>) to map Functors over Functors!
+		instance Applicative Maybe where
+			pure = Just
+			Nothing <*> _ = Nothing
+			(Just f) <*> something = fmap f something
+
+		Just ( + 3 ) <*> Just 9 = Just (*) <*> Just 3 <*> Just 9 = Just 12
+		Just ( ++ "haha" ) <*> Just "welp" = Just "welphaha"
+
+	Control.Applicative.(<$>)
+		Helper to save the pattern of: pure f <*> x <*> y
+		infix fmap
+
+	Lists are Applicative
+		instance Applicative [] where
+			pure x = [x]
+			fs <*> xs = [ f x | f <- fs, x <- xs ]
+
+		[(+),(*)] <*> [1,2] <*> [3,4] = [ ( + 1 ) , ( + 2 ), ( * 1 ), ( + 2 ) ] = [ 4, 5, 5, 6, 3, 4, 6, 8 ]
+
+		Think cross product of application
+
+		But, if element-wise is what you desire: Control.Applicative.ZipList
+
+
+	Even functions are Applicative
+		instance Applicative ( (->) r ) where
+			pure x = ( \_ -> x )
+			f <*> g = \x -> f x ( g x )
+
+		Specialize <*> for ((->) r)
+		f ( a -> b ) -> ( f a -> f b ) <- ((->) r)
+		((->) r) ( a -> b ) -> ( ((->) r) a -> ((->) r) b )
+
+		Simplified
+		( r -> ( a -> b ) ) -> ( r -> a ) -> ( r -> b )
+		Function taking
+			function taking one param and returning a function from a to b
+		Then taking
+			function from r to a
+		Giving
+			function from r to b
+
+		Lifting
+		( r -> ( a -> b ) ) -> ( ( r -> a ) -> ( r -> b ) )
+		Function taking
+			function taking one param and returning a function from a to b
+		Giving
+			function taking function from r to a giving function from r to b
+
+		pure (+) <*> (+3)
+			pure (+) = ( \_ -> (+) ) :: _ -> ( a -> b )
+		( \_ -> (+) ) <*> (+3) = \x -> ( \_ -> (+) ) x ( (+3) x )
+			\x -> ( \_ -> (+) ) x ( (+3) x )
+			\x -> (+) ( 3 + x ) :: a -> b
+
+		pure (+) <*> (+3) <*> (*100)
+		( \x -> (+) ( 3 + x ) ) <*> (*100) = \y -> ( ( \x -> (+) ( 3 + x ) ) y ( (*100) y ) )
+			\y -> ( ( \x -> (+) ( 3 + x ) ) y ( (*100) y ) )
+			\y -> ( 3 + y ) + ( 100 * y ) :: a -> b
+
+		pure (+) <*> (+3) <*> (*100) <*> (+5)
+		( \y -> ( 3 + y ) + ( 100 * y ) ) <*> (+5) = \z -> ( ( \y -> ( 3 + y ) + ( 100 * y ) ) z ( 5 + z ) )
+			\z -> ( ( 3 + z ) + ( 100 * z ) ( 5 + z ) )
+			THIS DOESN'T MAKE SENSE
+
+			But with a 3 argument function it would actually make sense, + can only take two
+
+	Lifting
+		liftA2 :: Applicative f => ( a -> b -> c ) -> ( f a -> f b -> fc )
+
+		sequenceA :: (Applicative f) => [f a] -> f [a]
+		sequenceA = foldr (liftA2 (:)) (pure [])
+		sequenceA [ Just 3, Just 2, Just 1 ] = Just [ 3, 2, 1 ]
+			[Maybe a] -> Maybe []
+		sequenceA [ Just 3, Nothing, Just 1 ] = Nothing
+		sequenceA [ (+3), (+2), (+1) ] 3 = [ 6, 5, 4 ]
+			[(a -> b)] -> ( a -> [b] )
+
+	Applicative laws
+		pure f <*> x = fmap f x
+		pure id <*> v = v
+		pure (.) <*> u <*> v <*> w = u <*> ( v <*> w )
+		pure f <*> pure x = pure ( f x )
+		u <*> pure y = pure ( $ y ) <*> u

@@ -1,8 +1,8 @@
 module Cube where
 
-import Graphics.UI.GLUT
+import Graphics.Rendering.OpenGL as GL
 
-cube :: GLfloat -> IO ()
+cube :: GLfloat -> [Vertex3 GLfloat]
 cube w = [
     Vertex3 w w w,
     Vertex3 w w (-w),

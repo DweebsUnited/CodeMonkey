@@ -16,8 +16,4 @@ keyPressed win _ _ _ _ = return( )
 
 -- Window closed
 winClosed :: GLFW.WindowCloseCallback
-winClosed win = do
-  GLFW.destroyWindow win
-  GLFW.terminate
-  _ <- exitWith ExitSuccess
-  return ( )
+winClosed win = GLFW.setWindowShouldClose win True

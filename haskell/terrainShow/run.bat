@@ -1,2 +1,2 @@
-cabal new-run
+cabal run
 pause
