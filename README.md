@@ -96,17 +96,43 @@ Stupidly inefficient
 Sure, we can run a kd-lookup for every pixel, why not? x)
 
 ###### java
-    Soon to be Eclipse project with all my projects nestled inside
+    Eclipse project with all my projects nestled inside
 
     A way to reduce the amount of duplicate code
 
-    Projects for now include:
+    Projects for include:
 
     DangerousTire
         Light painting base that outputs 3d printer gcode
 
     TitaniumSheepdog
         Simulation of sunlight hitting bathroom tile
+
+	BigAnvil
+		Pixel sorting!
+
+	BulbousBottle
+		DFS pixel coloring
+
+	BulbousFlagon
+		BFS pixel coloring
+
+	BulbousRamen
+		Multiple BFS pixel coloring using palette generated from image
+
+	CryptoSearch
+		Program to find solutions to substitution ciphers fitting a pattern of repeated letters
+
+	DangerousOrganism
+		Grid draw calculations
+
+	DangerousTire
+		Conversion from other temporary to valid GCode format
+
+	DopeyEeevee
+		Creation of texture by knitting various pipelines together with MATH
+
+		Friends dont let friends do math...
 
 ###### LateMorning
 Basic perlin noise viewer
