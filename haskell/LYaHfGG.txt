@@ -657,10 +657,10 @@ Basic IO
 		sequence :: [ IO a ] -> IO [ a ]
 			Returns IO action that will do each action in order, return results in a list
 
-		mapM :: ( a -> IO () ) -> [a] -> IO ()
+		mapM :: ( a -> IO b ) -> [a] -> IO [b]
 			Map then sequence, returning result
-		mapM_
-			Like mapM, but throws away result, returning ()
+		mapM_ :: ( a -> IO b ) -> [a] -> IO ()
+			Like mapM, but throws away results, returning ()
 
 		Control.Monad.forever :: IO () -> IO ()
 			Repeats given action forever
