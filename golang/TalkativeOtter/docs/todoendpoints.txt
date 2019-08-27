@@ -1,0 +1,10 @@
+posts
+	GET
+		List last x posts: 10 : ( 1, 50 )
+	POST
+
+	PUT
+
+	PATCH
+
+	DELETE

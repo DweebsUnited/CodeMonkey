@@ -1,0 +1,124 @@
+In general, endpoints do not expand data unless requested
+Render endpoint is pages to use the API (maybe move api to /api/, render to / ?)
+
+metadata
+	GET
+		Get list of visible Levels for each Factor
+		I.E. Unless user has permission, can only see own Project / Org if assigned
+	POST
+		ERROR
+			Do not allow creation of new Factors
+	PUT
+		ERROR
+			Do not allow update of Metadata
+	PATCH
+		ERROR
+			See PUT
+	DELETE
+		ERROR
+			Do not allow deleting Collection
+
+	metadata/(projects|organizations|categories|priorities|status)
+		GET
+			Get list of visible Levels
+		POST
+			Create new Level
+			REQ: Metadata Edit Role
+		PUT
+			ERROR
+				Do not allow update of Factor Levels
+		PATCH
+			ERROR
+				Do not allow update of Factor Levels
+		DELETE
+			ERROR
+
+bugs
+	GET
+		Get Bugs matching passed filter
+			Basically front end for DB query...
+			Needs to respect User/Role View Permissions
+	POST
+		Create a new Bug
+		REQ: Bug Create Role
+	PUT
+		Error
+			No updating the Collection
+	PATCH
+		Error
+			See PUT
+	DELETE
+		Error
+			No deleting the Collection
+
+	bugs/ID
+		GET
+			Get Metadata of Bug
+		POST
+			Error
+				Doesn't make sense
+		PUT
+			ERROR
+				Use POST@bugs to create, PATCH@bugs/{id} to update
+		PATCH
+			Update Bug, register changes in History
+		DELETE
+			Delete Bug
+			REQ: Role Permission, additional cleanup to scrub history, comments, attachments
+
+comments
+	GET
+		Get recent comments, maybe for specific Bug
+	POST
+		Create a new Comment
+	PUT
+		Error
+			No updating the Collection
+	PATCH
+		Error
+			See PUT
+	DELETE
+		Error
+			No deleting the Collection
+
+	comments/{id}
+		GET
+			Get specific comment text
+		POST
+		PUT
+		PATCH
+		DELETE
+
+attachments
+	GET
+	POST
+	PUT
+	PATCH
+	DELETE
+
+	attachments/{id}
+		GET
+		POST
+		PUT
+		PATCH
+		DELETE
+
+users
+	GET
+	POST
+	PUT
+	PATCH
+	DELETE
+
+	users/{id}
+
+render
+	render/issues
+		GET bugs, expand Metadata
+
+		render/issues/{id}
+
+	render/search
+		Search page allowing text queries in comment bodies
+
+	render/{user}
