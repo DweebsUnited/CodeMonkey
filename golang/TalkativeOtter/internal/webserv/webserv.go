@@ -13,8 +13,8 @@ import (
 type server struct {
 
 	// conf *someConfStruct
-    db db.Datastore
-    r *chi.Mux
+	db db.Datastore
+	r *chi.Mux
 	// email *someEmailSender
 
 }
@@ -26,20 +26,20 @@ func MakeAndStartServ( ) (func( context.Context ) error) {
 	serv := &server{ }
 
 	// Set up a DB
-	db, err := db.NewDB( "postgres://user:pass!@localhost/bookstore" )
+	db, err := db.NewDB( "user=apfel password=j0Dx#S^ponT3QN&CSfLhU7^VMZ7tvd7& host=localhost port=5432 dbname=todos" )
 	if err != nil {
-		panic( "Could not connect to DB" )
+		panic( "Could not connect to DB: " + err.Error( ) )
 	}
 	serv.db = db
 
 	// Set up the router!
 	serv.r = chi.NewRouter( )
-	serv.routes( "www" ) // TODO: Give static basedir?
+	serv.routes( "www" )
 
 	// Start it!
-	//   This is part of why we need the config...
+	//	 This is part of why we need the config...
 	server := &http.Server {
-		Addr: ":8080",
+		Addr: ":35424",
 		Handler: serv.r,
 		ReadTimeout: 10 * time.Second,
 		WriteTimeout: 10 * time.Second,

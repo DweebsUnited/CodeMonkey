@@ -2,23 +2,51 @@ package db
 
 import (
 	"time"
+	"github.com/jackc/pgx/pgtype"
 )
 
 type Todo struct {
 
-	id int
+	Id int `json:"id"`
 
-	title string
-	desc string
+	Title string `json:"title"`
+	Descr string `json:"descr"`
 
-	due time.Time
+	Due *time.Time `json:"due"`
 
-	done bool
+	Done bool `json:"done"`
 
 }
 
-func (db *dB) GetAllTodos( ) ( [ ] *Todo, error ) {
+// Helper function
+func todoFromDB(
+	id *int,
+	title *string,
+	descr *pgtype.Varchar,
+	due *pgtype.Timestamp,
+	done *bool ) *Todo {
 
-	return nil, nil
+	todo := new( Todo )
+
+	todo.Id = *id
+	todo.Title = *title
+	todo.Done = *done
+
+	t := descr.Get( )
+	if t != nil {
+
+		todo.Descr = t.(string)
+
+	}
+
+	t = due.Get( )
+	if t != nil {
+
+		todo.Due = new( time.Time )
+		*todo.Due = *(t.(*time.Time))
+
+	}
+
+	return todo
 
 }

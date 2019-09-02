@@ -1,33 +1,39 @@
 package db
 
 import (
-	"database/sql"
+	"github.com/jackc/pgx"
 )
 
 type Datastore interface {
 	GetAllTodos( ) ( [ ] *Todo, error )
+	AddTodo( todo *Todo ) ( error )
 }
 
 type dB struct {
 
-	*sql.DB
+	*pgx.Conn
 
 }
 
 func NewDB( connString string ) ( *dB, error ) {
 
 	// Make a DB
-    db, err := sql.Open( "postgres", connString )
+	config, err := pgx.ParseDSN( connString )
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := pgx.Connect( config )
 
 	// Check we connected okay
 	if err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 
 	// Check we can ping the DB
-	if err = db.Ping( ); err != nil {
-        return nil, err
-    }
+	if _, err = db.Exec( ";" ); err != nil {
+		return nil, err
+	}
 
 	return &dB{ db }, nil
 

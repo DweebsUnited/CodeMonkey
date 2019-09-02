@@ -8,7 +8,7 @@ import (
 func (s *server) handleSomething( ) http.HandlerFunc {
 
 	return func( w http.ResponseWriter, r *http.Request ) {
-        // Durrrr
-    }
+		// Durrrr
+	}
 
 }

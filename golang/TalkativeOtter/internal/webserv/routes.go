@@ -5,7 +5,6 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
-	"github.com/go-chi/docgen"
 	"fmt"
 	"path/filepath"
 )
@@ -39,8 +38,29 @@ func (s *server) routes( baseStaticDir string ) {
 
 		} )
 
+		r.Get( "/ip", func( w http.ResponseWriter, req *http.Request ) {
+
+			render.JSON( w, req, struct { IP string `json:"ip"` }{ req.RemoteAddr } )
+
+		} )
+
+		r.Get( "/todos", func( w http.ResponseWriter, req *http.Request ) {
+
+			todos, err := s.db.GetAllTodos( )
+			if err != nil {
+
+				render.JSON( w, req, struct { Error error `json:"error"` }{ err } )
+
+			} else {
+
+				render.JSON( w, req, todos )
+
+			}
+
+		} )
+
 	} )
 
-	fmt.Println( docgen.JSONRoutesDoc( s.r ) )
+	// fmt.Println( docgen.JSONRoutesDoc( s.r ) )
 
 }
