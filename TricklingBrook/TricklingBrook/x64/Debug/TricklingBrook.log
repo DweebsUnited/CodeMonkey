@@ -1,0 +1,4 @@
+﻿  TricklingBrook.cpp
+c:\users\eosburn\source\repos\tricklingbrook\tricklingbrook\tricklingbrook.cpp(159): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\eosburn\source\repos\tricklingbrook\tricklingbrook\tricklingbrook.cpp(177): warning C4715: 'oldmain': not all control paths return a value
+  TricklingBrook.vcxproj -> C:\Users\eosburn\source\repos\TricklingBrook\x64\Debug\TricklingBrook.exe
