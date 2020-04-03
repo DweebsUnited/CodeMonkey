@@ -1,5 +1,16 @@
 import java.util.*;
 import java.io.*;
+import java.awt.Color;
+
+// [ 0, 1 ]
+float[] rgbComp = new float[ 4 ];
+float[] HSBtoRGB( float h, float s, float b ) {
+  
+  Color c = Color.getHSBColor( h, s, b );
+  c.getRGBComponents( rgbComp );
+  return rgbComp;
+  
+}
 
 class Quad {
   
@@ -50,9 +61,9 @@ public Quad buildQuad( int depth, PImage src, PVector[] sPoints, float varcut, f
     mapLocal( locals, s, T, B, L, R );
     
     px = src.get( int( locals.x * src.pixelWidth ), int( locals.y * src.pixelHeight ) );
-    r = red( px ) / 255.0;
-    g = green( px ) / 255.0;
-    b = blue( px ) / 255.0;
+    r = hue( px );
+    g = saturation( px );
+    b = brightness( px );
     
     q.rbar += r;
     q.gbar += g;
@@ -64,15 +75,18 @@ public Quad buildQuad( int depth, PImage src, PVector[] sPoints, float varcut, f
     
   }
   
-  q.rbar = ( q.rbar * q.rbar ) / ( sPoints.length * sPoints.length );
-  q.gbar = ( q.gbar * q.gbar ) / ( sPoints.length * sPoints.length );
-  q.bbar = ( q.bbar * q.bbar ) / ( sPoints.length * sPoints.length );
+  q.rbar /= sPoints.length;
+  q.gbar /= sPoints.length;
+  q.bbar /= sPoints.length;
   
-  q.rvar = q.rvar / sPoints.length - q.rbar;
-  q.gvar = q.gvar / sPoints.length - q.gbar;
-  q.bvar = q.bvar / sPoints.length - q.bbar;
+  q.rvar = q.rvar / sPoints.length - ( q.rbar * q.rbar );
+  q.gvar = q.gvar / sPoints.length - ( q.gbar * q.gbar );
+  q.bvar = q.bvar / sPoints.length - ( q.bbar * q.bbar );
   
+  // Average variances
   q.vara = ( q.rvar + q.gvar + q.bvar ) / 3.0;
+  // Take max variance
+  //q.vara = max( q.rvar, max( q.gvar, q.bvar ) );
   System.out.println( q.vara );
   
   if( q.vara > varcut ) {
@@ -94,7 +108,7 @@ void drawQuad( Quad q ) {
   // Leaf, draw
   if( q.TL == null ) {
     
-    fill( color( q.rbar * 255, q.gbar * 255, q.bbar * 255 ) );
+    fill( color( q.rbar, q.gbar, q.bbar ) );
     rect( q.L * pixelWidth, q.B * pixelHeight, ( q.R - q.L ) * pixelWidth, ( q.T - q.B ) * pixelHeight );
     
   } else {
@@ -173,11 +187,14 @@ void writePlyFile( String fname, ArrayList<VertData> verts, ArrayList<TripleInt>
 
 void addQuadPly( Quad q, int scale, ArrayList<VertData> verts, ArrayList<TripleInt> faces ) {
   
-  int r = int( q.rbar * 255 );
-  int g = int( q.gbar * 255 );
-  int b = int( q.bbar * 255 );
+  HSBtoRGB( q.rbar / 100.0, q.gbar / 100.0, q.bbar / 100.0 );
   
-  float h = dlim - q.depth + 1;
+  float r = rgbComp[ 0 ] * 255;
+  float g = rgbComp[ 1 ] * 255;
+  float b = rgbComp[ 2 ] * 255;
+  
+  // Add a little randomness to the height
+  float h = dlim - q.depth + 1 + (float)rng.nextGaussian( ) * 0.1;
   
   //z
   //|
@@ -206,15 +223,15 @@ void addQuadPly( Quad q, int scale, ArrayList<VertData> verts, ArrayList<TripleI
   
   // Vertices: TL, TR, BR, BL, TLz, TRz, BRz, BLz
   int vroot = verts.size( );
-  verts.add( new VertData( new PVector( q.L * scale, q.T * scale, 0.0 ), r, g, b ) ); // TODO: Add some variance in color?
-  verts.add( new VertData( new PVector( q.R * scale, q.T * scale, 0.0 ), r, g, b ) );
-  verts.add( new VertData( new PVector( q.R * scale, q.B * scale, 0.0 ), r, g, b ) );
-  verts.add( new VertData( new PVector( q.L * scale, q.B * scale, 0.0 ), r, g, b ) );
+  verts.add( new VertData( new PVector( q.L * scale, q.T * scale, 0.0 ), int( r + (float)rng.nextGaussian( ) ), int( g + (float)rng.nextGaussian( ) ), int( b + (float)rng.nextGaussian( ) ) ) );
+  verts.add( new VertData( new PVector( q.R * scale, q.T * scale, 0.0 ), int( r + (float)rng.nextGaussian( ) ), int( g + (float)rng.nextGaussian( ) ), int( b + (float)rng.nextGaussian( ) ) ) );
+  verts.add( new VertData( new PVector( q.R * scale, q.B * scale, 0.0 ), int( r + (float)rng.nextGaussian( ) ), int( g + (float)rng.nextGaussian( ) ), int( b + (float)rng.nextGaussian( ) ) ) );
+  verts.add( new VertData( new PVector( q.L * scale, q.B * scale, 0.0 ), int( r + (float)rng.nextGaussian( ) ), int( g + (float)rng.nextGaussian( ) ), int( b + (float)rng.nextGaussian( ) ) ) );
   
-  verts.add( new VertData( new PVector( q.L * scale, q.T * scale, h   ), r, g, b ) );
-  verts.add( new VertData( new PVector( q.R * scale, q.T * scale, h   ), r, g, b ) );
-  verts.add( new VertData( new PVector( q.R * scale, q.B * scale, h   ), r, g, b ) );
-  verts.add( new VertData( new PVector( q.L * scale, q.B * scale, h   ), r, g, b ) );
+  verts.add( new VertData( new PVector( q.L * scale, q.T * scale, h   ), int( r + (float)rng.nextGaussian( ) ), int( g + (float)rng.nextGaussian( ) ), int( b + (float)rng.nextGaussian( ) ) ) );
+  verts.add( new VertData( new PVector( q.R * scale, q.T * scale, h   ), int( r + (float)rng.nextGaussian( ) ), int( g + (float)rng.nextGaussian( ) ), int( b + (float)rng.nextGaussian( ) ) ) );
+  verts.add( new VertData( new PVector( q.R * scale, q.B * scale, h   ), int( r + (float)rng.nextGaussian( ) ), int( g + (float)rng.nextGaussian( ) ), int( b + (float)rng.nextGaussian( ) ) ) );
+  verts.add( new VertData( new PVector( q.L * scale, q.B * scale, h   ), int( r + (float)rng.nextGaussian( ) ), int( g + (float)rng.nextGaussian( ) ), int( b + (float)rng.nextGaussian( ) ) ) );
   
   // Faces:
   //   DN: 013, 312
@@ -266,12 +283,12 @@ final int dlim = 8;
 
 void buildTree( ) {
   
-  int nSamp = 8;
+  int nSamp = 16;
   PVector[] sPoints = new PVector[ nSamp ];
   for( int sdx = 0; sdx < nSamp; ++ sdx )
     sPoints[ sdx ] = new PVector( rng.nextFloat( ), rng.nextFloat( ) );
   
-  tree = buildQuad( dlim, im, sPoints, 0.012, 1, 0, 0, 1 );
+  tree = buildQuad( dlim, im, sPoints, 85, 1, 0, 0, 1 );
   
 }
 
@@ -283,7 +300,9 @@ void setup( ) {
   
   size( 1024, 1024 );
   
-  im = loadImage( "StarryNight.jpg" );
+  colorMode( HSB, 100, 100, 100 );
+  
+  im = loadImage( "Sunflowers.jpg" );
   
   buildTree( );
   
