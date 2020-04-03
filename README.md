@@ -171,6 +171,9 @@ Water drop on voronoi diagram
 
 Uses spring forces to simulate the effect of a waterdrop
 
+###### SplitMayonnaise
+Variance QuadTrees, break an image down until a low enough variance per quadrant is reached
+
 ###### SquareVulture
 Agglomerative clustering
 
