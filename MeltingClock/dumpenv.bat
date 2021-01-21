@@ -1,0 +1,1 @@
+pip freeze > %~dp0requirements.pip

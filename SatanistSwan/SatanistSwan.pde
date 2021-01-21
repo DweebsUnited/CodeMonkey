@@ -25,17 +25,17 @@ void setup( ) {
     
   PGraphics canvas = createGraphics( pixelWidth, pixelHeight );
   canvas.beginDraw( );
-  canvas.blendMode( SUBTRACT );
+  canvas.blendMode( MULTIPLY );
   canvas.background( 255 );
   canvas.endDraw( );
 
-  sqdA.draw( canvas, color(   0, 255, 255, 85 ), 3 );
-  sqdB.draw( canvas, color( 255, 255,   0, 85 ), 3 );
-  sqdC.draw( canvas, color(   0,   0, 255, 85 ), 3 );
+  sqdA.draw( canvas, color( 255,   0,   0, 85 ), 3 );
+  sqdB.draw( canvas, color(   0,   0, 255, 85 ), 3 );
+  sqdC.draw( canvas, color(   0, 255,   0, 85 ), 3 );
   
   image( canvas, 0, 0, pixelWidth, pixelHeight );
   
   saveFrame( "SatanistSwan.png" );
-  exit( );
+  noLoop( );
   
 }

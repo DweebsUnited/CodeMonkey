@@ -139,6 +139,11 @@ Basic perlin noise viewer
 
 Used it to get a sense of scale when using Processing's noise()
 
+###### MeltingClock
+Python / Django based Time Tracking and Holiday Absence approval utility
+
+Built to replace Absence.io / Harvest
+
 ###### Mercury
 My little Processing library
 

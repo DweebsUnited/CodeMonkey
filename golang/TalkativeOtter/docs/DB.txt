@@ -1,0 +1,215 @@
+// Orgs are one of the core structures
+//   but are still basically LUTs
+Table organizations  [headercolor: #16a085] {
+  id int [pk]
+  name varchar
+  fieldperms list(int)
+}
+
+// Metadata, basically LUTs
+Table projects  [headercolor: #2c3e50] {
+  id int [pk]
+  name varchar
+}
+Table categories  [headercolor: #2c3e50] {
+  id int [pk]
+  name varchar
+}
+Table priorities  [headercolor: #2c3e50] {
+  id int [pk]
+  name varchar
+}
+Table status  [headercolor: #2c3e50] {
+  id int [pk]
+  name varchar
+}
+
+// Users
+Table users  [headercolor: #16a085] {
+
+  id int [pk]
+  username varchar [pk]
+
+  email varchar
+  fname varchar
+  lname varchar
+
+  pwhash binary(60)
+
+  // Admins can do anything, anywhere, at any time
+  // This completely circumvents user and org permissions
+  admin bool
+
+}
+
+// Bugs!
+Table bugs  [headercolor: #16a085] {
+
+  id int [pk]
+  desc varchar
+  project int [ref: > projects.id]
+  organiz int [ref: > organizations.id]
+  categor int [ref: > categories.id]
+  priorit int [ref: > priorities.id]
+  status int [ref: > status.id]
+
+  customer varchar
+
+  // User links
+  // This MAY be changed
+  assigned int [ref: > users.id]
+  // This MUST NOT be changed
+  created int [ref: > users.id]
+
+  // Timing
+  createdtime timestamp
+
+}
+
+// Comments
+Table comments  [headercolor: #16a085] {
+
+  id int [pk]
+  bugid int [ref: > bugs.id]
+  created int [ref: > users.id]
+  submitted timestamp
+
+  desc text
+
+}
+
+// Attachments
+Table attachments  [headercolor: #16a085] {
+
+  id int [pk]
+  bugid int [ref: > bugs.id]
+  created int [ref: > users.id]
+  uploaded timestamp
+
+  desc varchar
+  path varchar
+
+}
+
+// Relationships between bugs
+Table relations  [headercolor: #c0392b] {
+
+  id int [pk]
+
+  created int [ref: > users.id]
+  time timestamp
+
+  buga int [ref: > bugs.id]
+  bugb int [ref: > bugs.id]
+
+  type int [ref: > reltype.id]
+
+}
+
+Table reltype  [headercolor: #2c3e50] {
+  id int [pk]
+  name varchar
+}
+
+// Permissions / OrgMembers
+Table userorgs  [headercolor: #3498db] {
+  orgid int [ref: > organizations.id]
+  userid int [ref: > users.id]
+}
+
+Table orgorgperms  [headercolor: #3498db] {
+  roleid int [ref: > organizations.id]
+  orgid int [ref: > organizations.id]
+  view bool
+  assign bool
+}
+
+Table orgviewproj  [headercolor: #3498db] {
+  uid int [ref: > organizations.id]
+  projid int [ref: > projects.id]
+}
+Table userviewproj  [headercolor: #3498db] {
+  uid int [ref: > users.id]
+  orgid int [ref: > projects.id]
+  perms int
+}
+
+
+// History tracking: EAV
+Table history  [headercolor: #c0392b] {
+
+  id int [pk]
+  bugid int [ref: > bugs.id]
+
+  changed int [ref: > users.id]
+  changedtime timestamp
+
+  changedattr varchar
+
+  oldval varchar
+  newval varchar
+
+}
+
+// Session and public ip tracking
+Table session  [headercolor: #f39c12] {
+
+  sessionid char(64) [pk]
+  lastupdate timestamp
+
+  CSRF char(64)
+
+  uid int [ref: > users.id]
+
+  admin bool
+  orgs list(int)
+
+  projperms list(int)
+  orgperms list(int)
+  catperms list(int)
+
+}
+
+Table publicips  [headercolor: #f39c12] {
+
+  id int [pk, ref: > users.id]
+  ip ip
+
+}
+
+Table publicipkeys  [headercolor: #f39c12] {
+
+  id int [pk, ref: > users.id]
+  ip ip
+  updatekey char(64)
+  created timestamp
+
+}
+
+// Custom attributes!
+// Can be used to allow tagging, etc
+// Should probably allow this only for certain users...
+// These can be made required in application code
+Table attributedefs  [headercolor: #CC0099] {
+
+  id int [pk]
+
+  name varchar
+  type int
+  defn varchar
+
+}
+
+Table attributes  [headercolor: #CC0099] {
+
+  id int [pk]
+  bugid int [ref: > bugs.id]
+
+  changed int [ref: > users.id]
+  changedtime timestamp
+
+  changedattr int [ref: > attributedefs.id]
+
+  value varchar
+
+}
