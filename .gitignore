@@ -7,3 +7,6 @@ ffmpeg.txt
 
 # Java bin
 java/CodeMonkey/bin
+
+# Python compiled
+*.pyc
