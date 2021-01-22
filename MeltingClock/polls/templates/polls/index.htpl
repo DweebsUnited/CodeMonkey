@@ -1,16 +1,26 @@
-<html>
+{% load static %}
+<!doctype html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="{% static 'polls/css/bootstrap.min.css' %}">
 <title>Polls Index</title>
 </head>
 <body>
+
 {% if latest_questions %}
 	<ul>
 	{% for question in latest_questions %}
-		<li><a href="{% url 'polls:detail' question.id %}/">{{ question.question_text }}</a></li>
+		<li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
 	{% endfor %}
 	</ul>
 {% else %}
 	<p>No polls are available.</p>
 {% endif %}
+
+<script src="{% static 'polls/js/jquery-3.5.1.min.js' %}"></script>
+<script src="{% static 'polls/js/bootstrap.min.js' %}"></script>
+
 </body>
 </html>
