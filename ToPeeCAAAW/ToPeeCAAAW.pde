@@ -3,20 +3,18 @@ import java.util.ArrayList;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-ChaosSquare sq;
-
 PGraphics canvas;
 
 final float mX = 1.0 / 16;
 final float mY = 1.0 / 16;
 
-final int gX = 5;
-final int gY = 5;
+final int gX = 4;
+final int gY = 3;
+
+ChaosSquare grid[][] = new ChaosSquare[ gY ][ gX ];
 
 final float sX = ( 1.0 - 2 * mX ) / gX;
 final float sY = ( 1.0 - 2 * mY ) / gY;
-
-final int nRounds = 5;
 
 final float mRad = 1.0 / 32;
 final float MRad = 1.0 / 8;
@@ -33,10 +31,7 @@ final float upSpd = 4000;
 BufferedWriter baseWriter;
 BufferedWriter acctWriter;
 
-void create( ) throws IOException {
-  
-  baseWriter = new BufferedWriter( new FileWriter( "/Users/ozzy/Documents/CodeMonkey/ToPeeCAAAW/ToPeeCAAAW_base.pointlist" ) );
-  acctWriter = new BufferedWriter( new FileWriter( "/Users/ozzy/Documents/CodeMonkey/ToPeeCAAAW/ToPeeCAAAW_acct.pointlist" ) );
+void create( ) {
   
   canvas.beginDraw( );
   canvas.background( 255 );
@@ -47,24 +42,37 @@ void create( ) throws IOException {
       
       float rad = ( MRad - mRad ) * ( ydx * gX + xdx ) / ( gX * gY ) + mRad;
       
-      sq = new ChaosSquare(
+      grid[ ydx ][ xdx ] = new ChaosSquare(
         new PVector( ( mX + xdx * sX ) * canvas.pixelWidth, ( mY + ydx * sY ) * canvas.pixelHeight ),
         new PVector( ( mX + ( xdx + 1 ) * sX ) * canvas.pixelWidth, ( mY + ( ydx + 1 ) * sY ) * canvas.pixelHeight ),
-        rad );
+        rad, 8 );
         
-      BufferedWriter writer = sq.isBase ? baseWriter : acctWriter;
-        
-      // Move to square start
-      writer.append( "N," + Float.toString( ( sq.max.x - sq.min.x ) * sq.cA.x + sq.min.x ) + "," + Float.toString( ( sq.max.y - sq.min.y ) * sq.cA.y + sq.min.y ) + "\n" );
-        
-      for( int ddx = 0; ddx < nRounds; ++ddx )
-        sq.draw( canvas, writer );
+      grid[ ydx ][ xdx ].draw( canvas );
     
     }
     
   }
   
   canvas.endDraw( );
+  
+}
+
+void saveCanvas( ) throws IOException {
+  
+  baseWriter = new BufferedWriter( new FileWriter( "D:\\Projects\\CodeMonkey\\ToPeeCAAAW\\ToPeeCAAAW_base.pointlist" ) );
+  acctWriter = new BufferedWriter( new FileWriter( "D:\\Projects\\CodeMonkey\\ToPeeCAAAW\\ToPeeCAAAW_acct.pointlist" ) );
+  
+  for( int ydx = 0; ydx < gY; ++ydx ) {
+    
+    for( int xdx = 0; xdx < gX; ++xdx ) {
+        
+      BufferedWriter writer = grid[ ydx ][ xdx ].isBase ? baseWriter : acctWriter;
+        
+      grid[ ydx ][ xdx ].write( writer );
+    
+    }
+    
+  }
   
   baseWriter.close( );
   acctWriter.close( );
@@ -100,6 +108,14 @@ void keyPressed( ) {
     
     try {
       create( );
+    } catch( Exception e ) {
+      System.out.println( "Failure?" );
+    }
+    
+  } else if( key == 'z' ) {
+    
+    try {
+      saveCanvas( );
     } catch( Exception e ) {
       System.out.println( "Failure?" );
     }

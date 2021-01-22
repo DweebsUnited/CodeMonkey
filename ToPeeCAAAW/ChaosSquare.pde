@@ -3,8 +3,7 @@ import java.util.Random;
 class ChaosSquare {
 
   private List<PVector> anchors = new ArrayList<PVector>( );
-  private int adx;
-  public PVector cA;
+  private ArrayList<PVector> points = new ArrayList<PVector>( );
 
   public PVector min, max;
 
@@ -18,15 +17,23 @@ class ChaosSquare {
 
   public ChaosSquare( PVector min, PVector max ) {
 
-    this( min, max, 1.0 / 32.0, 1.0 / 8.0 );
+    this( min, max, 16 );
+    
   }
 
-  public ChaosSquare( PVector min, PVector max, float aRad ) {
+  public ChaosSquare( PVector min, PVector max, int nRounds ) {
 
-    this( min, max, aRad, 1.0 / 8.0 );
+    this( min, max, 1.0 / 32.0, nRounds );
+    
   }
 
-  public ChaosSquare( PVector min, PVector max, float aRad, float frac ) {
+  public ChaosSquare( PVector min, PVector max, float aRad, int nRounds ) {
+
+    this( min, max, aRad, 1.0 / 8.0, nRounds );
+    
+  }
+
+  public ChaosSquare( PVector min, PVector max, float aRad, float frac, int nRounds ) {
 
     this.aRad = aRad;
 
@@ -35,11 +42,9 @@ class ChaosSquare {
     this.anchors.add( new PVector( 1.0 - frac, 1.0 - frac ) );
     this.anchors.add( new PVector(       frac, 1.0 - frac ) );
 
-    for ( this.adx = 0; this.adx < 4; ++this.adx )
+    int adx;
+    for( adx = 0; adx < 4; ++adx )
       this.anchors.get( adx ).add( this.sample( 2.0 ) );
-
-    this.adx = 0;
-    this.cA = this.anchors.get( adx );
 
     this.min = min.copy( );
     this.max = max.copy( );
@@ -55,41 +60,58 @@ class ChaosSquare {
       this.isBase = true;
       
     }
+    
+    // Generate points
+    for( int sdx = 0; sdx < nRounds; ++sdx ) { // Rounds
+      for( adx = 0; adx < 4; ++adx ) { // Anchors
+
+        int nadx = ( adx + 1 ) % 4;
+  
+        PVector b = this.anchors.get( nadx ).copy( );
+        b.add( this.sample( ) );
+  
+        // With very low probability, move anchor a large amount
+        if ( this.rng.nextFloat( ) < 1.0 / 50 )
+          this.anchors.get( nadx ).add( this.sample( 4.0 ) );
+  
+        points.add( b );
+        
+      }
+    }
 
   }
 
-  public void draw( PGraphics canvas, BufferedWriter writer ) throws IOException {
+  public void draw( PGraphics canvas ) {
 
     canvas.noFill( );
     canvas.stroke( this.c );
     canvas.strokeWeight( 5 );
 
-    for ( int sdx = 0; sdx < 4; ++sdx ) {
-
-      int nadx = ( adx + 1 ) % 4;
-
-      PVector b = this.anchors.get( nadx ).copy( );
-      b.add( this.sample( ) );
-
-      // With very low probability, move anchor a large amount
-      if ( this.rng.nextFloat( ) < 1.0 / 50 )
-        this.anchors.get( nadx ).add( this.sample( 4.0 ) );
-
-      // Write a move command
-      //   Scale 0.o
-      //   Don't worry about it, we have a rescaler lib :D
-
-      writer.append( Float.toString( sX( b.x ) ) + "," + Float.toString( sY( b.y ) ) + "\n" );
-
+    PVector cA = this.anchors.get( 0 );
+    for( PVector pt : this.points ) {
+      
       canvas.line(
-        sX( this.cA.x ), sY( this.cA.y ), 
-        sX( b.x ), sY( b.y )
+        sX( cA.x ), sY( cA.y ), 
+        sX( pt.x ), sY( pt.y )
         );
 
-      adx = nadx;
-      this.cA = b;
+      cA = pt;
       
     }
+    
+  }
+  
+  public void write( BufferedWriter writer ) throws IOException {
+    
+    PVector origin = this.anchors.get( 0 );
+    writer.append( "N," + Float.toString( sX( origin.x ) ) + "," + Float.toString( sY( origin.y ) ) + "\n" );
+    
+    for( PVector pt : this.points ) {
+      
+      writer.append( Float.toString( sX( pt.x ) ) + "," + Float.toString( sY( pt.y ) ) + "\n" );
+      
+    }
+    
   }
 
   private float sX( float x ) {
