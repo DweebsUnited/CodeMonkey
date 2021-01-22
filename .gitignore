@@ -12,4 +12,4 @@ java/CodeMonkey/bin
 *.pyc
 
 # VS
-.vs/*
+*/.vs/*
