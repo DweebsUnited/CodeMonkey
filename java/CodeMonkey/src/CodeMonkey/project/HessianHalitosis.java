@@ -3,7 +3,7 @@ package CodeMonkey.project;
 import java.util.Random;
 
 import CodeMonkey.transform.AxisTransform;
-import CodeMonkey.transform.axis.ATLinear;
+import CodeMonkey.transform.axis.ATMap;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PVector;
@@ -29,7 +29,7 @@ public class HessianHalitosis extends ProjectBase {
 
 	private float[ ] nX, nY;
 
-	private AxisTransform toNegPos = new ATLinear( 0, 1, -1, 1 );
+	private AxisTransform toNegPos = new ATMap( 0, 1, -1, 1 );
 
 	private int[ ] palette;
 

@@ -4,17 +4,17 @@ package CodeMonkey.transform.axis;
 
 import CodeMonkey.transform.AxisTransform;
 
-public class ATLinear implements AxisTransform {
-    float a, o;
+public class ATPLinear implements AxisTransform {
+    AxisTransform a, o;
 
-    public ATLinear(float a, float o) {
+    public ATPLinear(AxisTransform a, AxisTransform o) {
         this.a = a;
         this.o = o;
     }
 
     @Override
     public float map( float x ) {
-        return x * this.a + this.o;
+        return x * this.a.map(x) + this.o.map(x);
     }
 
 }

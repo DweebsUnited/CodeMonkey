@@ -9,7 +9,7 @@ import CodeMonkey.spatial.Segment;
 import CodeMonkey.spatial.TexturedMirror;
 import CodeMonkey.transform.AxisTransform;
 import CodeMonkey.transform.CoordinateTransform;
-import CodeMonkey.transform.axis.ATLinear;
+import CodeMonkey.transform.axis.ATMap;
 import CodeMonkey.transform.coordinate.CTLinear;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -148,7 +148,7 @@ public class TitaniumSheepdog extends PApplet {
 
 		this.nTrans = new CTLinear( new PVector( this.rng.nextFloat( ) * 10, this.rng.nextFloat( ) * 10 ),
 				new PVector( this.rng.nextFloat( ) * 4, this.rng.nextFloat( ) * 4 ) );
-		this.nScale = new ATLinear( 0, 0.25f );
+		this.nScale = new ATMap( 0, 0.25f );
 		this.makeNormMap( );
 
 		this.mirr = new TexturedMirror( 1f, 0.5f, new PVector( 0, 0, 1 ), new PVector( 0.5f, 0.25f, 0 ), this.normMap );

@@ -3,7 +3,7 @@ package CodeMonkey.project;
 import java.util.Random;
 
 import CodeMonkey.transform.AxisTransform;
-import CodeMonkey.transform.axis.ATLinear;
+import CodeMonkey.transform.axis.ATMap;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
@@ -36,7 +36,7 @@ public class FrozenPlanetoid extends ProjectBase {
 	private int cHeigh = 512;
 	private int nPx = this.cWidth * this.cHeigh;
 
-	AxisTransform toNegPos = new ATLinear( 0, 1, -1, 1 );
+	AxisTransform toNegPos = new ATMap( 0, 1, -1, 1 );
 
 	private float[ ] AField, BField;
 	private float[ ] APField, BPField;

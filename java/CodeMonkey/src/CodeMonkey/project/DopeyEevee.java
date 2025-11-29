@@ -5,7 +5,7 @@ import java.util.Random;
 import CodeMonkey.transform.AxisTransform;
 import CodeMonkey.transform.CoordinateTransform;
 import CodeMonkey.transform.DualCoordinateTransform;
-import CodeMonkey.transform.axis.ATLinear;
+import CodeMonkey.transform.axis.ATMap;
 import CodeMonkey.transform.color.ColorCoordinateTransform;
 import CodeMonkey.transform.color.CoordinateHue;
 import CodeMonkey.transform.coordinate.CTExponential;
@@ -308,9 +308,9 @@ public class DopeyEevee extends PApplet {
 			}
 		}
 
-		AxisTransform rTrans = new ATLinear( rmin, rmax - rmin, 0, 255 );
-		AxisTransform gTrans = new ATLinear( gmin, gmax - gmin, 0, 255 );
-		AxisTransform bTrans = new ATLinear( bmin, bmax - bmin, 0, 255 );
+		AxisTransform rTrans = new ATMap( rmin, rmax - rmin, 0, 255 );
+		AxisTransform gTrans = new ATMap( gmin, gmax - gmin, 0, 255 );
+		AxisTransform bTrans = new ATMap( bmin, bmax - bmin, 0, 255 );
 		// CoordinateTransform bTrans = new ATLinear( mMin, mMax - mMin, 0, 1 );
 
 		for( int xdx = 0; xdx < this.pixelWidth; ++xdx ) {

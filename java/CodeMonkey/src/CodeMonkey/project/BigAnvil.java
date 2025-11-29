@@ -221,7 +221,7 @@ public class BigAnvil extends ProjectBase {
 
 			}
 		}
-		this.canvas.updatePixels( );
+    this.canvas.updatePixels( );
 
 		if( this.drawt )
 			this.image( this.thresh, 0, 0, this.pixelWidth, this.pixelHeight );

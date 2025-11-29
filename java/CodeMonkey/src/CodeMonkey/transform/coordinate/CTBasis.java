@@ -3,6 +3,7 @@ package CodeMonkey.transform.coordinate;
 import CodeMonkey.transform.CoordinateTransform;
 import processing.core.PVector;
 
+// This takes one vector and applies the coordinates to 3d (or 2d) basis vectors
 
 public class CTBasis implements CoordinateTransform {
 
