@@ -5,3 +5,28 @@ github.com/go-chi/chi/middleware
 github.com/go-chi/docgen
 # github.com/go-chi/render v1.0.1
 github.com/go-chi/render
+# github.com/jackc/pgx v3.5.0+incompatible
+github.com/jackc/pgx
+github.com/jackc/pgx/chunkreader
+github.com/jackc/pgx/internal/sanitize
+github.com/jackc/pgx/pgio
+github.com/jackc/pgx/pgproto3
+github.com/jackc/pgx/pgtype
+# github.com/pkg/errors v0.8.1
+github.com/pkg/errors
+# golang.org/x/crypto v0.1.0
+golang.org/x/crypto/pbkdf2
+# golang.org/x/text v0.4.0
+golang.org/x/text/cases
+golang.org/x/text/internal
+golang.org/x/text/internal/language
+golang.org/x/text/internal/language/compact
+golang.org/x/text/internal/tag
+golang.org/x/text/language
+golang.org/x/text/runes
+golang.org/x/text/secure/bidirule
+golang.org/x/text/secure/precis
+golang.org/x/text/transform
+golang.org/x/text/unicode/bidi
+golang.org/x/text/unicode/norm
+golang.org/x/text/width
